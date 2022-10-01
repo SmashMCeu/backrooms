@@ -1,0 +1,6 @@
+name: Backrooms
+main: gg.maga.backrooms.Backrooms
+version: '${project.version}'
+api-version: 1.19
+author: ReaperMaga & Nyxie
+description: Very beautiful backrooms minigame plugin
