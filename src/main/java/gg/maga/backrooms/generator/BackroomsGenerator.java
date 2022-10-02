@@ -1,17 +1,15 @@
 package gg.maga.backrooms.generator;
 
-import gg.maga.backrooms.generator.exception.MissingStrategyException;
 import gg.maga.backrooms.generator.strategy.BackroomsStrategy;
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
 import gg.maga.backrooms.room.Room;
-import jline.internal.Preconditions;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,7 +23,9 @@ import java.util.concurrent.CompletableFuture;
 public class BackroomsGenerator {
 
     private Plugin plugin;
-    private Map<String, Room> rooms;
+
+    @Setter
+    private List<Room> rooms;
 
     private Random random;
 
@@ -35,7 +35,7 @@ public class BackroomsGenerator {
     public BackroomsGenerator(Plugin plugin, Random random) {
         this.plugin = plugin;
         this.random = random;
-        this.rooms = new HashMap<>();
+        this.rooms = new ArrayList<>();
     }
 
     public BackroomsGenerator(Plugin plugin, long seed) {
@@ -47,7 +47,7 @@ public class BackroomsGenerator {
     }
 
     public <T extends GenerationResult> CompletableFuture<T> generate(Location location, int amount) {
-        Preconditions.checkNotNull(strategy);
+        //Preconditions.checkNotNull(strategy);
         return this.strategy.generate(location, amount);
     }
 

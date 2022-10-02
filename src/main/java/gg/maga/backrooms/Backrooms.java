@@ -1,5 +1,8 @@
 package gg.maga.backrooms;
 
+import gg.maga.backrooms.generator.BackroomsGenerator;
+import gg.maga.backrooms.generator.strategy.impl.PrototypeBackroomsStrategy;
+import gg.maga.backrooms.room.scanner.BackroomsScanner;
 import in.prismar.library.meta.MetaRegistry;
 import in.prismar.library.meta.anno.Service;
 import in.prismar.library.spigot.meta.SpigotCommandProcessor;
@@ -8,6 +11,10 @@ import in.prismar.library.spigot.meta.anno.AutoCommand;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import in.prismar.library.spigot.setup.SpigotSetup;
 import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -22,6 +29,9 @@ public class Backrooms extends JavaPlugin {
 
     private MetaRegistry metaRegistry;
     private SpigotSetup setup;
+
+    private BackroomsGenerator generator;
+    private BackroomsScanner scanner;
 
 
     @Override
@@ -45,5 +55,14 @@ public class Backrooms extends JavaPlugin {
 
         this.setup.register();
 
+
+        World world = Bukkit.getWorld("backrooms");
+        Location start = new Location(world, 0, 0, 0);
+        this.scanner = new BackroomsScanner(this, 23, 2, 8, start, Material.HAY_BLOCK);
+        this.generator = new BackroomsGenerator(this);
+        this.generator.setRooms(scanner.scan());
+        this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, 23));
+
     }
+
 }

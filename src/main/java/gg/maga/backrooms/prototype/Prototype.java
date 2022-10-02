@@ -44,39 +44,39 @@ public class Prototype {
 
     private void scan() {
         World world = startLocation.getWorld();
-        this.rooms.add(new Room("1", new Location(world, 21, -61, 8),
+        this.rooms.add(new Room(new Location(world, 21, -61, 8),
                 new Location(world, -1, -53, -14), RoomOpening.NORTH, RoomOpening.EAST));
-        this.rooms.add(new Room("2", new Location(world, 21, -61, -17),
+        this.rooms.add(new Room(new Location(world, 21, -61, -17),
                 new Location(world, -1, -53, -39), RoomOpening.SOUTH, RoomOpening.EAST));
-        this.rooms.add(new Room("3", new Location(world, 21, -61, -42),
+        this.rooms.add(new Room( new Location(world, 21, -61, -42),
                 new Location(world, -1, -53, -64), RoomOpening.SOUTH, RoomOpening.EAST));
 
-        this.rooms.add(new Room("4", new Location(world, 21, -61, -67),
+        this.rooms.add(new Room( new Location(world, 21, -61, -67),
                 new Location(world, -1, -53, -89),
                 RoomOpening.SOUTH, RoomOpening.EAST, RoomOpening.NORTH, RoomOpening.WEST));
 
-        this.rooms.add(new Room("5", new Location(world, 21, -61, -92),
+        this.rooms.add(new Room(new Location(world, 21, -61, -92),
                 new Location(world, -1, -53, -114),
                 RoomOpening.SOUTH, RoomOpening.EAST, RoomOpening.WEST));
 
-        this.rooms.add(new Room("6", new Location(world, 21, -61, -117),
+        this.rooms.add(new Room(new Location(world, 21, -61, -117),
                 new Location(world, -1, -53, -139),
                 RoomOpening.SOUTH, RoomOpening.WEST));
 
-        this.rooms.add(new Room("7", new Location(world, 21, -61, -142),
+        this.rooms.add(new Room(new Location(world, 21, -61, -142),
                 new Location(world, -1, -53, -164),
                 RoomOpening.SOUTH, RoomOpening.NORTH, RoomOpening.WEST));
 
-        this.rooms.add(new Room("8", new Location(world, 21, -61, -167),
+        this.rooms.add(new Room(new Location(world, 21, -61, -167),
                 new Location(world, -1, -53, -189),
                 RoomOpening.NORTH, RoomOpening.WEST));
 
-        this.rooms.add(new Room("9", new Location(world, 21, -61, -192),
+        this.rooms.add(new Room( new Location(world, 21, -61, -192),
                 new Location(world, -1, -53, -214),
                 RoomOpening.NORTH, RoomOpening.EAST, RoomOpening.WEST));
 
 
-        this.rooms.add(new Room("10", new Location(world, 21, -61, -217),
+        this.rooms.add(new Room(new Location(world, 21, -61, -217),
                 new Location(world, -1, -53, -239),
                 RoomOpening.NORTH, RoomOpening.EAST, RoomOpening.SOUTH));
     }

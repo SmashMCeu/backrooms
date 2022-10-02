@@ -1,5 +1,6 @@
 package gg.maga.backrooms.generator.strategy.impl;
 
+import com.google.common.base.Joiner;
 import gg.maga.backrooms.generator.BackroomsGenerator;
 import gg.maga.backrooms.generator.strategy.AbstractBackroomsStrategy;
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
@@ -121,7 +122,7 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
 
     private Room getRandomRoomByOpenings(RoomOpening... openings) {
         List<Room> selectedRooms = new ArrayList<>();
-        for(Room room : getGenerator().getRooms().values()) {
+        for(Room room : getGenerator().getRooms()) {
             boolean found = true;
             for(RoomOpening opening : openings) {
                 if(!room.getOpenings().contains(opening)) {
@@ -132,12 +133,12 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                 selectedRooms.add(room);
             }
         }
-        return selectedRooms.get(getGenerator().getRandom().nextInt(selectedRooms.size() - 1));
+        return selectedRooms.get(getGenerator().getRandom().nextInt(selectedRooms.size()));
     }
 
     private Room getRandomRoomByOpeningsAndNot(RoomOpening[] openings, RoomOpening[] notOpenings) {
         List<Room> selectedRooms = new ArrayList<>();
-        for(Room room : getGenerator().getRooms().values()) {
+        for(Room room : getGenerator().getRooms()) {
             boolean found = true;
             for(RoomOpening opening : openings) {
                 if(!room.getOpenings().contains(opening)) {
@@ -155,6 +156,6 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                 selectedRooms.add(room);
             }
         }
-        return selectedRooms.get(getGenerator().getRandom().nextInt(selectedRooms.size() - 1));
+        return selectedRooms.get(getGenerator().getRandom().nextInt(selectedRooms.size()));
     }
 }
