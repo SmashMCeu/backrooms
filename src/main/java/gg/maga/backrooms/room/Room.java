@@ -25,10 +25,7 @@ public class Room {
     private Location max;
 
     public Room(Location min, Location max, RoomOpening... openings) {
-        this.pivot = min;
-        this.min = min;
-        this.max = max;
-        this.openings = new HashSet<>(Arrays.asList(openings));
+        this(min, max, new HashSet<>(Arrays.asList(openings)));
     }
 
     public Room(Location min, Location max, Set<RoomOpening> openings) {
