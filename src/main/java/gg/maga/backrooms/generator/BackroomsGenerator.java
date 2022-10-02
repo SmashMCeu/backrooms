@@ -12,6 +12,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -26,12 +27,23 @@ public class BackroomsGenerator {
     private Plugin plugin;
     private Map<String, Room> rooms;
 
+    private Random random;
+
     @Setter
     private BackroomsStrategy strategy;
 
-    public BackroomsGenerator(Plugin plugin) {
+    public BackroomsGenerator(Plugin plugin, Random random) {
         this.plugin = plugin;
+        this.random = random;
         this.rooms = new HashMap<>();
+    }
+
+    public BackroomsGenerator(Plugin plugin, long seed) {
+        this(plugin, new Random(seed));
+    }
+
+    public BackroomsGenerator(Plugin plugin) {
+        this(plugin, new Random());
     }
 
     public <T extends GenerationResult> CompletableFuture<T> generate(Location location, int amount) {

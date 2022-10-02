@@ -132,7 +132,7 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                 selectedRooms.add(room);
             }
         }
-        return selectedRooms.get(MathUtil.random(selectedRooms.size() - 1));
+        return selectedRooms.get(getGenerator().getRandom().nextInt(selectedRooms.size() - 1));
     }
 
     private Room getRandomRoomByOpeningsAndNot(RoomOpening[] openings, RoomOpening[] notOpenings) {
@@ -155,6 +155,6 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                 selectedRooms.add(room);
             }
         }
-        return selectedRooms.get(MathUtil.random(selectedRooms.size() - 1));
+        return selectedRooms.get(getGenerator().getRandom().nextInt(selectedRooms.size() - 1));
     }
 }
