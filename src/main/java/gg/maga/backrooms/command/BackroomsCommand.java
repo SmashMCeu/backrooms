@@ -2,17 +2,13 @@ package gg.maga.backrooms.command;
 
 import com.google.common.base.Joiner;
 import gg.maga.backrooms.Backrooms;
-import gg.maga.backrooms.prototype.Prototype;
+import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.room.Room;
 import in.prismar.library.spigot.command.exception.CommandException;
 import in.prismar.library.spigot.command.spigot.SpigotArguments;
-import in.prismar.library.spigot.command.spigot.SpigotCommand;
 import in.prismar.library.spigot.command.spigot.template.player.PlayerCommand;
 import in.prismar.library.spigot.meta.anno.AutoCommand;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
-
-import java.util.List;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -34,11 +30,17 @@ public class BackroomsCommand extends PlayerCommand {
 
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
-        player.sendMessage("Start generating backrooms...");
-        backrooms.getGenerator().setRooms(backrooms.getScanner().scan());
-        backrooms.getGenerator().generate(player.getLocation(), arguments.getInteger(0));
-
-        player.sendMessage("Finished generating backrooms");
+        if(arguments.getLength() >= 1) {
+            player.sendMessage(BackroomsConstants.PREFIX + "§7Scanning rooms...");
+            backrooms.getGenerator().setRooms(backrooms.getScanner().scan());
+            player.sendMessage(BackroomsConstants.PREFIX + "§7Found §a" + backrooms.getGenerator().getRooms().size() + " rooms");
+            player.sendMessage(BackroomsConstants.PREFIX + "§7Start generating backrooms...");
+            backrooms.getGenerator().generate(player.getLocation(), arguments.getInteger(0)).thenAccept(result -> {
+                player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully finished generating backrooms");
+            });
+            return true;
+        }
+        player.sendMessage(BackroomsConstants.PREFIX + "§cUsage: /backrooms <rooms>");
         return true;
     }
 

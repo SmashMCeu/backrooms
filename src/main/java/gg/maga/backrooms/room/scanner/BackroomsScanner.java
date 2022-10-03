@@ -51,13 +51,11 @@ public class BackroomsScanner {
 
         Room room = scanSingle(location);
 
-        int id = 1;
         while (room != null) {
             rooms.add(room);
             location = location.subtract(0, 0, calcSize);
             room = scanSingle(location);
 
-            id++;
         }
 
         return rooms;

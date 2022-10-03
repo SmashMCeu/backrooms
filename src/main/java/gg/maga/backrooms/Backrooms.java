@@ -5,6 +5,11 @@ import gg.maga.backrooms.generator.strategy.impl.PrototypeBackroomsStrategy;
 import gg.maga.backrooms.room.scanner.BackroomsScanner;
 import in.prismar.library.meta.MetaRegistry;
 import in.prismar.library.meta.anno.Service;
+import in.prismar.library.spigot.command.CommandFactory;
+import in.prismar.library.spigot.command.exception.impl.NoPermissionException;
+import in.prismar.library.spigot.command.exception.impl.PlayerNotFoundException;
+import in.prismar.library.spigot.command.exception.impl.PlayerOfflineException;
+import in.prismar.library.spigot.command.exception.impl.WrongNumberFormatException;
 import in.prismar.library.spigot.meta.SpigotCommandProcessor;
 import in.prismar.library.spigot.meta.SpigotListenerProcessor;
 import in.prismar.library.spigot.meta.anno.AutoCommand;
@@ -46,6 +51,8 @@ public class Backrooms extends JavaPlugin {
 
     private void initialize() {
         this.setup = new SpigotSetup(this, "backrooms");
+        initializeCommandsExceptions();
+
         this.metaRegistry = new MetaRegistry();
         this.metaRegistry.registerProcessor(AutoCommand.class, new SpigotCommandProcessor(setup, metaRegistry));
         this.metaRegistry.registerProcessor(AutoListener.class, new SpigotListenerProcessor(setup, metaRegistry));
@@ -55,14 +62,30 @@ public class Backrooms extends JavaPlugin {
 
         this.setup.register();
 
+        initializeBackrooms();
+    }
 
+    private void initializeBackrooms() {
         World world = Bukkit.getWorld("backrooms");
         Location start = new Location(world, 0, 0, 0);
         this.scanner = new BackroomsScanner(this, 23, 2, 8, start, Material.HAY_BLOCK);
         this.generator = new BackroomsGenerator(this);
         this.generator.setRooms(scanner.scan());
         this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, 23));
+    }
 
+    private void initializeCommandsExceptions() {
+        CommandFactory.setDefaultExceptionMapper((sender, exception) -> {
+            if(exception instanceof NoPermissionException) {
+                sender.sendMessage(BackroomsConstants.NO_PERMISSION_MESSAGE);
+            } else if(exception instanceof PlayerOfflineException) {
+                sender.sendMessage(BackroomsConstants.PLAYER_NOT_ONLINE_MESSAGE);
+            } else if(exception instanceof WrongNumberFormatException) {
+                sender.sendMessage(BackroomsConstants.NOT_VALID_NUMBER_MESSAGE);
+            } else if(exception instanceof PlayerNotFoundException) {
+                sender.sendMessage(BackroomsConstants.PLAYER_NOT_FOUND_MESSAGE);
+            }
+        });
     }
 
 }
