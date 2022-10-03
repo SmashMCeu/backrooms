@@ -4,6 +4,7 @@ import com.google.common.base.Joiner;
 import gg.maga.backrooms.generator.BackroomsGenerator;
 import gg.maga.backrooms.generator.strategy.AbstractBackroomsStrategy;
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
+import gg.maga.backrooms.room.PlacedRoom;
 import gg.maga.backrooms.room.Room;
 import gg.maga.backrooms.room.RoomOpening;
 import in.prismar.library.common.math.MathUtil;
@@ -23,15 +24,18 @@ import java.util.concurrent.CompletableFuture;
 public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<GenerationResult> {
 
     private final double roomSize;
+    private final double halfRoomSize;
 
     public PrototypeBackroomsStrategy(BackroomsGenerator generator, double roomSize) {
         super(generator);
         this.roomSize = roomSize;
+        this.halfRoomSize = Math.floor(roomSize / 2);
     }
     
     @Override
     public CompletableFuture<GenerationResult> generate(Location location, int amount) {
         CompletableFuture<GenerationResult> future = new CompletableFuture<>();
+        List<PlacedRoom> placedRooms = new ArrayList<>();
         long now = System.currentTimeMillis();
 
         Room startRoom = null;
@@ -59,6 +63,8 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
 
             Copier copier = new Copier(room.getPivot(), room.getMin(), room.getMax());
             copier.paste(startLocation);
+
+            placedRooms.add(new PlacedRoom(room, startLocation.clone().subtract(halfRoomSize, 0, halfRoomSize)));
 
             startRoom = room;
 
@@ -107,6 +113,8 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                 copier = new Copier(roomX.getPivot(), roomX.getMin(), roomX.getMax());
                 copier.paste(startLocationX);
 
+                placedRooms.add(new PlacedRoom(roomX, startLocationX.clone().subtract(halfRoomSize, 0, halfRoomSize)));
+
                 startRoomX = roomX;
             }
 
@@ -116,7 +124,7 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
         
         
         long time = System.currentTimeMillis() - now;
-        future.complete(new GenerationResult(time));
+        future.complete(new GenerationResult(time, placedRooms));
         return future;
     }
 

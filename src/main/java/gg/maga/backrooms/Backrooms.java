@@ -1,9 +1,11 @@
 package gg.maga.backrooms;
 
+import gg.maga.backrooms.config.GeneratorConfig;
 import gg.maga.backrooms.generator.BackroomsGenerator;
 import gg.maga.backrooms.generator.strategy.impl.PrototypeBackroomsStrategy;
 import gg.maga.backrooms.room.scanner.BackroomsScanner;
 import in.prismar.library.meta.MetaRegistry;
+import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.meta.anno.Service;
 import in.prismar.library.spigot.command.CommandFactory;
 import in.prismar.library.spigot.command.exception.impl.NoPermissionException;
@@ -22,6 +24,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+
 /**
  * Copyright (c) Maga, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
@@ -35,14 +39,11 @@ public class Backrooms extends JavaPlugin {
     private MetaRegistry metaRegistry;
     private SpigotSetup setup;
 
+    @Inject
+    private GeneratorConfig generatorConfig;
+
     private BackroomsGenerator generator;
     private BackroomsScanner scanner;
-
-
-    @Override
-    public void onLoad() {
-
-    }
 
     @Override
     public void onEnable() {
@@ -62,30 +63,32 @@ public class Backrooms extends JavaPlugin {
 
         this.setup.register();
 
-        initializeBackrooms();
+        initializeGenerator();
     }
 
-    private void initializeBackrooms() {
-        World world = Bukkit.getWorld("backrooms");
-        Location start = new Location(world, 0, 0, 0);
-        this.scanner = new BackroomsScanner(this, 23, 2, 8, start, Material.HAY_BLOCK);
-        this.generator = new BackroomsGenerator(this);
-        this.generator.setRooms(scanner.scan());
-        this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, 23));
-    }
 
     private void initializeCommandsExceptions() {
         CommandFactory.setDefaultExceptionMapper((sender, exception) -> {
-            if(exception instanceof NoPermissionException) {
+            if (exception instanceof NoPermissionException) {
                 sender.sendMessage(BackroomsConstants.NO_PERMISSION_MESSAGE);
-            } else if(exception instanceof PlayerOfflineException) {
+            } else if (exception instanceof PlayerOfflineException) {
                 sender.sendMessage(BackroomsConstants.PLAYER_NOT_ONLINE_MESSAGE);
-            } else if(exception instanceof WrongNumberFormatException) {
+            } else if (exception instanceof WrongNumberFormatException) {
                 sender.sendMessage(BackroomsConstants.NOT_VALID_NUMBER_MESSAGE);
-            } else if(exception instanceof PlayerNotFoundException) {
+            } else if (exception instanceof PlayerNotFoundException) {
                 sender.sendMessage(BackroomsConstants.PLAYER_NOT_FOUND_MESSAGE);
             }
         });
+    }
+
+    private void initializeGenerator() {
+        World world = Bukkit.getWorld(generatorConfig.getRoomTemplateWorld());
+        Location start = new Location(world, 0, 0, 0);
+        this.scanner = new BackroomsScanner(this, generatorConfig.getRoomSize(),
+                generatorConfig.getSpaceBetweenRooms(), generatorConfig.getRoomHeight(), start, Material.valueOf(generatorConfig.getRoomFloorMaterialType()));
+        this.generator = new BackroomsGenerator(this);
+        this.generator.setRooms(scanner.scan());
+        this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, generatorConfig.getRoomSize()));
     }
 
 }

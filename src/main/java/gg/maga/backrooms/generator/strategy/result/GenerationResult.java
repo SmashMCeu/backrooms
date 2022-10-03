@@ -1,8 +1,11 @@
 package gg.maga.backrooms.generator.strategy.result;
 
+import gg.maga.backrooms.room.PlacedRoom;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -16,4 +19,5 @@ import lombok.NoArgsConstructor;
 public class GenerationResult {
 
     private long time;
+    private List<PlacedRoom> rooms;
 }
