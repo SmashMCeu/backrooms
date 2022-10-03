@@ -1,4 +1,6 @@
-package gg.maga.backrooms.game;
+package gg.maga.backrooms.game.participant.lobby;
+
+import gg.maga.backrooms.game.participant.GameParticipant;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -6,9 +8,5 @@ package gg.maga.backrooms.game;
  * Proprietary and confidential
  * Written by Maga
  **/
-public enum GameState {
-
-    LOBBY,
-    IN_GAME,
-    END;
+public class LobbyParticipant extends GameParticipant {
 }

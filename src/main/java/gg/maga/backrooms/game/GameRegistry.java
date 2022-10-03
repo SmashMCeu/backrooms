@@ -1,5 +1,6 @@
 package gg.maga.backrooms.game;
 
+import gg.maga.backrooms.Backrooms;
 import in.prismar.library.meta.anno.Service;
 import lombok.Getter;
 
@@ -16,9 +17,11 @@ import java.util.Map;
 @Getter
 public class GameRegistry {
 
+    private final Backrooms backrooms;
     private Map<String, Game> games;
 
-    public GameRegistry() {
+    public GameRegistry(Backrooms backrooms) {
+        this.backrooms = backrooms;
         this.games = new HashMap<>();
     }
 
