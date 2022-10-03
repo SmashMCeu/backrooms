@@ -1,17 +1,18 @@
-package gg.maga.backrooms.prototype;
+package gg.maga.backrooms.generator.strategy.impl;
 
-import gg.maga.backrooms.room.PlacedRoom;
+import com.google.common.base.Joiner;
+import gg.maga.backrooms.generator.BackroomsGenerator;
+import gg.maga.backrooms.generator.strategy.AbstractBackroomsStrategy;
+import gg.maga.backrooms.generator.strategy.result.GenerationResult;
 import gg.maga.backrooms.room.Room;
 import gg.maga.backrooms.room.RoomOpening;
 import in.prismar.library.common.math.MathUtil;
 import in.prismar.library.spigot.location.copier.Copier;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.plugin.Plugin;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -19,73 +20,24 @@ import java.util.List;
  * Proprietary and confidential
  * Written by Maga
  **/
-public class Prototype {
+public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<GenerationResult> {
 
-    private Plugin plugin;
-    private Location startLocation;
+    private final double roomSize;
 
-    private int roomsAmount;
-    private double roomSize;
-    private List<Room> rooms;
-    private List<PlacedRoom> placedRooms;
-
-
-
-    public Prototype(Plugin plugin, Location location, double roomSize, int roomsAmount) {
-        this.plugin = plugin;
-        this.startLocation = location;
+    public PrototypeBackroomsStrategy(BackroomsGenerator generator, double roomSize) {
+        super(generator);
         this.roomSize = roomSize;
-        this.rooms = new ArrayList<>();
-        this.placedRooms = new ArrayList<>();
-        this.roomsAmount = roomsAmount;
-
-        scan();
     }
+    
+    @Override
+    public CompletableFuture<GenerationResult> generate(Location location, int amount) {
+        CompletableFuture<GenerationResult> future = new CompletableFuture<>();
+        long now = System.currentTimeMillis();
 
-    private void scan() {
-        World world = startLocation.getWorld();
-        this.rooms.add(new Room("1", new Location(world, 21, -61, 8),
-                new Location(world, -1, -53, -14), RoomOpening.NORTH, RoomOpening.EAST));
-        this.rooms.add(new Room("2", new Location(world, 21, -61, -17),
-                new Location(world, -1, -53, -39), RoomOpening.SOUTH, RoomOpening.EAST));
-        this.rooms.add(new Room("3", new Location(world, 21, -61, -42),
-                new Location(world, -1, -53, -64), RoomOpening.SOUTH, RoomOpening.EAST));
-
-        this.rooms.add(new Room("4", new Location(world, 21, -61, -67),
-                new Location(world, -1, -53, -89),
-                RoomOpening.SOUTH, RoomOpening.EAST, RoomOpening.NORTH, RoomOpening.WEST));
-
-        this.rooms.add(new Room("5", new Location(world, 21, -61, -92),
-                new Location(world, -1, -53, -114),
-                RoomOpening.SOUTH, RoomOpening.EAST, RoomOpening.WEST));
-
-        this.rooms.add(new Room("6", new Location(world, 21, -61, -117),
-                new Location(world, -1, -53, -139),
-                RoomOpening.SOUTH, RoomOpening.WEST));
-
-        this.rooms.add(new Room("7", new Location(world, 21, -61, -142),
-                new Location(world, -1, -53, -164),
-                RoomOpening.SOUTH, RoomOpening.NORTH, RoomOpening.WEST));
-
-        this.rooms.add(new Room("8", new Location(world, 21, -61, -167),
-                new Location(world, -1, -53, -189),
-                RoomOpening.NORTH, RoomOpening.WEST));
-
-        this.rooms.add(new Room("9", new Location(world, 21, -61, -192),
-                new Location(world, -1, -53, -214),
-                RoomOpening.NORTH, RoomOpening.EAST, RoomOpening.WEST));
-
-
-        this.rooms.add(new Room("10", new Location(world, 21, -61, -217),
-                new Location(world, -1, -53, -239),
-                RoomOpening.NORTH, RoomOpening.EAST, RoomOpening.SOUTH));
-    }
-
-    public void start() {
         Room startRoom = null;
-        Location startLocation = this.startLocation.clone();
+        Location startLocation = location.clone();
 
-        for (int i = 0; i < roomsAmount; i++) {
+        for (int i = 0; i < amount; i++) {
             RoomOpening[] counterOpenings = i == 0 ? new RoomOpening[]{} :
                     startRoom.getOpenings().toArray(new RoomOpening[0]);
             for (int j = 0; j < counterOpenings.length; j++) {
@@ -97,7 +49,7 @@ public class Prototype {
             if(i == 0) {
                 room = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.NORTH, RoomOpening.EAST},
                         new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.WEST});
-            } else if(i == roomsAmount - 1) {
+            } else if(i == amount - 1) {
                 room = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.EAST},
                         new RoomOpening[]{RoomOpening.WEST, RoomOpening.NORTH});
             } else {
@@ -114,7 +66,7 @@ public class Prototype {
             Location startLocationX = startLocation.clone();
             Room startRoomX = getRandomRoomByOpenings(counterOpenings);
 
-            for (int j = 0; j < roomsAmount; j++) {
+            for (int j = 0; j < amount; j++) {
                 startLocationX = startLocationX.add(roomSize, 0, 0);
 
                 RoomOpening[] counterOpeningsX = startRoomX.getOpenings().toArray(new RoomOpening[0]);
@@ -124,7 +76,7 @@ public class Prototype {
 
                 Room roomX;
                 if(i == 0) {
-                    if (j == roomsAmount - 1) {
+                    if (j == amount - 1) {
                         roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.WEST, RoomOpening.NORTH},
                                 new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.EAST});
                     } else {
@@ -132,8 +84,8 @@ public class Prototype {
                                 new RoomOpening[]{RoomOpening.SOUTH});
                     }
                 } else {
-                    if(j == roomsAmount - 1) {
-                        if(i == roomsAmount - 1) {
+                    if(j == amount - 1) {
+                        if(i == amount - 1) {
                             roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.WEST, RoomOpening.SOUTH},
                                     new RoomOpening[]{RoomOpening.EAST, RoomOpening.NORTH});
                         } else {
@@ -142,7 +94,7 @@ public class Prototype {
                         }
 
                     } else {
-                        if(i == roomsAmount - 1) {
+                        if(i == amount - 1) {
                             roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.WEST, RoomOpening.EAST},
                                     new RoomOpening[]{RoomOpening.NORTH});
                         } else {
@@ -161,11 +113,16 @@ public class Prototype {
             startLocation = startLocation.subtract(0,0, roomSize);
 
         }
+        
+        
+        long time = System.currentTimeMillis() - now;
+        future.complete(new GenerationResult(time));
+        return future;
     }
 
     private Room getRandomRoomByOpenings(RoomOpening... openings) {
         List<Room> selectedRooms = new ArrayList<>();
-        for(Room room : rooms) {
+        for(Room room : getGenerator().getRooms()) {
             boolean found = true;
             for(RoomOpening opening : openings) {
                 if(!room.getOpenings().contains(opening)) {
@@ -176,12 +133,12 @@ public class Prototype {
                 selectedRooms.add(room);
             }
         }
-        return selectedRooms.get(MathUtil.random(selectedRooms.size() - 1));
+        return selectedRooms.get(getGenerator().getRandom().nextInt(selectedRooms.size()));
     }
 
     private Room getRandomRoomByOpeningsAndNot(RoomOpening[] openings, RoomOpening[] notOpenings) {
         List<Room> selectedRooms = new ArrayList<>();
-        for(Room room : rooms) {
+        for(Room room : getGenerator().getRooms()) {
             boolean found = true;
             for(RoomOpening opening : openings) {
                 if(!room.getOpenings().contains(opening)) {
@@ -199,6 +156,6 @@ public class Prototype {
                 selectedRooms.add(room);
             }
         }
-        return selectedRooms.get(MathUtil.random(selectedRooms.size() - 1));
+        return selectedRooms.get(getGenerator().getRandom().nextInt(selectedRooms.size()));
     }
 }

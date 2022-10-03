@@ -17,7 +17,6 @@ import java.util.Set;
 @Data
 public class Room {
 
-    private String id;
     private Set<RoomOpening> openings;
 
     //Replica
@@ -25,11 +24,14 @@ public class Room {
     private Location min;
     private Location max;
 
-    public Room(String id, Location min, Location max, RoomOpening... openings) {
-        this.id = id;
+    public Room(Location min, Location max, RoomOpening... openings) {
+        this(min, max, new HashSet<>(Arrays.asList(openings)));
+    }
+
+    public Room(Location min, Location max, Set<RoomOpening> openings) {
         this.pivot = min;
         this.min = min;
         this.max = max;
-        this.openings = new HashSet<>(Arrays.asList(openings));
+        this.openings = openings;
     }
 }
