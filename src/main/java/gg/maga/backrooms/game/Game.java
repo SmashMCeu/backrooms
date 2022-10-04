@@ -3,12 +3,8 @@ package gg.maga.backrooms.game;
 import gg.maga.backrooms.game.countdown.Countdown;
 import gg.maga.backrooms.game.countdown.impl.LobbyCountdown;
 import gg.maga.backrooms.game.participant.GameParticipantRegistry;
-import gg.maga.backrooms.room.PlacedRoom;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.plugin.Plugin;
-
-import java.util.List;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -20,18 +16,20 @@ import java.util.List;
 @Setter
 public class Game {
 
-    private final GameRegistry registry;
+    private final String id;
+    private final GameProvider provider;
     private final GameParticipantRegistry participantRegistry;
     private GameProperties properties;
     private GameState state;
-    private List<PlacedRoom> rooms;
+    private GameMap map;
 
     private Countdown countdown;
 
-    public Game(GameRegistry registry, GameProperties properties, List<PlacedRoom> rooms) {
-        this.registry = registry;
+    public Game(GameProvider provider, String id, GameProperties properties, GameMap map) {
+        this.provider = provider;
+        this.id = id;
         this.properties = properties;
-        this.rooms = rooms;
+        this.map = map;
         this.state = GameState.LOBBY;
         this.participantRegistry = new GameParticipantRegistry();
         this.countdown = new LobbyCountdown(this);

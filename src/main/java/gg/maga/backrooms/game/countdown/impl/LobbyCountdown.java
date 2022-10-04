@@ -18,7 +18,7 @@ public class LobbyCountdown extends GameCountdown {
     private final Game game;
 
     public LobbyCountdown(Game game) {
-        super(game.getRegistry().getBackrooms(), 60);
+        super(game.getProvider().getBackrooms(), 60);
         this.game = game;
     }
 

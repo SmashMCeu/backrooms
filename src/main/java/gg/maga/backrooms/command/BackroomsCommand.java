@@ -3,12 +3,16 @@ package gg.maga.backrooms.command;
 import com.google.common.base.Joiner;
 import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
+import gg.maga.backrooms.game.GameProvider;
 import gg.maga.backrooms.room.Room;
+import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.command.exception.CommandException;
 import in.prismar.library.spigot.command.spigot.SpigotArguments;
 import in.prismar.library.spigot.command.spigot.template.player.PlayerCommand;
 import in.prismar.library.spigot.meta.anno.AutoCommand;
 import org.bukkit.entity.Player;
+
+import java.util.function.Consumer;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -21,6 +25,9 @@ public class BackroomsCommand extends PlayerCommand {
 
     private final Backrooms backrooms;
 
+    @Inject
+    private GameProvider provider;
+
     public BackroomsCommand(Backrooms backrooms) {
         super("backrooms");
         setAliases("br", "backroom");
@@ -31,16 +38,28 @@ public class BackroomsCommand extends PlayerCommand {
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
         if(arguments.getLength() >= 1) {
-            player.sendMessage(BackroomsConstants.PREFIX + "§7Scanning rooms...");
-            backrooms.getGenerator().setRooms(backrooms.getScanner().scan());
-            player.sendMessage(BackroomsConstants.PREFIX + "§7Found §a" + backrooms.getGenerator().getRooms().size() + " rooms");
-            player.sendMessage(BackroomsConstants.PREFIX + "§7Start generating backrooms...");
-            backrooms.getGenerator().generate(player.getLocation(), arguments.getInteger(0)).thenAccept(result -> {
-                player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully finished generating backrooms");
-            });
+            final String sub = arguments.getString(0);
+            if(sub.equalsIgnoreCase("generate")) {
+                player.sendMessage(BackroomsConstants.PREFIX + "§7Start generating backrooms...");
+                provider.prepareGame().thenAccept(game -> {
+                    player.sendMessage(BackroomsConstants.PREFIX + "§7ID: §a" + game.getId());
+                    player.sendMessage(BackroomsConstants.PREFIX + "§7Scientist spawns: §a" + game.getMap().getScientistSpawns().size());
+                    player.sendMessage(BackroomsConstants.PREFIX + "§7Entity spawns: §a" + game.getMap().getEntitySpawns().size());
+
+                    player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully finished generating backrooms");
+
+                });
+                return true;
+            } else if(sub.equalsIgnoreCase("clear")) {
+                player.sendMessage(BackroomsConstants.PREFIX + "§7Clearing all backrooms.");
+                provider.clearGames().thenAccept(unused -> {
+                    player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully cleared all backrooms");
+                });
+            }
+
             return true;
         }
-        player.sendMessage(BackroomsConstants.PREFIX + "§cUsage: /backrooms <rooms>");
+        player.sendMessage(BackroomsConstants.PREFIX + "§cUsage: /backrooms <generate, clear>");
         return true;
     }
 
