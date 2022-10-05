@@ -4,6 +4,7 @@ import gg.maga.backrooms.config.GeneratorConfig;
 import gg.maga.backrooms.generator.BackroomsGenerator;
 import gg.maga.backrooms.generator.strategy.impl.PrototypeBackroomsStrategy;
 import gg.maga.backrooms.room.scanner.BackroomsScanner;
+import gg.maga.backrooms.room.scanner.strategy.PrototypeScannerStrategy;
 import in.prismar.library.meta.MetaRegistry;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.meta.anno.Service;
@@ -84,8 +85,8 @@ public class Backrooms extends JavaPlugin {
     private void initializeGenerator() {
         World world = Bukkit.getWorld(generatorConfig.getRoomTemplateWorld());
         Location start = new Location(world, 0, 0, 0);
-        this.scanner = new BackroomsScanner(this, generatorConfig.getRoomSize(),
-                generatorConfig.getSpaceBetweenRooms(), generatorConfig.getRoomHeight(), start, Material.valueOf(generatorConfig.getRoomFloorMaterialType()));
+        this.scanner = new BackroomsScanner(this, start);
+        this.scanner.setStrategy(new PrototypeScannerStrategy(generatorConfig.getRoomSize(), generatorConfig.getSpaceBetweenRooms(), generatorConfig.getRoomHeight(), Material.valueOf(generatorConfig.getRoomFloorMaterialType())));
         this.generator = new BackroomsGenerator(this);
         this.generator.setRooms(scanner.scan());
         this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, generatorConfig.getRoomSize()));
