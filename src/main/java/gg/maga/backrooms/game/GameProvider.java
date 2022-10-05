@@ -1,7 +1,8 @@
 package gg.maga.backrooms.game;
 
 import gg.maga.backrooms.Backrooms;
-import gg.maga.backrooms.config.GameConfig;
+import gg.maga.backrooms.config.ConfigProvider;
+import gg.maga.backrooms.config.model.GameConfig;
 import gg.maga.backrooms.game.event.GameCreateEvent;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameMap;
@@ -39,7 +40,7 @@ public class GameProvider {
     private final Backrooms backrooms;
 
     @Inject
-    private GameConfig config;
+    private ConfigProvider configProvider;
 
     private Map<String, Game> games;
     private List<GameSignProcessor> signProcessors;
@@ -59,11 +60,13 @@ public class GameProvider {
 
     @SafeInitialize
     private void initialize() {
-        this.generationLocation = config.getGenerationLocation();
+        this.generationLocation = configProvider.getEntity().getGame().getGenerationStart().clone();
     }
 
     public CompletableFuture<Game> prepareGame() {
         CompletableFuture<Game> future = new CompletableFuture<>();
+        GameConfig config = configProvider.getEntity().getGame();
+
         backrooms.getGenerator().generate(generationLocation, config.getDefaultBackroomsSize()).thenAccept(result -> {
             final String id = UUID.randomUUID().toString();
             Tuple<Location, Location> minMax = getMinMaxOfGeneration(result);
@@ -125,9 +128,9 @@ public class GameProvider {
         PlacedRoom first = generation.getRooms().get(0);
         PlacedRoom last = generation.getRooms().get(generation.getRooms().size() - 1);
 
-        double halfRoomSize = Math.floor(backrooms.getGeneratorConfig().getRoomSize() / 2);
+        double halfRoomSize = Math.floor(configProvider.getEntity().getGenerator().getSize() / 2);
         Location min = first.getCenter().clone().add(-halfRoomSize, 0, halfRoomSize);
-        Location max = last.getCenter().clone().add(halfRoomSize, backrooms.getGeneratorConfig().getRoomHeight(), -halfRoomSize);
+        Location max = last.getCenter().clone().add(halfRoomSize, configProvider.getEntity().getGenerator().getHeight(), -halfRoomSize);
         return new Tuple<>(min, max);
     }
 

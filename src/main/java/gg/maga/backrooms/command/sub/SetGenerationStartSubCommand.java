@@ -27,7 +27,8 @@ public class SetGenerationStartSubCommand extends HelpSubCommand<Player> {
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
         player.sendMessage(BackroomsConstants.PREFIX + "§7You have successfully set the §ageneration start point");
-        provider.getConfig().setGenerationLocation(player.getLocation());
+        provider.getConfigProvider().getEntity().getGame().setGenerationStart(player.getLocation());
+        provider.getConfigProvider().save();
         return true;
     }
 }

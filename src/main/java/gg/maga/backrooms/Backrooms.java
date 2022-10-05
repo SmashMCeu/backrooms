@@ -1,6 +1,7 @@
 package gg.maga.backrooms;
 
-import gg.maga.backrooms.config.GeneratorConfig;
+import gg.maga.backrooms.config.ConfigProvider;
+import gg.maga.backrooms.config.model.GeneratorConfig;
 import gg.maga.backrooms.generator.BackroomsGenerator;
 import gg.maga.backrooms.generator.strategy.impl.PrototypeBackroomsStrategy;
 import gg.maga.backrooms.room.scanner.BackroomsScanner;
@@ -25,8 +26,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
-
 /**
  * Copyright (c) Maga, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
@@ -41,7 +40,7 @@ public class Backrooms extends JavaPlugin {
     private SpigotSetup setup;
 
     @Inject
-    private GeneratorConfig generatorConfig;
+    private ConfigProvider configProvider;
 
     private BackroomsGenerator generator;
     private BackroomsScanner scanner;
@@ -83,13 +82,14 @@ public class Backrooms extends JavaPlugin {
     }
 
     private void initializeGenerator() {
-        World world = Bukkit.getWorld(generatorConfig.getRoomTemplateWorld());
+        GeneratorConfig config = configProvider.getEntity().getGenerator();
+        World world = Bukkit.getWorld(config.getTemplateWorld());
         Location start = new Location(world, 0, 0, 0);
         this.scanner = new BackroomsScanner(this, start);
-        this.scanner.setStrategy(new PrototypeScannerStrategy(generatorConfig.getRoomSize(), generatorConfig.getSpaceBetweenRooms(), generatorConfig.getRoomHeight(), Material.valueOf(generatorConfig.getRoomFloorMaterialType())));
+        this.scanner.setStrategy(new PrototypeScannerStrategy(config.getSize(), config.getSpaceBetweenRooms(), config.getHeight(), Material.valueOf(config.getFloorMaterialType())));
         this.generator = new BackroomsGenerator(this);
         this.generator.setRooms(scanner.scan());
-        this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, generatorConfig.getRoomSize()));
+        this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, config.getSize()));
     }
 
 }

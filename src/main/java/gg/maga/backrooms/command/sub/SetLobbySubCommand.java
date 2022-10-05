@@ -27,7 +27,8 @@ public class SetLobbySubCommand extends HelpSubCommand<Player> {
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
         player.sendMessage(BackroomsConstants.PREFIX + "§7You have successfully set the §alobby spawn");
-        provider.getConfig().setLobbyLocation(player.getLocation());
+        provider.getConfigProvider().getEntity().getGame().setLobby(player.getLocation());
+        provider.getConfigProvider().save();
         return true;
     }
 }
