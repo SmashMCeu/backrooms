@@ -1,5 +1,6 @@
 package gg.maga.backrooms.command.sub;
 
+import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.GameProvider;
 import in.prismar.library.spigot.command.exception.CommandException;
@@ -15,17 +16,18 @@ import org.bukkit.entity.Player;
  **/
 public class SetLobbySubCommand extends HelpSubCommand<Player> {
 
-    private GameProvider provider;
+    private Backrooms backrooms;
 
-    public SetLobbySubCommand(GameProvider provider) {
+    public SetLobbySubCommand(Backrooms backrooms) {
         super("setlobby");
         setPermission(BackroomsConstants.PERMISSION_PREFIX + "setlobby");
         setDescription("Set the lobby spawn");
-        this.provider = provider;
+        this.backrooms = backrooms;
     }
 
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
+        GameProvider provider = backrooms.getGameProvider();
         player.sendMessage(BackroomsConstants.PREFIX + "§7You have successfully set the §alobby spawn");
         provider.getConfigProvider().getEntity().getGame().setLobby(player.getLocation());
         provider.getConfigProvider().save();

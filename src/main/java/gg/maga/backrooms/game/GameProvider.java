@@ -42,6 +42,9 @@ public class GameProvider {
     @Inject
     private ConfigProvider configProvider;
 
+    @Inject
+    private GameMatchmaker matchmaker;
+
     private Map<String, Game> games;
     private List<GameSignProcessor> signProcessors;
 

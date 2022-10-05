@@ -1,5 +1,6 @@
 package gg.maga.backrooms.command.sub;
 
+import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.GameProvider;
 import in.prismar.library.spigot.command.exception.CommandException;
@@ -15,19 +16,19 @@ import org.bukkit.entity.Player;
  **/
 public class ClearSubCommand extends HelpSubCommand<Player> {
 
-    private GameProvider provider;
+    private Backrooms backrooms;
 
-    public ClearSubCommand(GameProvider provider) {
+    public ClearSubCommand(Backrooms backrooms) {
         super("clear");
         setPermission(BackroomsConstants.PERMISSION_PREFIX + "clear");
         setDescription("Clear all backrooms");
-        this.provider = provider;
+        this.backrooms = backrooms;
     }
 
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
         player.sendMessage(BackroomsConstants.PREFIX + "§7Clearing all backrooms.");
-        provider.clearGames().thenAccept(unused -> {
+        backrooms.getGameProvider().clearGames().thenAccept(unused -> {
             player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully cleared all backrooms");
         });
         return true;

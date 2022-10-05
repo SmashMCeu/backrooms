@@ -1,5 +1,6 @@
 package gg.maga.backrooms.command.sub;
 
+import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.GameProvider;
 import in.prismar.library.spigot.command.exception.CommandException;
@@ -15,17 +16,18 @@ import org.bukkit.entity.Player;
  **/
 public class SetGenerationStartSubCommand extends HelpSubCommand<Player> {
 
-    private GameProvider provider;
+    private Backrooms backrooms;
 
-    public SetGenerationStartSubCommand(GameProvider provider) {
+    public SetGenerationStartSubCommand(Backrooms backrooms) {
         super("setgenerationstart");
         setPermission(BackroomsConstants.PERMISSION_PREFIX + "setgenerationstart");
         setDescription("Set the generation start point");
-        this.provider = provider;
+        this.backrooms = backrooms;
     }
 
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
+        GameProvider provider = backrooms.getGameProvider();
         player.sendMessage(BackroomsConstants.PREFIX + "§7You have successfully set the §ageneration start point");
         provider.getConfigProvider().getEntity().getGame().setGenerationStart(player.getLocation());
         provider.getConfigProvider().save();

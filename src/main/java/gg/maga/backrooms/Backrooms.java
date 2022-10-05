@@ -2,6 +2,7 @@ package gg.maga.backrooms;
 
 import gg.maga.backrooms.config.ConfigProvider;
 import gg.maga.backrooms.config.model.GeneratorConfig;
+import gg.maga.backrooms.game.GameProvider;
 import gg.maga.backrooms.generator.BackroomsGenerator;
 import gg.maga.backrooms.generator.strategy.impl.PrototypeBackroomsStrategy;
 import gg.maga.backrooms.room.scanner.BackroomsScanner;
@@ -41,6 +42,9 @@ public class Backrooms extends JavaPlugin {
 
     @Inject
     private ConfigProvider configProvider;
+
+    @Inject
+    private GameProvider gameProvider;
 
     private BackroomsGenerator generator;
     private BackroomsScanner scanner;

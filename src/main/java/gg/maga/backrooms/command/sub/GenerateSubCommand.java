@@ -1,5 +1,6 @@
 package gg.maga.backrooms.command.sub;
 
+import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.GameMatchmaker;
 import gg.maga.backrooms.game.GameProvider;
@@ -19,19 +20,19 @@ import org.bukkit.entity.Player;
  **/
 public class GenerateSubCommand extends HelpSubCommand<Player> {
 
-    private GameProvider provider;
+    private Backrooms backrooms;
 
-    public GenerateSubCommand(GameProvider provider) {
+    public GenerateSubCommand(Backrooms backrooms) {
         super("generate");
         setPermission(BackroomsConstants.PERMISSION_PREFIX + "generate");
         setDescription("Generate a backroom");
-        this.provider = provider;
+        this.backrooms = backrooms;
     }
 
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
         player.sendMessage(BackroomsConstants.PREFIX + "§7Start generating backrooms...");
-        provider.prepareGame().thenAccept(game -> {
+        backrooms.getGameProvider().prepareGame().thenAccept(game -> {
             player.sendMessage(BackroomsConstants.PREFIX + "§7ID: §a" + game.getId());
             player.sendMessage(BackroomsConstants.PREFIX + "§7Scientist spawns: §a" + game.getMap().getScientistSpawns().size());
             player.sendMessage(BackroomsConstants.PREFIX + "§7Entity spawns: §a" + game.getMap().getEntitySpawns().size());

@@ -1,5 +1,6 @@
 package gg.maga.backrooms.command.sub;
 
+import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.GameMatchmaker;
@@ -18,16 +19,17 @@ import java.util.Optional;
  **/
 public class JoinSubCommand extends HelpSubCommand<Player> {
 
-    private GameMatchmaker matchmaker;
+    private Backrooms backrooms;
 
-    public JoinSubCommand(GameMatchmaker matchmaker) {
+    public JoinSubCommand(Backrooms backrooms) {
         super("join");
         setDescription("Join a game");
-        this.matchmaker = matchmaker;
+        this.backrooms = backrooms;
     }
 
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
+        GameMatchmaker matchmaker = backrooms.getGameProvider().getMatchmaker();
         Optional<Game> optional = matchmaker.findGame();
         if(optional.isPresent()) {
             Game game = optional.get();
