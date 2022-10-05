@@ -1,10 +1,7 @@
 package gg.maga.backrooms.command;
 
 import gg.maga.backrooms.Backrooms;
-import gg.maga.backrooms.command.sub.ClearSubCommand;
-import gg.maga.backrooms.command.sub.GenerateSubCommand;
-import gg.maga.backrooms.command.sub.JoinSubCommand;
-import gg.maga.backrooms.command.sub.LeaveSubCommand;
+import gg.maga.backrooms.command.sub.*;
 import gg.maga.backrooms.game.GameMatchmaker;
 import gg.maga.backrooms.game.GameProvider;
 import in.prismar.library.meta.anno.Inject;
@@ -39,6 +36,8 @@ public class BackroomsCommand extends HelpCommand<Player> {
         addChild(new ClearSubCommand(provider));
         addChild(new JoinSubCommand(matchmaker));
         addChild(new LeaveSubCommand(matchmaker));
+        addChild(new SetLobbySubCommand(provider));
+        addChild(new SetGenerationSubCommand(provider));
     }
 
 

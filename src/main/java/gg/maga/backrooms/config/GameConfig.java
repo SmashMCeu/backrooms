@@ -35,11 +35,13 @@ public class GameConfig extends YamlConfig {
     public void setGenerationLocation(Location location) {
         set("generationLocation", LocationUtil.locationToString(location));
         this.generationLocation = location;
+        save();
     }
 
     public void setLobbyLocation(Location location) {
         set("lobbyLocation", LocationUtil.locationToString(location));
         this.lobbyLocation = location;
+        save();
     }
 
 
