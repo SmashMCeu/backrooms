@@ -1,6 +1,7 @@
 package gg.maga.backrooms.game.participant.lobby;
 
 import gg.maga.backrooms.game.participant.GameParticipant;
+import org.bukkit.entity.Player;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -9,4 +10,10 @@ import gg.maga.backrooms.game.participant.GameParticipant;
  * Written by Maga
  **/
 public class LobbyParticipant extends GameParticipant {
+
+    public LobbyParticipant(Player player) {
+        super(player);
+    }
 }
+
+

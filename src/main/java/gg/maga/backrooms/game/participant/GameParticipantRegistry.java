@@ -22,6 +22,10 @@ public class GameParticipantRegistry {
         this.participants = new HashMap<>();
     }
 
+    public int getCount() {
+        return participants.size();
+    }
+
     public void register(UUID uuid, GameParticipant participant) {
         participants.put(uuid, participant);
     }

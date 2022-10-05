@@ -3,15 +3,24 @@ package gg.maga.backrooms.command;
 import com.google.common.base.Joiner;
 import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
+import gg.maga.backrooms.command.sub.ClearSubCommand;
+import gg.maga.backrooms.command.sub.GenerateSubCommand;
+import gg.maga.backrooms.command.sub.JoinSubCommand;
+import gg.maga.backrooms.command.sub.LeaveSubCommand;
+import gg.maga.backrooms.game.Game;
+import gg.maga.backrooms.game.GameMatchmaker;
 import gg.maga.backrooms.game.GameProvider;
 import gg.maga.backrooms.room.Room;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.command.exception.CommandException;
+import in.prismar.library.spigot.command.exception.impl.NoPermissionException;
 import in.prismar.library.spigot.command.spigot.SpigotArguments;
+import in.prismar.library.spigot.command.spigot.template.help.HelpCommand;
 import in.prismar.library.spigot.command.spigot.template.player.PlayerCommand;
 import in.prismar.library.spigot.meta.anno.AutoCommand;
 import org.bukkit.entity.Player;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -21,51 +30,27 @@ import java.util.function.Consumer;
  * Written by Maga
  **/
 @AutoCommand
-public class BackroomsCommand extends PlayerCommand {
+public class BackroomsCommand extends HelpCommand<Player> {
 
     private final Backrooms backrooms;
 
     @Inject
     private GameProvider provider;
 
+    @Inject
+    private GameMatchmaker matchmaker;
+
     public BackroomsCommand(Backrooms backrooms) {
-        super("backrooms");
+        super("backrooms", "Backrooms");
+        setSenders(Player.class);
         setAliases("br", "backroom");
-
         this.backrooms = backrooms;
+
+        addChild(new GenerateSubCommand(provider));
+        addChild(new ClearSubCommand(provider));
+        addChild(new JoinSubCommand(matchmaker));
+        addChild(new LeaveSubCommand(matchmaker));
     }
 
-    @Override
-    public boolean send(Player player, SpigotArguments arguments) throws CommandException {
-        if(arguments.getLength() >= 1) {
-            final String sub = arguments.getString(0);
-            if(sub.equalsIgnoreCase("generate")) {
-                player.sendMessage(BackroomsConstants.PREFIX + "§7Start generating backrooms...");
-                provider.prepareGame().thenAccept(game -> {
-                    player.sendMessage(BackroomsConstants.PREFIX + "§7ID: §a" + game.getId());
-                    player.sendMessage(BackroomsConstants.PREFIX + "§7Scientist spawns: §a" + game.getMap().getScientistSpawns().size());
-                    player.sendMessage(BackroomsConstants.PREFIX + "§7Entity spawns: §a" + game.getMap().getEntitySpawns().size());
 
-                    player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully finished generating backrooms");
-
-                });
-                return true;
-            } else if(sub.equalsIgnoreCase("clear")) {
-                player.sendMessage(BackroomsConstants.PREFIX + "§7Clearing all backrooms.");
-                provider.clearGames().thenAccept(unused -> {
-                    player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully cleared all backrooms");
-                });
-            }
-
-            return true;
-        }
-        player.sendMessage(BackroomsConstants.PREFIX + "§cUsage: /backrooms <generate, clear>");
-        return true;
-    }
-
-    private void printRoom(Player player, Room first) {
-        player.sendMessage("Min: " + first.getMin().getBlockX() + " / " + first.getMin().getBlockY() + " / " + first.getMin().getBlockZ());
-        player.sendMessage("Max: " + first.getMax().getBlockX() + " / " + first.getMax().getBlockY() + " / " + first.getMax().getBlockZ());
-        player.sendMessage("Openings: " + Joiner.on(", ").join(first.getOpenings()));
-    }
 }
