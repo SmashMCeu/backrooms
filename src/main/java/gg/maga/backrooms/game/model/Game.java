@@ -1,5 +1,6 @@
-package gg.maga.backrooms.game;
+package gg.maga.backrooms.game.model;
 
+import gg.maga.backrooms.game.GameProvider;
 import gg.maga.backrooms.game.countdown.Countdown;
 import gg.maga.backrooms.game.countdown.impl.LobbyCountdown;
 import gg.maga.backrooms.game.participant.GameParticipantRegistry;

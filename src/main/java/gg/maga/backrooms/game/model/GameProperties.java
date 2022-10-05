@@ -1,4 +1,4 @@
-package gg.maga.backrooms.game;
+package gg.maga.backrooms.game.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

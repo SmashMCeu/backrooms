@@ -1,7 +1,7 @@
 package gg.maga.backrooms.command.sub;
 
 import gg.maga.backrooms.BackroomsConstants;
-import gg.maga.backrooms.game.Game;
+import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.GameMatchmaker;
 import in.prismar.library.spigot.command.exception.CommandException;
 import in.prismar.library.spigot.command.spigot.SpigotArguments;

@@ -1,5 +1,6 @@
 package gg.maga.backrooms.room;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bukkit.Location;
 
@@ -10,13 +11,10 @@ import org.bukkit.Location;
  * Written by Maga
  **/
 @Data
+@AllArgsConstructor
 public class PlacedRoom {
 
     private final Room room;
     private Location center;
 
-    public PlacedRoom(Room room, Location center) {
-        this.room = room;
-        this.center = center;
-    }
 }

@@ -1,4 +1,4 @@
-package gg.maga.backrooms.game;
+package gg.maga.backrooms.game.model;
 
 /**
  * Copyright (c) Maga, All Rights Reserved

@@ -1,9 +1,8 @@
 package gg.maga.backrooms.game.listener.game;
 
 import gg.maga.backrooms.BackroomsConstants;
-import gg.maga.backrooms.game.Game;
+import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.GameMatchmaker;
-import gg.maga.backrooms.game.event.GameJoinEvent;
 import gg.maga.backrooms.game.event.GameLeaveEvent;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;

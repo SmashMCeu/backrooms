@@ -1,7 +1,6 @@
 package gg.maga.backrooms.game.event;
 
-import gg.maga.backrooms.game.Game;
-import lombok.AllArgsConstructor;
+import gg.maga.backrooms.game.model.Game;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

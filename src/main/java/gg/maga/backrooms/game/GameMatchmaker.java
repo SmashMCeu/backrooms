@@ -2,6 +2,8 @@ package gg.maga.backrooms.game;
 
 import gg.maga.backrooms.game.event.GameJoinEvent;
 import gg.maga.backrooms.game.event.GameLeaveEvent;
+import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.lobby.LobbyParticipant;
 import in.prismar.library.meta.anno.Inject;

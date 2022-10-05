@@ -1,6 +1,6 @@
 package gg.maga.backrooms.game.sign;
 
-import gg.maga.backrooms.game.Game;
+import gg.maga.backrooms.game.model.Game;
 import org.bukkit.Location;
 
 /**

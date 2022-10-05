@@ -1,11 +1,10 @@
 package gg.maga.backrooms.game.countdown.impl;
 
 import gg.maga.backrooms.BackroomsConstants;
-import gg.maga.backrooms.game.Game;
-import gg.maga.backrooms.game.GameState;
+import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.countdown.GameCountdown;
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
