@@ -37,7 +37,7 @@ public class BackroomsCommand extends HelpCommand<Player> {
         addChild(new JoinSubCommand(matchmaker));
         addChild(new LeaveSubCommand(matchmaker));
         addChild(new SetLobbySubCommand(provider));
-        addChild(new SetGenerationSubCommand(provider));
+        addChild(new SetGenerationStartSubCommand(provider));
     }
 
 

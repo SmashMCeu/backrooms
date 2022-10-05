@@ -13,13 +13,13 @@ import org.bukkit.entity.Player;
  * Proprietary and confidential
  * Written by Maga
  **/
-public class SetGenerationSubCommand extends HelpSubCommand<Player> {
+public class SetGenerationStartSubCommand extends HelpSubCommand<Player> {
 
     private GameProvider provider;
 
-    public SetGenerationSubCommand(GameProvider provider) {
-        super("setgeneration");
-        setPermission(BackroomsConstants.PERMISSION_PREFIX + "setgeneration");
+    public SetGenerationStartSubCommand(GameProvider provider) {
+        super("setgenerationstart");
+        setPermission(BackroomsConstants.PERMISSION_PREFIX + "setgenerationstart");
         setDescription("Set the generation start point");
         this.provider = provider;
     }
