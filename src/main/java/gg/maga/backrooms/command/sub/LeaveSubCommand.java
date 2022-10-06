@@ -32,7 +32,7 @@ public class LeaveSubCommand extends HelpSubCommand<Player> {
         GameMatchmaker matchmaker = backrooms.getGameProvider().getMatchmaker();
         Optional<Game> optional = matchmaker.getGameByPlayer(player);
         if(optional.isPresent()) {
-            matchmaker.leaveGame(optional.get(), player);
+            matchmaker.leaveGame(optional.get(), player, false);
         } else {
             player.sendMessage(BackroomsConstants.PREFIX + "§cYou are not in a game.");
         }

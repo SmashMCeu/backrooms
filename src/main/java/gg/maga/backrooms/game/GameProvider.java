@@ -7,6 +7,7 @@ import gg.maga.backrooms.game.event.GameCreateEvent;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameMap;
 import gg.maga.backrooms.game.model.GameProperties;
+import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.sign.GameSignProcessor;
 import gg.maga.backrooms.game.sign.SpawnSignProcessor;
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
@@ -117,6 +118,14 @@ public class GameProvider {
 
     public CompletableFuture<Game> stopGame(Game game) {
         CompletableFuture<Game> future = new CompletableFuture<>();
+        GameParticipant[] participants = game.getParticipantRegistry().getParticipants().values().toArray(new GameParticipant[0]);
+        for(GameParticipant participant : participants) {
+            matchmaker.leaveGame(game, participant.getPlayer(), true);
+        }
+        game.getParticipantRegistry().getParticipants().clear();
+        if(game.getCountdown().isRunning()) {
+            game.getCountdown().stop(true);
+        }
         BlocksProcessor processor = new BlocksProcessor(backrooms, game.getMap().getMin(), game.getMap().getMax(), block -> {
             block.setType(Material.AIR);
         });

@@ -30,6 +30,7 @@ public class BackroomsCommand extends HelpCommand<Player> {
         super("backrooms", "Backrooms");
         setSenders(Player.class);
         setAliases("br", "backroom");
+        setBaseColor("§e");
         this.backrooms = backrooms;
 
         addChild(new GenerateSubCommand(backrooms));

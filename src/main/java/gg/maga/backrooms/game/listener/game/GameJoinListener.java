@@ -33,6 +33,8 @@ public class GameJoinListener implements Listener {
 
         player.sendMessage(joinMessage);
         matchmaker.sendMessage(game, joinMessage);
+
+
     }
 }
 

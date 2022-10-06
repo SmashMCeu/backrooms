@@ -30,7 +30,8 @@ public abstract class GameCountdown implements Countdown {
         onStart();
         task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             if(currentCount <= 0) {
-                stop();
+                stop(false);
+                onEnd();
                 return;
             }
             onCount();
@@ -39,11 +40,13 @@ public abstract class GameCountdown implements Countdown {
     }
 
     @Override
-    public void stop() {
+    public void stop(boolean force) {
         if(isRunning()) {
-            onEnd();
             task.cancel();
             task = null;
+            if(force) {
+                onForceStop();
+            }
         }
 
     }

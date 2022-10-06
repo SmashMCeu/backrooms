@@ -14,5 +14,7 @@ import org.bukkit.entity.Player;
 @Getter
 public class EntityParticipant extends GameParticipant {
 
-
+    public EntityParticipant(Player player) {
+        super(player);
+    }
 }

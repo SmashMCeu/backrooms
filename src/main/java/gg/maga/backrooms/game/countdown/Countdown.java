@@ -12,8 +12,10 @@ public interface Countdown {
     void onCount();
     void onEnd();
 
+    void onForceStop();
+
     void start();
-    void stop();
+    void stop(boolean force);
     boolean isRunning();
 
     int getCurrentCount();

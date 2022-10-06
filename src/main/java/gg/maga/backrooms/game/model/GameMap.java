@@ -1,6 +1,7 @@
 package gg.maga.backrooms.game.model;
 
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
+import in.prismar.library.common.math.MathUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bukkit.Location;
@@ -29,5 +30,13 @@ public class GameMap {
         this.max = max;
         this.scientistSpawns = new ArrayList<>();
         this.entitySpawns = new ArrayList<>();
+    }
+
+    public Location getRandomScientistSpawn() {
+        return scientistSpawns.get(MathUtil.random(scientistSpawns.size() - 1));
+    }
+
+    public Location getRandomEntitySpawn() {
+        return entitySpawns.get(MathUtil.random(entitySpawns.size() - 1));
     }
 }

@@ -4,7 +4,15 @@ import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.countdown.GameCountdown;
+import gg.maga.backrooms.game.participant.GameParticipant;
+import gg.maga.backrooms.game.participant.entity.EntityParticipant;
+import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.entity.Player;
+
+import java.util.function.Consumer;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -29,13 +37,16 @@ public class LobbyCountdown extends GameCountdown {
     @Override
     public void onCount() {
         int count = getCurrentCount();
-        if(count != 0) {
-            if(count == 1) {
-                Bukkit.broadcastMessage(BackroomsConstants.PREFIX + "§7The game will start in §a" + count + " second");
+        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
+            participant.getPlayer().setLevel(count);
+        });
+        if (count != 0) {
+            if (count == 1) {
+                game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The game will start in §a" + count + " second");
                 return;
             }
-            if(count % 20 == 0 || count == 10 || count <= 5) {
-                Bukkit.broadcastMessage(BackroomsConstants.PREFIX + "§7The game will start in §a" + count + " seconds");
+            if (count % 20 == 0 || count == 10 || count <= 5) {
+                game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The game will start in §a" + count + " seconds");
                 return;
             }
         }
@@ -43,8 +54,33 @@ public class LobbyCountdown extends GameCountdown {
     }
 
     @Override
+    public void onForceStop() {
+        game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The §ccountdown §7has been forcefully stopped.");
+    }
+
+    @Override
     public void onEnd() {
         game.setState(GameState.IN_GAME);
-        Bukkit.broadcastMessage(BackroomsConstants.PREFIX + "§7The game will start §anow");
+        game.setCountdown(new IngameCountdown(game));
+        game.getCountdown().start();
+        game.getProvider().getMatchmaker().shuffleParticipants(game);
+        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
+            Player player = participant.getPlayer();
+            if (participant instanceof EntityParticipant) {
+                Location location = game.getMap().getRandomEntitySpawn();
+                player.teleport(location);
+                player.sendTitle("§4Entity", "", 20, 20, 20);
+                player.playSound(player.getLocation(), Sound.BLOCK_NETHERRACK_BREAK, 1, 1);
+            } else if (participant instanceof ScientistParticipant) {
+                Location location = game.getMap().getRandomScientistSpawn();
+                player.teleport(location);
+                player.sendTitle("§eScientist", "", 20, 20, 20);
+                player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+            }
+            for (int i = 0; i < 200; i++) {
+                player.sendMessage(" ");
+            }
+        });
+        game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The §agame §7has started");
     }
 }
