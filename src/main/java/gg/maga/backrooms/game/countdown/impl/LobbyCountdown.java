@@ -1,6 +1,7 @@
 package gg.maga.backrooms.game.countdown.impl;
 
 import gg.maga.backrooms.BackroomsConstants;
+import gg.maga.backrooms.game.event.GameStartEvent;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.countdown.GameCountdown;
@@ -60,7 +61,7 @@ public class LobbyCountdown extends GameCountdown {
 
     @Override
     public void onEnd() {
-        game.setState(GameState.IN_GAME);
+        game.getProvider().changeState(game, GameState.IN_GAME);
         game.setCountdown(new IngameCountdown(game));
         game.getCountdown().start();
         game.getProvider().getMatchmaker().shuffleParticipants(game);
@@ -82,5 +83,6 @@ public class LobbyCountdown extends GameCountdown {
             }
         });
         game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The §agame §7has started");
+        Bukkit.getPluginManager().callEvent(new GameStartEvent(game));
     }
 }

@@ -2,11 +2,16 @@ package gg.maga.backrooms.game.countdown.impl;
 
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.countdown.GameCountdown;
+import gg.maga.backrooms.game.event.GameEndEvent;
+import gg.maga.backrooms.game.event.GameStartEvent;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.entity.EntityParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -37,7 +42,12 @@ public class IngameCountdown extends GameCountdown {
     public void onCount() {
         int count = getCurrentCount();
         game.getProvider().getMatchmaker().executeForAll(game, participant -> {
-            participant.getPlayer().setLevel(count);
+            Player player = participant.getPlayer();
+            player.setLevel(count);
+
+            final String actionBarMessage = "§7Tasks§8: §a" + game.getSolvedTasks() + " §8/ §a" + game.getProperties().getMaxTasks();
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(actionBarMessage));
+
         });
         if (count != 0 && count <= 60) {
             if (count == 1) {
@@ -59,8 +69,9 @@ public class IngameCountdown extends GameCountdown {
 
     @Override
     public void onEnd() {
-        game.setState(GameState.END);
+        game.getProvider().changeState(game, GameState.END);
         //TODO: Find Winner
         game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The game has §eended");
+        Bukkit.getPluginManager().callEvent(new GameEndEvent(game));
     }
 }

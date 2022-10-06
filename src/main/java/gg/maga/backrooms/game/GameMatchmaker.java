@@ -2,6 +2,7 @@ package gg.maga.backrooms.game;
 
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.config.ConfigProvider;
+import gg.maga.backrooms.game.event.GameChangeStateEvent;
 import gg.maga.backrooms.game.event.GameJoinEvent;
 import gg.maga.backrooms.game.event.GameLeaveEvent;
 import gg.maga.backrooms.game.model.Game;
@@ -105,6 +106,8 @@ public class GameMatchmaker {
         }
     }
 
+
+
     private void modifyPlayer(Player player, GameMode mode) {
         player.setGameMode(mode);
         player.setHealth(20);
@@ -134,6 +137,7 @@ public class GameMatchmaker {
         }
         return Optional.empty();
     }
+
 
     public boolean isInGame(Player player) {
         return getGameByPlayer(player).isPresent();

@@ -18,6 +18,8 @@ public class GameProperties {
     private int maxScientists;
     private int maxEntities;
 
+    private int maxTasks;
+
     public int getMaxPlayers() {
         return maxScientists + maxEntities;
     }

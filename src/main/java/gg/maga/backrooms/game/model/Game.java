@@ -26,6 +26,8 @@ public class Game {
 
     private Countdown countdown;
 
+    private int solvedTasks;
+
     public Game(GameProvider provider, String id, GameProperties properties, GameMap map) {
         this.provider = provider;
         this.id = id;
@@ -34,5 +36,9 @@ public class Game {
         this.state = GameState.LOBBY;
         this.participantRegistry = new GameParticipantRegistry();
         this.countdown = new LobbyCountdown(this);
+    }
+
+    public void setState(GameState state) {
+        this.state = state;
     }
 }

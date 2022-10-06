@@ -3,10 +3,12 @@ package gg.maga.backrooms.game;
 import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.config.ConfigProvider;
 import gg.maga.backrooms.config.model.GameConfig;
+import gg.maga.backrooms.game.event.GameChangeStateEvent;
 import gg.maga.backrooms.game.event.GameCreateEvent;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameMap;
 import gg.maga.backrooms.game.model.GameProperties;
+import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.sign.GameSignProcessor;
 import gg.maga.backrooms.game.sign.SpawnSignProcessor;
@@ -75,7 +77,7 @@ public class GameProvider {
             final String id = UUID.randomUUID().toString();
             Tuple<Location, Location> minMax = getMinMaxOfGeneration(result);
             GameMap map = new GameMap(result, minMax.getFirst(), minMax.getSecond());
-            GameProperties properties = new GameProperties(config.getMaxScientists(), config.getMaxEntities());
+            GameProperties properties = new GameProperties(config.getMaxScientists(), config.getMaxEntities(), config.getMaxTasks());
             Game game = new Game(this, id, properties, map);
 
             BlocksProcessor processor = new BlocksProcessor(backrooms, minMax.getFirst(), minMax.getSecond(), block -> {
@@ -100,6 +102,11 @@ public class GameProvider {
             });
         });
         return future;
+    }
+
+    public void changeState(Game game, GameState state) {
+        Bukkit.getPluginManager().callEvent(new GameChangeStateEvent(game, game.getState(), state));
+        game.setState(state);
     }
 
     public CompletableFuture<Void> clearGames() {
