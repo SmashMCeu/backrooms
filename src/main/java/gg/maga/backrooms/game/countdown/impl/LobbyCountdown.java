@@ -67,15 +67,15 @@ public class LobbyCountdown extends GameCountdown {
         game.getProvider().getMatchmaker().shuffleParticipants(game);
         game.getProvider().getMatchmaker().executeForAll(game, participant -> {
             Player player = participant.getPlayer();
-            if (participant instanceof EntityParticipant) {
+            if (participant instanceof EntityParticipant entity) {
                 Location location = game.getMap().getRandomEntitySpawn();
                 player.teleport(location);
-                player.sendTitle("§4Entity", "", 20, 20, 20);
+                player.sendTitle("§4Entity", "§c" + entity.getName(), 20, 40, 20);
                 player.playSound(player.getLocation(), Sound.BLOCK_NETHERRACK_BREAK, 1, 1);
             } else if (participant instanceof ScientistParticipant) {
                 Location location = game.getMap().getRandomScientistSpawn();
                 player.teleport(location);
-                player.sendTitle("§eScientist", "", 20, 20, 20);
+                player.sendTitle("§eScientist", "", 20, 40, 20);
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
             }
             for (int i = 0; i < 200; i++) {

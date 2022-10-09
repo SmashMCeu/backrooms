@@ -4,7 +4,7 @@ import gg.maga.backrooms.room.Room;
 import gg.maga.backrooms.room.RoomOpening;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.block.Sign;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -69,6 +69,7 @@ public class PrototypeScannerStrategy implements ScannerStrategy{
             Location east = location.clone().add(halfRoomSize, 0, 0);
             Location west = location.clone().subtract(halfRoomSize, 0, 0);
 
+            Location up = base.clone().add(0, roomHeight, 0);
 
             if(north.getBlock().getType() == Material.AIR) {
                 openings.add(RoomOpening.NORTH);
@@ -86,6 +87,20 @@ public class PrototypeScannerStrategy implements ScannerStrategy{
                 openings.add(RoomOpening.SOUTH);
             }
             Room room = new Room(min, max, openings);
+            if(up.getBlock().getType().name().contains("SIGN")) {
+                Sign sign = (Sign) up.getBlock().getState();
+                for(String line : sign.getLines()) {
+                    if(line.startsWith("tag: ")) {
+                        room.setTag(line.replace("tag: ", ""));
+                    } else if(line.startsWith("amount: ")) {
+                        room.setAmount(Integer.valueOf(line.replace("amount: ", "")));
+                    } else if(line.startsWith("chance: ")) {
+                        room.setChance(Double.valueOf(line.replace("chance: ", "")));
+                    }
+                }
+            }
+
+
             return room;
         }
         return null;

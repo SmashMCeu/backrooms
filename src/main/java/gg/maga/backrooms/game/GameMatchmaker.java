@@ -8,6 +8,7 @@ import gg.maga.backrooms.game.event.GameLeaveEvent;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
+import gg.maga.backrooms.game.participant.entity.BacteriaParticipant;
 import gg.maga.backrooms.game.participant.entity.EntityParticipant;
 import gg.maga.backrooms.game.participant.lobby.LobbyParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
@@ -95,7 +96,7 @@ public class GameMatchmaker {
             int random = MathUtil.random(game.getParticipantRegistry().getCount() - 1);
             GameParticipant entityParticipant = participants[random];
             game.getParticipantRegistry().register(entityParticipant.getPlayer().getUniqueId(),
-                    new EntityParticipant(entityParticipant.getPlayer()));
+                    getRandomEntity(entityParticipant.getPlayer()));
             participants[random] = null;
         }
         for (int i = 0; i < participants.length; i++) {
@@ -106,12 +107,18 @@ public class GameMatchmaker {
         }
     }
 
+    public EntityParticipant getRandomEntity(Player player) {
+        return new BacteriaParticipant(player);
+    }
 
 
     private void modifyPlayer(Player player, GameMode mode) {
         player.setGameMode(mode);
         player.setHealth(20);
         player.setFoodLevel(20);
+        player.setWalkSpeed(0.2f);
+        player.setLevel(0);
+        player.setExp(0);
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }

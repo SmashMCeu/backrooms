@@ -17,6 +17,10 @@ import java.util.Set;
 @Data
 public class Room {
 
+
+    private String tag;
+    private double chance;
+    private int amount;
     private Set<RoomOpening> openings;
     private Location pivot;
     private Location min;
@@ -27,5 +31,9 @@ public class Room {
         this.min = min;
         this.max = max;
         this.openings = openings;
+    }
+
+    public boolean hasTag() {
+        return tag != null;
     }
 }

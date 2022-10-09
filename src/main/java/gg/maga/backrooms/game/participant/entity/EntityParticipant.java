@@ -14,7 +14,10 @@ import org.bukkit.entity.Player;
 @Getter
 public class EntityParticipant extends GameParticipant {
 
-    public EntityParticipant(Player player) {
+    private final String name;
+
+    public EntityParticipant(Player player, String name) {
         super(player);
+        this.name = name;
     }
 }

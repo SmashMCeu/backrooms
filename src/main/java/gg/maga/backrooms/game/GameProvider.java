@@ -126,10 +126,12 @@ public class GameProvider {
     public CompletableFuture<Game> stopGame(Game game) {
         CompletableFuture<Game> future = new CompletableFuture<>();
         GameParticipant[] participants = game.getParticipantRegistry().getParticipants().values().toArray(new GameParticipant[0]);
-        for(GameParticipant participant : participants) {
-            matchmaker.leaveGame(game, participant.getPlayer(), true);
-        }
-        game.getParticipantRegistry().getParticipants().clear();
+        Bukkit.getScheduler().runTask(backrooms, () -> {
+            for(GameParticipant participant : participants) {
+                matchmaker.leaveGame(game, participant.getPlayer(), true);
+            }
+            game.getParticipantRegistry().getParticipants().clear();
+        });
         if(game.getCountdown().isRunning()) {
             game.getCountdown().stop(true);
         }

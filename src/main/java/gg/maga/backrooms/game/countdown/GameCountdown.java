@@ -1,6 +1,7 @@
 package gg.maga.backrooms.game.countdown;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -17,6 +18,8 @@ public abstract class GameCountdown implements Countdown {
     private BukkitTask task;
     private Plugin plugin;
     private final int maxCount;
+
+    @Setter
     private int currentCount;
 
     public GameCountdown(Plugin plugin, int maxCount) {

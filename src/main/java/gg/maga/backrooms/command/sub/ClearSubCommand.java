@@ -8,6 +8,8 @@ import in.prismar.library.spigot.command.spigot.SpigotArguments;
 import in.prismar.library.spigot.command.spigot.template.help.HelpSubCommand;
 import org.bukkit.entity.Player;
 
+import java.util.function.Function;
+
 /**
  * Copyright (c) Maga, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
@@ -30,6 +32,9 @@ public class ClearSubCommand extends HelpSubCommand<Player> {
         player.sendMessage(BackroomsConstants.PREFIX + "§7Clearing all backrooms.");
         backrooms.getGameProvider().clearGames().thenAccept(unused -> {
             player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully cleared all backrooms");
+        }).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return null;
         });
         return true;
     }

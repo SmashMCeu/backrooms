@@ -19,5 +19,7 @@ public interface Countdown {
     boolean isRunning();
 
     int getCurrentCount();
+
+    void setCurrentCount(int count);
     int getMaxCount();
 }
