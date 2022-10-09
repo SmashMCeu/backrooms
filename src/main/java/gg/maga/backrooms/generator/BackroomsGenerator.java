@@ -51,5 +51,15 @@ public class BackroomsGenerator {
         return this.strategy.generate(location, amount);
     }
 
+    public List<Room> getRoomsByTag(String tag) {
+        List<Room> rooms = new ArrayList<>();
+        for(Room room : this.rooms) {
+            if(room.getTag().equalsIgnoreCase(tag)) {
+                rooms.add(room);
+            }
+        }
+        return rooms;
+    }
+
 
 }

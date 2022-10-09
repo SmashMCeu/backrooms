@@ -1,8 +1,9 @@
-package gg.maga.backrooms.room;
+package gg.maga.backrooms.game.participant;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.bukkit.Location;
+import lombok.NoArgsConstructor;
+import org.bukkit.entity.Player;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -12,9 +13,11 @@ import org.bukkit.Location;
  **/
 @Data
 @AllArgsConstructor
-public class PlacedRoom {
+@NoArgsConstructor
+public class GameParticipant {
 
-    private final Room room;
-    private Location center;
+    private Player player;
+
+
 
 }

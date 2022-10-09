@@ -1,4 +1,4 @@
-package gg.maga.backrooms.game;
+package gg.maga.backrooms.game.participant.scientist;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -6,5 +6,9 @@ package gg.maga.backrooms.game;
  * Proprietary and confidential
  * Written by Maga
  **/
-public class Game {
+public enum ScientistState {
+
+    ALIVE,
+    KNOCKED,
+    DEAD;
 }

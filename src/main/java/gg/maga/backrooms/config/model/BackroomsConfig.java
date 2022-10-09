@@ -1,8 +1,6 @@
-package gg.maga.backrooms.room;
+package gg.maga.backrooms.config.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.bukkit.Location;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -11,10 +9,8 @@ import org.bukkit.Location;
  * Written by Maga
  **/
 @Data
-@AllArgsConstructor
-public class PlacedRoom {
+public class BackroomsConfig {
 
-    private final Room room;
-    private Location center;
-
+    private GeneratorConfig generator;
+    private GameConfig game;
 }

@@ -9,6 +9,7 @@ package gg.maga.backrooms;
 public final class BackroomsConstants {
 
     public static final String PREFIX = "§8[§eBackrooms§8] §7";
+    public static final String PERMISSION_PREFIX = "backrooms.";
 
     /** Messages **/
     public static final String NO_PERMISSION_MESSAGE = PREFIX + "§cYou do not have enough permissions.";

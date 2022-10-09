@@ -1,8 +1,9 @@
-package gg.maga.backrooms.room;
+package gg.maga.backrooms.room.scanner.strategy;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import gg.maga.backrooms.room.Room;
 import org.bukkit.Location;
+
+import java.util.List;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -10,11 +11,7 @@ import org.bukkit.Location;
  * Proprietary and confidential
  * Written by Maga
  **/
-@Data
-@AllArgsConstructor
-public class PlacedRoom {
+public interface ScannerStrategy {
 
-    private final Room room;
-    private Location center;
-
+    List<Room> scan(Location start);
 }

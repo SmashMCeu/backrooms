@@ -1,7 +1,6 @@
-package gg.maga.backrooms.room;
+package gg.maga.backrooms.game.sign;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import gg.maga.backrooms.game.model.Game;
 import org.bukkit.Location;
 
 /**
@@ -10,11 +9,7 @@ import org.bukkit.Location;
  * Proprietary and confidential
  * Written by Maga
  **/
-@Data
-@AllArgsConstructor
-public class PlacedRoom {
+public interface GameSignProcessor {
 
-    private final Room room;
-    private Location center;
-
+    boolean process(Game game, Location location, String[] lines);
 }

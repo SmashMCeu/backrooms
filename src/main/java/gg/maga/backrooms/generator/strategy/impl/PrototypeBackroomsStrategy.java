@@ -8,6 +8,7 @@ import gg.maga.backrooms.room.PlacedRoom;
 import gg.maga.backrooms.room.Room;
 import gg.maga.backrooms.room.RoomOpening;
 import in.prismar.library.common.math.MathUtil;
+import in.prismar.library.common.tuple.Tuple;
 import in.prismar.library.spigot.location.copier.Copier;
 import org.bukkit.Location;
 
@@ -41,6 +42,7 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
         Room startRoom = null;
         Location startLocation = location.clone();
 
+        int index = 0;
         for (int i = 0; i < amount; i++) {
             RoomOpening[] counterOpenings = i == 0 ? new RoomOpening[]{} :
                     startRoom.getOpenings().toArray(new RoomOpening[0]);
@@ -60,9 +62,7 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                 room = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.EAST, RoomOpening.NORTH, RoomOpening.SOUTH},
                         new RoomOpening[]{RoomOpening.WEST});
             }
-
-            Copier copier = new Copier(room.getPivot(), room.getMin(), room.getMax());
-            copier.paste(startLocation);
+            copy(room, startLocation);
 
             placedRooms.add(new PlacedRoom(room, startLocation.clone().subtract(halfRoomSize, 0, halfRoomSize)));
 
@@ -72,7 +72,10 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
             Location startLocationX = startLocation.clone();
             Room startRoomX = getRandomRoomByOpenings(counterOpenings);
 
+            index++;
+
             for (int j = 0; j < amount; j++) {
+                index++;
                 startLocationX = startLocationX.add(roomSize, 0, 0);
 
                 RoomOpening[] counterOpeningsX = startRoomX.getOpenings().toArray(new RoomOpening[0]);
@@ -110,8 +113,7 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                     }
 
                 }
-                copier = new Copier(roomX.getPivot(), roomX.getMin(), roomX.getMax());
-                copier.paste(startLocationX);
+                copy(roomX, startLocationX);
 
                 placedRooms.add(new PlacedRoom(roomX, startLocationX.clone().subtract(halfRoomSize, 0, halfRoomSize)));
 
@@ -126,6 +128,12 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
         long time = System.currentTimeMillis() - now;
         future.complete(new GenerationResult(time, placedRooms));
         return future;
+    }
+
+    private Copier copy(Room room, Location location) {
+        Copier copier = new Copier(room.getPivot(), room.getMin(), room.getMax());
+        copier.paste(location);
+        return copier;
     }
 
     private Room getRandomRoomByOpenings(RoomOpening... openings) {
