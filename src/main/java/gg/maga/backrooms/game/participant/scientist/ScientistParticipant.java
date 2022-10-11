@@ -3,6 +3,8 @@ package gg.maga.backrooms.game.participant.scientist;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -19,4 +21,6 @@ public class ScientistParticipant extends GameParticipant {
         super(player);
         this.state = ScientistState.ALIVE;
     }
+
+
 }

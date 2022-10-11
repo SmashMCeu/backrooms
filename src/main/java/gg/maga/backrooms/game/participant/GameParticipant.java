@@ -3,7 +3,10 @@ package gg.maga.backrooms.game.participant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -17,6 +20,7 @@ import org.bukkit.entity.Player;
 public class GameParticipant {
 
     private Player player;
+
 
 
 

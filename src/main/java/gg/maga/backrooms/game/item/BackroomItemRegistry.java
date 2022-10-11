@@ -1,13 +1,11 @@
-package gg.maga.backrooms.item;
+package gg.maga.backrooms.game.item;
 
-import gg.maga.backrooms.item.holder.BackroomItemHolder;
+import gg.maga.backrooms.game.item.impl.LeaveBackroomItem;
 import in.prismar.library.meta.anno.Service;
 import lombok.Getter;
+import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -20,24 +18,13 @@ import java.util.UUID;
 public class BackroomItemRegistry {
 
     private Map<String, BackroomItem> items;
-    private Map<UUID, List<BackroomItemHolder>> holders;
 
     public BackroomItemRegistry() {
         this.items = new HashMap<>();
-        this.holders = new HashMap<>();
+
+        register(new LeaveBackroomItem());
     }
 
-    public void registerHolder(UUID uuid) {
-
-    }
-
-    public void unregisterHolder(UUID uuid) {
-
-    }
-
-    public void addHoldingItem(UUID uuid, BackroomItemHolder holder) {
-
-    }
 
     public void register(BackroomItem item) {
         this.items.put(item.getId(), item);
@@ -49,5 +36,9 @@ public class BackroomItemRegistry {
 
     public boolean existsItemById(String id) {
         return this.items.containsKey(id);
+    }
+
+    public ItemStack createItem(String id) {
+        return getItemById(id).build();
     }
 }

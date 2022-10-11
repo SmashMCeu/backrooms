@@ -14,6 +14,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>md_5-public</id>
+            <url>https://repo.md-5.net/content/groups/public/</url>
+        </repository>
+    </repositories>
+
     <build>
         <resources>
             <resource>
@@ -74,6 +81,12 @@
     </build>
 
     <dependencies>
+        <dependency>
+            <groupId>LibsDisguises</groupId>
+            <artifactId>LibsDisguises</artifactId>
+            <version>10.0.31</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>in.prismar.library</groupId>
             <artifactId>all</artifactId>

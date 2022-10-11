@@ -1,5 +1,6 @@
-package gg.maga.backrooms.item;
+package gg.maga.backrooms.game.item;
 
+import gg.maga.backrooms.game.item.event.BackroomItemEventBus;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Material;
@@ -26,9 +27,12 @@ public class BackroomItem {
     private String displayName;
     private List<String> lore;
 
+    private BackroomItemEventBus eventBus;
+
     public BackroomItem(String id, Material material) {
         this.id = id;
         this.material = material;
+        this.eventBus = new BackroomItemEventBus(this);
     }
 
     public BackroomItem addLore(String... lore) {

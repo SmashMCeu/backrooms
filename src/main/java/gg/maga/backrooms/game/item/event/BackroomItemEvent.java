@@ -1,4 +1,4 @@
-package gg.maga.backrooms.item.event;
+package gg.maga.backrooms.game.item.event;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

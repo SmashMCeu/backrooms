@@ -1,5 +1,9 @@
 package gg.maga.backrooms.game.participant.entity;
 
+import me.libraryaddict.disguise.DisguiseAPI;
+import me.libraryaddict.disguise.disguisetypes.Disguise;
+import me.libraryaddict.disguise.disguisetypes.DisguiseType;
+import me.libraryaddict.disguise.disguisetypes.MobDisguise;
 import org.bukkit.entity.Player;
 
 /**
@@ -15,6 +19,8 @@ public class BacteriaParticipant extends EntityParticipant {
     public BacteriaParticipant(Player player) {
         super(player, "Bacteria");
         player.setWalkSpeed(WALK_SPEED);
+        DisguiseAPI.disguiseToAll(player, new MobDisguise(DisguiseType.ENDERMAN));
+
     }
 
 }

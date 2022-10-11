@@ -1,8 +1,6 @@
 package gg.maga.backrooms.game;
 
-import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.config.ConfigProvider;
-import gg.maga.backrooms.game.event.GameChangeStateEvent;
 import gg.maga.backrooms.game.event.GameJoinEvent;
 import gg.maga.backrooms.game.event.GameLeaveEvent;
 import gg.maga.backrooms.game.model.Game;
@@ -12,9 +10,12 @@ import gg.maga.backrooms.game.participant.entity.BacteriaParticipant;
 import gg.maga.backrooms.game.participant.entity.EntityParticipant;
 import gg.maga.backrooms.game.participant.lobby.LobbyParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
+import gg.maga.backrooms.game.scoreboard.CustomBoardRegistry;
+import gg.maga.backrooms.game.item.BackroomItemRegistry;
 import in.prismar.library.common.math.MathUtil;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.meta.anno.Service;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -30,6 +31,7 @@ import java.util.function.Consumer;
  * Written by Maga
  **/
 @Service
+@Getter
 public class GameMatchmaker {
 
     @Inject
@@ -37,6 +39,12 @@ public class GameMatchmaker {
 
     @Inject
     private ConfigProvider configProvider;
+
+    @Inject
+    private CustomBoardRegistry boardRegistry;
+
+    @Inject
+    private BackroomItemRegistry itemRegistry;
 
     public Optional<Game> findGame() {
         for(Game game : provider.getGames().values()) {
@@ -62,6 +70,11 @@ public class GameMatchmaker {
                     game.getCountdown().start();
                 }
             }
+
+            boardRegistry.add(player, game);
+            boardRegistry.updateTablistAll();
+
+            giveLobbyItems(player);
         }
 
     }
@@ -82,6 +95,8 @@ public class GameMatchmaker {
                         game.getCountdown().stop(true);
                     }
                 }
+                boardRegistry.remove(player);
+                boardRegistry.updateTablistAll();
 
             }
         }
@@ -122,6 +137,11 @@ public class GameMatchmaker {
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }
+        player.getInventory().clear();
+    }
+
+    public void giveLobbyItems(Player player) {
+        player.getInventory().setItem(8, itemRegistry.createItem("Leave"));
     }
 
     public void sendMessage(Game game, String message) {

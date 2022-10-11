@@ -1,6 +1,6 @@
-package gg.maga.backrooms.item.holder;
+package gg.maga.backrooms.game.item.holder;
 
-import gg.maga.backrooms.item.BackroomItem;
+import gg.maga.backrooms.game.item.BackroomItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;

@@ -62,8 +62,7 @@ public class Backrooms extends JavaPlugin {
         this.metaRegistry.registerProcessor(AutoCommand.class, new SpigotCommandProcessor(setup, metaRegistry));
         this.metaRegistry.registerProcessor(AutoListener.class, new SpigotListenerProcessor(setup, metaRegistry));
         this.metaRegistry.registerEntity(this);
-        this.metaRegistry.scan(this.getClassLoader(), "gg.maga.backrooms");
-        this.metaRegistry.load();
+        this.metaRegistry.build(this.getClassLoader(), "gg.maga.backrooms");
 
         this.setup.register();
 

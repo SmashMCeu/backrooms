@@ -44,10 +44,6 @@ public class IngameCountdown extends GameCountdown {
         game.getProvider().getMatchmaker().executeForAll(game, participant -> {
             Player player = participant.getPlayer();
             player.setLevel(count);
-
-            final String actionBarMessage = "§7Tasks§8: §a" + game.getSolvedTasks() + " §8/ §a" + game.getProperties().getMaxTasks();
-            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(actionBarMessage));
-
         });
         if (count != 0 && count <= 60) {
             if (count == 1) {
