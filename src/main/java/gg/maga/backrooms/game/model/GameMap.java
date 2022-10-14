@@ -5,6 +5,7 @@ import in.prismar.library.common.math.MathUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,12 +25,15 @@ public class GameMap {
     private List<Location> scientistSpawns;
     private List<Location> entitySpawns;
 
+    private List<Block> portalBlocks;
+
     public GameMap(GenerationResult result, Location min, Location max) {
         this.result = result;
         this.min = min;
         this.max = max;
         this.scientistSpawns = new ArrayList<>();
         this.entitySpawns = new ArrayList<>();
+        this.portalBlocks = new ArrayList<>();
     }
 
     public Location getRandomScientistSpawn() {

@@ -23,6 +23,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 import java.util.*;
@@ -89,6 +90,9 @@ public class GameProvider {
                             block.setType(Material.AIR);
                         }
                     }
+                } else if(block.getType() == GameConstants.PORTAL_SCAN_BLOCK) {
+                    block.setType(Material.AIR);
+                    map.getPortalBlocks().add(block);
                 }
             });
             processor.start().thenAccept(blocks -> {
@@ -103,6 +107,7 @@ public class GameProvider {
         });
         return future;
     }
+
 
     public void changeState(Game game, GameState state) {
         Bukkit.getPluginManager().callEvent(new GameChangeStateEvent(game, game.getState(), state));

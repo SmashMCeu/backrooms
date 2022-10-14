@@ -9,6 +9,7 @@ import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.entity.EntityParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -66,6 +67,8 @@ public class LobbyCountdown extends GameCountdown {
         game.getCountdown().start();
         game.getProvider().getMatchmaker().shuffleParticipants(game);
         game.getProvider().getMatchmaker().executeForAll(game, participant -> {
+            game.getProvider().getMatchmaker().resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
+
             Player player = participant.getPlayer();
             if (participant instanceof EntityParticipant entity) {
                 Location location = game.getMap().getRandomEntitySpawn();

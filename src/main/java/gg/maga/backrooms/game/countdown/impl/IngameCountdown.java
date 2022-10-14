@@ -12,6 +12,7 @@ import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -60,14 +61,17 @@ public class IngameCountdown extends GameCountdown {
 
     @Override
     public void onForceStop() {
-        game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The §ccountdown §7has been forcefully stopped.");
     }
 
     @Override
     public void onEnd() {
         game.getProvider().changeState(game, GameState.END);
+        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
+            game.getProvider().getMatchmaker().resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
+        });
         //TODO: Find Winner
-        game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The game has §eended");
-        Bukkit.getPluginManager().callEvent(new GameEndEvent(game));
+        game.setCountdown(new EndCountdown(game));
+        game.getCountdown().start();
+        game.getProvider().getMatchmaker().endGame(game);
     }
 }

@@ -40,6 +40,10 @@ public class Game {
         this.countdown = new LobbyCountdown(this);
     }
 
+    public boolean isThresholdOpened() {
+        return solvedTasks >= properties.getMaxTasks();
+    }
+
     public void setState(GameState state) {
         this.state = state;
     }

@@ -1,6 +1,7 @@
 package gg.maga.backrooms.game;
 
 import gg.maga.backrooms.config.ConfigProvider;
+import gg.maga.backrooms.game.event.GameEndEvent;
 import gg.maga.backrooms.game.event.GameJoinEvent;
 import gg.maga.backrooms.game.event.GameLeaveEvent;
 import gg.maga.backrooms.game.model.Game;
@@ -18,6 +19,7 @@ import in.prismar.library.meta.anno.Service;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 
@@ -57,13 +59,17 @@ public class GameMatchmaker {
         return Optional.empty();
     }
 
+    public void endGame(Game game) {
+        Bukkit.getPluginManager().callEvent(new GameEndEvent(game));
+    }
+
     public void joinGame(Game game, Player player) {
         GameJoinEvent event = new GameJoinEvent(game, player);
         Bukkit.getPluginManager().callEvent(event);
         if(!event.isCancelled() && game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
             game.getParticipantRegistry().register(player.getUniqueId(), new LobbyParticipant(player));
             player.teleport(configProvider.getEntity().getGame().getLobby());
-            modifyPlayer(player, GameMode.ADVENTURE);
+            resetPlayer(player, GameMode.ADVENTURE);
 
             if(game.getParticipantRegistry().getCount() >= game.getProperties().getMaxPlayers()) {
                 if(!game.getCountdown().isRunning()) {
@@ -82,13 +88,13 @@ public class GameMatchmaker {
     public void leaveGame(Game game, Player player, boolean force) {
         if(force) {
             player.teleport(configProvider.getEntity().getGame().getLobby());
-            modifyPlayer(player, GameMode.SURVIVAL);
+            resetPlayer(player, GameMode.SURVIVAL);
         } else {
             GameLeaveEvent event = new GameLeaveEvent(game, player);
             Bukkit.getPluginManager().callEvent(event);
             if(!event.isCancelled()) {
                 player.teleport(configProvider.getEntity().getGame().getLobby());
-                modifyPlayer(player, GameMode.SURVIVAL);
+                resetPlayer(player, GameMode.SURVIVAL);
                 game.getParticipantRegistry().unregister(player.getUniqueId());
                 if(game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
                     if(game.getCountdown().isRunning()) {
@@ -97,10 +103,15 @@ public class GameMatchmaker {
                 }
                 boardRegistry.remove(player);
                 boardRegistry.updateTablistAll();
-
             }
         }
 
+    }
+
+    public void openThreshold(Game game) {
+        for(Block block : game.getMap().getPortalBlocks()) {
+            block.setType(GameConstants.PORTAL_BLOCK);
+        }
     }
 
     public void shuffleParticipants(Game game) {
@@ -127,7 +138,7 @@ public class GameMatchmaker {
     }
 
 
-    private void modifyPlayer(Player player, GameMode mode) {
+    public void resetPlayer(Player player, GameMode mode) {
         player.setGameMode(mode);
         player.setHealth(20);
         player.setFoodLevel(20);
