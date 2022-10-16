@@ -9,9 +9,11 @@ import gg.maga.backrooms.game.participant.scientist.ScientistState;
 import in.prismar.library.common.time.TimeUtil;
 import in.prismar.library.spigot.hologram.Hologram;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -21,7 +23,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * Proprietary and confidential
  * Written by Maga
  **/
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ParticipantKnockedTask extends BukkitRunnable {
 
     private static final int MAX_REVIVING_COUNT = 10;
@@ -33,7 +35,8 @@ public class ParticipantKnockedTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        if(game.getState() != GameState.IN_GAME || participant.getState() != ScientistState.KNOCKED) {
+        if(game.getState() != GameState.IN_GAME || participant.getState() != ScientistState.KNOCKED ||
+        !game.getProvider().existsGame(game.getId())) {
             if (participant.getKnockedHologram() != null) {
                 participant.getKnockedHologram().disable();
             }
@@ -54,19 +57,23 @@ public class ParticipantKnockedTask extends BukkitRunnable {
             Hologram hologram = new Hologram(participant.getKnockedLocation(),
                     lines);
             hologram.enable();
+            participant.setKnockedHologram(hologram);
         } else {
             Hologram hologram = participant.getKnockedHologram();
             hologram.updateLines(lines);
         }
 
         for(GameParticipant otherParticipants : game.getParticipantRegistry().getParticipants().values()) {
-            if(otherParticipants instanceof ScientistParticipant scientist) {
-                if(scientist.getState() == ScientistState.ALIVE && scientist.getPlayer().isSneaking()) {
+            if(otherParticipants instanceof ScientistParticipant scientist ) {
+                if(scientist.getPlayer().isSneaking()) {
                     if(scientist.getPlayer().getLocation().distanceSquared(player.getLocation()) <= 4) {
                         if(revivingCount >= MAX_REVIVING_COUNT) {
                             game.getProvider().getMatchmaker().revive(game, scientist, participant);
+                            participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1);
+                            participant.getPlayer().sendTitle("§7You have been §arevived", "", 20, 20, 20);
                             return;
                         }
+                        participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.6f, 1);
                         final String actionBarMessage = Progress.getProgress(MAX_REVIVING_COUNT, revivingCount, false);
                         final BaseComponent[] component = TextComponent.fromLegacyText(actionBarMessage);
                         scientist.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, component);

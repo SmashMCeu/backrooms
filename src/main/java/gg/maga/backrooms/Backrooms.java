@@ -15,6 +15,7 @@ import in.prismar.library.spigot.command.exception.impl.NoPermissionException;
 import in.prismar.library.spigot.command.exception.impl.PlayerNotFoundException;
 import in.prismar.library.spigot.command.exception.impl.PlayerOfflineException;
 import in.prismar.library.spigot.command.exception.impl.WrongNumberFormatException;
+import in.prismar.library.spigot.hologram.HologramBootstrap;
 import in.prismar.library.spigot.meta.SpigotCommandProcessor;
 import in.prismar.library.spigot.meta.SpigotListenerProcessor;
 import in.prismar.library.spigot.meta.anno.AutoCommand;
@@ -49,12 +50,15 @@ public class Backrooms extends JavaPlugin {
     private BackroomsGenerator generator;
     private BackroomsScanner scanner;
 
+    private HologramBootstrap hologramBootstrap;
+
     @Override
     public void onEnable() {
         initialize();
     }
 
     private void initialize() {
+        this.hologramBootstrap = new HologramBootstrap(this);
         this.setup = new SpigotSetup(this, "backrooms");
         initializeCommandsExceptions();
 

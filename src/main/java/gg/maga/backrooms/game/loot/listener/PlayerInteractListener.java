@@ -7,6 +7,8 @@ import gg.maga.backrooms.game.loot.ChestLootRegistry;
 import gg.maga.backrooms.game.loot.model.ChestLoot;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameState;
+import gg.maga.backrooms.game.participant.GameParticipant;
+import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.Material;
@@ -48,15 +50,16 @@ public class PlayerInteractListener implements Listener {
                 if(game.getState() != GameState.IN_GAME) {
                     return;
                 }
-                Optional<ChestLoot> chestLootOptional = registry.findRandomLoot();
-                if(chestLootOptional.isPresent()) {
-                    ChestLoot loot = chestLootOptional.get();
-                    loot.give(event.getClickedBlock().getLocation(), player);
-                    player.getWorld().playSound(event.getClickedBlock().getLocation(), Sound.BLOCK_WOOD_BREAK, 0.5F, 1);
-                    event.getClickedBlock().setType(Material.AIR);
+                GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
+                if(participant instanceof ScientistParticipant) {
+                    Optional<ChestLoot> chestLootOptional = registry.findRandomLoot();
+                    if(chestLootOptional.isPresent()) {
+                        ChestLoot loot = chestLootOptional.get();
+                        loot.give(event.getClickedBlock().getLocation(), player);
+                        player.getWorld().playSound(event.getClickedBlock().getLocation(), Sound.BLOCK_WOOD_BREAK, 0.5F, 1);
+                        event.getClickedBlock().setType(Material.AIR);
+                    }
                 }
-
-
             }
         }
     }

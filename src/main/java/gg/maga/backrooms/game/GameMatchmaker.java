@@ -100,7 +100,7 @@ public class GameMatchmaker {
                 player.sendMessage(" ");
 
             } else if (participant instanceof ScientistParticipant) {
-                player.getInventory().addItem(matchmaker.getItemRegistry().createItem(""));
+                player.getInventory().addItem(matchmaker.getItemRegistry().createItem("Almond Water"));
                 Location location = game.getMap().getRandomScientistSpawn();
                 player.teleport(location);
                 player.sendTitle("§eScientist", "", 20, 40, 20);
@@ -141,6 +141,8 @@ public class GameMatchmaker {
 
     public void knock(Game game, ScientistParticipant participant) {
         if (participant.getKnocks() <= 0) {
+            participant.getPlayer().sendTitle("§cYou died", "", 20, 20, 20);
+
             participant.setState(ScientistState.DEAD);
             participant.getPlayer().setGameMode(GameMode.SPECTATOR);
             int alive = getAliveParticipants(game);

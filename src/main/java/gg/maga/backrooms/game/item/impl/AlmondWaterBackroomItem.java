@@ -18,14 +18,18 @@ import org.bukkit.inventory.EquipmentSlot;
 public class AlmondWaterBackroomItem extends BackroomItem {
 
     public AlmondWaterBackroomItem() {
-        super("Almond Water", Material.GLASS_BOTTLE);
+        super("Almond Water", Material.POTION);
         setDisplayName("§aAlmond Water");
         addLore("§7Heals half of your life");
     }
 
     @BackroomItemEvent
     public void onInteract(Player player, Game game, PlayerInteractEvent event) {
-        player.setHealth(player.getHealth() + 10);
+        double nextHealth = player.getHealth() + 10;
+        if(nextHealth > 20) {
+            nextHealth = 20;
+        }
+        player.setHealth(nextHealth);
         player.playSound(player.getLocation(), Sound.ENTITY_WITCH_DRINK, 0.8f, 1);
 
         if (event.getHand() == EquipmentSlot.HAND) {

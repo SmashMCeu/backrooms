@@ -49,10 +49,11 @@ public class Sidebar {
         Game game = customBoard.getGame();
         GameParticipant gameParticipant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
 
-        if(game.getState() == GameState.IN_GAME || game.getState() == GameState.LOBBY) {
+        if(game.getState() == GameState.IN_GAME || game.getState() == GameState.END) {
             if(gameParticipant instanceof EntityParticipant entity) {
 
             } else if(gameParticipant instanceof ScientistParticipant scientist) {
+                System.out.println("Registered sidebar as scientist");
                 addStaticLine("§3§7 ");
                 addStaticLine("§8┃ §e" + player.getName());
                 addDynamicLine(" §8▪ §7Knocks§8: ", "Knocks", team -> {
