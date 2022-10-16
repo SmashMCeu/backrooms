@@ -65,13 +65,6 @@ public class IngameCountdown extends GameCountdown {
 
     @Override
     public void onEnd() {
-        game.getProvider().changeState(game, GameState.END);
-        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
-            game.getProvider().getMatchmaker().resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
-        });
-        //TODO: Find Winner
-        game.setCountdown(new EndCountdown(game));
-        game.getCountdown().start();
         game.getProvider().getMatchmaker().endGame(game);
     }
 }

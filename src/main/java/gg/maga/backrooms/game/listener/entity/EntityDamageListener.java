@@ -5,6 +5,7 @@ import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.entity.EntityParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
+import gg.maga.backrooms.game.participant.scientist.ScientistState;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.entity.Player;
@@ -35,9 +36,12 @@ public class EntityDamageListener implements Listener {
                 Game game = matchmaker.getGameByPlayer(player).get();
                 GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
                 GameParticipant damagerParticipant = game.getParticipantRegistry().getParticipant(damager.getUniqueId());
-                if(participant instanceof ScientistParticipant && damagerParticipant instanceof EntityParticipant) {
-                    event.setCancelled(true);
-                    return;
+                if(participant instanceof ScientistParticipant scientistParticipant && damagerParticipant instanceof EntityParticipant entity) {
+                    if(scientistParticipant.getState() == ScientistState.ALIVE) {
+                        entity.onAttackTarget(game, scientistParticipant, event);
+                        return;
+                    }
+
                 }
             }
         }

@@ -60,10 +60,10 @@ public class CustomBoardRegistry {
         return boards.get(player.getUniqueId());
     }
 
-    public void refreshBoard(Player player) {
+    public void resetSidebar(Player player) {
         if(boards.containsKey(player.getUniqueId())) {
             CustomBoard board = boards.get(player.getUniqueId());
-            board.refresh();
+            board.reset();
         }
     }
 }

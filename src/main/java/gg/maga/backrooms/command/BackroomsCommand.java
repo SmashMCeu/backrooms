@@ -34,6 +34,7 @@ public class BackroomsCommand extends HelpCommand<Player> {
         this.backrooms = backrooms;
 
         addChild(new GenerateSubCommand(backrooms));
+        addChild(new ScanSubCommand(backrooms));
         addChild(new ClearSubCommand(backrooms));
         addChild(new JoinSubCommand(backrooms));
         addChild(new LeaveSubCommand(backrooms));

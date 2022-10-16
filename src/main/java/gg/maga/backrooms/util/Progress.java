@@ -1,4 +1,4 @@
-package gg.maga.backrooms.game.scoreboard.sidebar;
+package gg.maga.backrooms.util;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -6,7 +6,7 @@ package gg.maga.backrooms.game.scoreboard.sidebar;
  * Proprietary and confidential
  * Written by Maga
  **/
-public class SidebarProgress {
+public class Progress {
 
     private static final String TEMPLATE = "§8[§7■§7■§7■§7■§7■§7■§7■§7■§8] §70%";
     private static final long SPACERS = 10;

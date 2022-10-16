@@ -44,7 +44,7 @@ public class CustomBoard {
 
 
 
-    public void refresh() {
+    public void reset() {
         this.sidebar.destroy();
         Bukkit.getScheduler().runTaskLater(backrooms, () -> {
             create();

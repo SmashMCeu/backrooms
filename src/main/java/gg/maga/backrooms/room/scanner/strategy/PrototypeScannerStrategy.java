@@ -2,6 +2,7 @@ package gg.maga.backrooms.room.scanner.strategy;
 
 import gg.maga.backrooms.room.Room;
 import gg.maga.backrooms.room.RoomOpening;
+import in.prismar.library.common.math.MathUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
@@ -93,7 +94,8 @@ public class PrototypeScannerStrategy implements ScannerStrategy{
                     if(line.startsWith("tag: ")) {
                         room.setTag(line.replace("tag: ", ""));
                     } else if(line.startsWith("amount: ")) {
-                        room.setAmount(Integer.valueOf(line.replace("amount: ", "")));
+                        String[] split = line.replace("amount: ", "").split("-");
+                        room.setAmount(MathUtil.random(Integer.valueOf(split[0]), Integer.valueOf(split[1])));
                     } else if(line.startsWith("chance: ")) {
                         room.setChance(Double.valueOf(line.replace("chance: ", "")));
                     }

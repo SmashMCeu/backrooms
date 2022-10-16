@@ -1,9 +1,12 @@
 package gg.maga.backrooms.game.participant.entity;
 
+import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.participant.GameParticipant;
+import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistState;
 import lombok.Getter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -20,4 +23,6 @@ public class EntityParticipant extends GameParticipant {
         super(player);
         this.name = name;
     }
+
+    public void onAttackTarget(Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {}
 }

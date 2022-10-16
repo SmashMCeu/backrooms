@@ -25,6 +25,8 @@ public class GameMap {
     private List<Location> scientistSpawns;
     private List<Location> entitySpawns;
 
+    private List<Location> chests;
+
     private List<Block> portalBlocks;
 
     public GameMap(GenerationResult result, Location min, Location max) {
@@ -34,6 +36,7 @@ public class GameMap {
         this.scientistSpawns = new ArrayList<>();
         this.entitySpawns = new ArrayList<>();
         this.portalBlocks = new ArrayList<>();
+        this.chests = new ArrayList<>();
     }
 
     public Location getRandomScientistSpawn() {

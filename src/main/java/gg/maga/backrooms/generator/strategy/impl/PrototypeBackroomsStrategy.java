@@ -12,8 +12,7 @@ import in.prismar.library.common.tuple.Tuple;
 import in.prismar.library.spigot.location.copier.Copier;
 import org.bukkit.Location;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -32,11 +31,14 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
         this.roomSize = roomSize;
         this.halfRoomSize = Math.floor(roomSize / 2);
     }
-    
+
     @Override
     public CompletableFuture<GenerationResult> generate(Location location, int amount) {
         CompletableFuture<GenerationResult> future = new CompletableFuture<>();
         List<PlacedRoom> placedRooms = new ArrayList<>();
+
+        Map<Integer, Room> preplacedRooms = findPreplacedRooms(amount);
+
         long now = System.currentTimeMillis();
 
         Room startRoom = null;
@@ -52,10 +54,10 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
 
             Room room;
 
-            if(i == 0) {
+            if (i == 0) {
                 room = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.NORTH, RoomOpening.EAST},
                         new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.WEST});
-            } else if(i == amount - 1) {
+            } else if (i == amount - 1) {
                 room = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.EAST},
                         new RoomOpening[]{RoomOpening.WEST, RoomOpening.NORTH});
             } else {
@@ -84,7 +86,7 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                 }
 
                 Room roomX;
-                if(i == 0) {
+                if (i == 0) {
                     if (j == amount - 1) {
                         roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.WEST, RoomOpening.NORTH},
                                 new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.EAST});
@@ -93,8 +95,8 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                                 new RoomOpening[]{RoomOpening.SOUTH});
                     }
                 } else {
-                    if(j == amount - 1) {
-                        if(i == amount - 1) {
+                    if (j == amount - 1) {
+                        if (i == amount - 1) {
                             roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.WEST, RoomOpening.SOUTH},
                                     new RoomOpening[]{RoomOpening.EAST, RoomOpening.NORTH});
                         } else {
@@ -103,11 +105,19 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                         }
 
                     } else {
-                        if(i == amount - 1) {
+                        if (i == amount - 1) {
                             roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.WEST, RoomOpening.EAST},
                                     new RoomOpening[]{RoomOpening.NORTH});
                         } else {
-                            roomX = getRandomRoomByOpenings(counterOpeningsX);
+                            if(preplacedRooms.containsKey(index)) {
+                                roomX = preplacedRooms.get(index);
+                            } else {
+                                roomX = getRandomRoomByOpenings(counterOpeningsX);
+                                while (containsPreplacedRoom(preplacedRooms, roomX)) {
+                                    roomX = getRandomRoomByOpenings(counterOpeningsX);
+                                }
+                            }
+
                         }
 
                     }
@@ -120,14 +130,25 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                 startRoomX = roomX;
             }
 
-            startLocation = startLocation.subtract(0,0, roomSize);
+            startLocation = startLocation.subtract(0, 0, roomSize);
 
         }
-        
-        
+
+
         long time = System.currentTimeMillis() - now;
         future.complete(new GenerationResult(time, placedRooms));
         return future;
+    }
+
+    private boolean containsPreplacedRoom(Map<Integer, Room> preplacedRooms, Room room) {
+        for(Room preRoom : preplacedRooms.values()) {
+            if(preRoom.getTag() != null && room.getTag() != null) {
+                if(preRoom.getTag().equals(room.getTag())) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private Copier copy(Room room, Location location) {
@@ -136,16 +157,52 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
         return copier;
     }
 
+    private Map<Integer, Room> findPreplacedRooms(int amount) {
+        Map<Integer, Room> rooms = new HashMap<>();
+        List<Integer> allowedNumbers = new ArrayList<>();
+        int index = 0;
+        for (int i = 0; i < amount; i++) {
+            if (i != 0 && i != amount - 1) {
+                allowedNumbers.add(index);
+            }
+            index++;
+            for (int j = 0; j < amount; j++) {
+                index++;
+                if (i != 0) {
+                    if (j != amount - 1) {
+                        if (i != amount - 1) {
+                            allowedNumbers.add(index);
+                        }
+
+                    }
+                }
+            }
+        }
+        for(Room room : getGenerator().getRooms()) {
+            if(room.getAmount() >= 1) {
+                for (int i = 0; i < room.getAmount(); i++) {
+                    int random = allowedNumbers.get(MathUtil.random(allowedNumbers.size() - 1));
+                    while (rooms.containsKey(random)) {
+                        random = allowedNumbers.get(MathUtil.random(allowedNumbers.size() - 1));
+                    }
+                    rooms.put(random, room);
+
+                }
+            }
+        }
+        return rooms;
+    }
+
     private Room getRandomRoomByOpenings(RoomOpening... openings) {
         List<Room> selectedRooms = new ArrayList<>();
-        for(Room room : getGenerator().getRooms()) {
+        for (Room room : getGenerator().getRooms()) {
             boolean found = true;
-            for(RoomOpening opening : openings) {
-                if(!room.getOpenings().contains(opening)) {
+            for (RoomOpening opening : openings) {
+                if (!room.getOpenings().contains(opening)) {
                     found = false;
                 }
             }
-            if(found) {
+            if (found) {
                 selectedRooms.add(room);
             }
         }
@@ -154,21 +211,21 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
 
     private Room getRandomRoomByOpeningsAndNot(RoomOpening[] openings, RoomOpening[] notOpenings) {
         List<Room> selectedRooms = new ArrayList<>();
-        for(Room room : getGenerator().getRooms()) {
+        for (Room room : getGenerator().getRooms()) {
             boolean found = true;
-            for(RoomOpening opening : openings) {
-                if(!room.getOpenings().contains(opening)) {
+            for (RoomOpening opening : openings) {
+                if (!room.getOpenings().contains(opening)) {
                     found = false;
                     break;
                 }
             }
-            for(RoomOpening opening : notOpenings) {
-                if(room.getOpenings().contains(opening)) {
+            for (RoomOpening opening : notOpenings) {
+                if (room.getOpenings().contains(opening)) {
                     found = false;
                     break;
                 }
             }
-            if(found) {
+            if (found) {
                 selectedRooms.add(room);
             }
         }

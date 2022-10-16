@@ -1,5 +1,6 @@
 package gg.maga.backrooms.game.item;
 
+import gg.maga.backrooms.game.item.impl.AlmondWaterBackroomItem;
 import gg.maga.backrooms.game.item.impl.LeaveBackroomItem;
 import in.prismar.library.meta.anno.Service;
 import lombok.Getter;
@@ -21,8 +22,8 @@ public class BackroomItemRegistry {
 
     public BackroomItemRegistry() {
         this.items = new HashMap<>();
-
         register(new LeaveBackroomItem());
+        register(new AlmondWaterBackroomItem());
     }
 
 

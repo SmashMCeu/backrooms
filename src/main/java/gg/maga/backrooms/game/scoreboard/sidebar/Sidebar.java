@@ -2,6 +2,7 @@ package gg.maga.backrooms.game.scoreboard.sidebar;
 
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.entity.EntityParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
@@ -46,38 +47,52 @@ public class Sidebar {
         this.scores.clear();
 
         Game game = customBoard.getGame();
+        GameParticipant gameParticipant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
 
-        addStaticLine("§3§7 ");
-        addStaticLine("§8┃ §e" + player.getName());
-        addDynamicLine(" §8▪ §7Knocks§8: ", "Knocks", team -> {
-            team.setSuffix("§62");
-        });
-        addStaticLine("§a§3§7 ");
-        addStaticLine("§8┃ §eGame");
-        addDynamicLine(" §8▪ §7Tasks§8: ", "Tasks", team -> {
-            team.setSuffix("§a" + game.getSolvedTasks() + "§8/§a" + game.getProperties().getMaxTasks());
-        });
-        addDynamicLine(" §8▪ §7Scientists§8: ", "Scientists", team -> {
-            int count = 0;
-            for(GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
-                if(participant instanceof ScientistParticipant scientistParticipant) {
-                    if(scientistParticipant.getState() == ScientistState.ALIVE) {
+        if(game.getState() == GameState.IN_GAME || game.getState() == GameState.LOBBY) {
+            if(gameParticipant instanceof EntityParticipant entity) {
+
+            } else if(gameParticipant instanceof ScientistParticipant scientist) {
+                addStaticLine("§3§7 ");
+                addStaticLine("§8┃ §e" + player.getName());
+                addDynamicLine(" §8▪ §7Knocks§8: ", "Knocks", team -> {
+                    team.setSuffix("§6" + scientist.getKnocks());
+                });
+            }
+
+            addStaticLine("§a§3§7 ");
+            addStaticLine("§8┃ §eGame");
+            addDynamicLine(" §8▪ §7Tasks§8: ", "Tasks", team -> {
+                team.setSuffix("§a" + game.getSolvedTasks() + "§8/§a" + game.getProperties().getMaxTasks());
+            });
+            addDynamicLine(" §8▪ §7Scientists§8: ", "Scientists", team -> {
+                int count = 0;
+                for(GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
+                    if(participant instanceof ScientistParticipant scientistParticipant) {
+                        if(scientistParticipant.getState() == ScientistState.ALIVE) {
+                            count++;
+                        }
+                    }
+                }
+                team.setSuffix("§e" + count + "§8/§e" + game.getProperties().getMaxScientists());
+            });
+            addDynamicLine(" §8▪ §7Entities§8: ", "Entities", team -> {
+                int count = 0;
+                for(GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
+                    if(participant instanceof EntityParticipant) {
                         count++;
                     }
                 }
-            }
-            team.setSuffix("§e" + count + "§8/§e" + game.getProperties().getMaxScientists());
-        });
-        addDynamicLine(" §8▪ §7Entities§8: ", "Entities", team -> {
-            int count = 0;
-            for(GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
-                if(participant instanceof EntityParticipant) {
-                    count++;
-                }
-            }
-            team.setSuffix("§c" + count + "§8/§c" + game.getProperties().getMaxEntities());
-        });
-        addStaticLine("§3§7§1 ");
+                team.setSuffix("§c" + count + "§8/§c" + game.getProperties().getMaxEntities());
+            });
+            addStaticLine("§3§7§1 ");
+        } else if(game.getState() == GameState.LOBBY) {
+            addStaticLine("§3§7 ");
+            addStaticLine("§3§7Waiting...");
+            addStaticLine("§3§8§7 ");
+        }
+
+
     }
 
     public void addStaticLine(String content) {

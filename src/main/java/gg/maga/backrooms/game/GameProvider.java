@@ -10,6 +10,7 @@ import gg.maga.backrooms.game.model.GameMap;
 import gg.maga.backrooms.game.model.GameProperties;
 import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
+import gg.maga.backrooms.game.sign.ChestSignProcessor;
 import gg.maga.backrooms.game.sign.GameSignProcessor;
 import gg.maga.backrooms.game.sign.SpawnSignProcessor;
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
@@ -63,6 +64,7 @@ public class GameProvider {
 
     private void registerDefaultSignProcessors() {
         this.signProcessors.add(new SpawnSignProcessor());
+        this.signProcessors.add(new ChestSignProcessor());
     }
 
     @SafeInitialize

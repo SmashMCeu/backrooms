@@ -4,9 +4,9 @@ import gg.maga.backrooms.game.GameProvider;
 import gg.maga.backrooms.game.countdown.Countdown;
 import gg.maga.backrooms.game.countdown.impl.LobbyCountdown;
 import gg.maga.backrooms.game.participant.GameParticipantRegistry;
+import gg.maga.backrooms.game.task.GameMainTask;
 import lombok.Getter;
 import lombok.Setter;
-import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitTask;
 
 /**
@@ -26,6 +26,7 @@ public class Game {
     private GameState state;
     private GameMap map;
 
+    private BukkitTask mainTask;
     private Countdown countdown;
 
     private int solvedTasks;
@@ -39,6 +40,7 @@ public class Game {
         this.participantRegistry = new GameParticipantRegistry();
         this.countdown = new LobbyCountdown(this);
     }
+
 
     public boolean isThresholdOpened() {
         return solvedTasks >= properties.getMaxTasks();

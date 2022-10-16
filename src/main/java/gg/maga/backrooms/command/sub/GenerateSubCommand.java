@@ -4,6 +4,7 @@ import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.GameMatchmaker;
 import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.room.PlacedRoom;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.command.exception.CommandException;
 import in.prismar.library.spigot.command.exception.impl.NoPermissionException;
@@ -36,6 +37,15 @@ public class GenerateSubCommand extends HelpSubCommand<Player> {
             player.sendMessage(BackroomsConstants.PREFIX + "§7ID: §a" + game.getId());
             player.sendMessage(BackroomsConstants.PREFIX + "§7Scientist spawns: §a" + game.getMap().getScientistSpawns().size());
             player.sendMessage(BackroomsConstants.PREFIX + "§7Entity spawns: §a" + game.getMap().getEntitySpawns().size());
+
+            int customRooms = 0;
+            for(PlacedRoom room : game.getMap().getResult().getRooms()) {
+                if(room.getRoom().getAmount() >= 1) {
+                    customRooms++;
+                }
+            }
+            player.sendMessage(BackroomsConstants.PREFIX + "§7Custom rooms: §a" + customRooms);
+            player.sendMessage(BackroomsConstants.PREFIX + "§7Chests: §a" + game.getMap().getChests().size());
 
             player.sendMessage(BackroomsConstants.PREFIX + "§aSuccessfully finished generating backrooms");
 

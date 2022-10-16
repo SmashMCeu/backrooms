@@ -2,7 +2,9 @@ package gg.maga.backrooms.game.listener.player;
 
 import gg.maga.backrooms.game.GameMatchmaker;
 import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
+import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import net.minecraft.world.level.block.LeverBlock;
@@ -44,21 +46,16 @@ public class PlayerInteractListener implements Listener {
                        return;
                     }
                     Game game = matchmaker.getGameByPlayer(player).get();
-                    int tasks = game.getSolvedTasks() + 1;
-                    if(tasks <= game.getProperties().getMaxTasks()) {
-                        game.setSolvedTasks(tasks);
-                        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
-                            participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.45F, 1);
-                            participant.getPlayer().sendTitle("§aTask solved", "", 20, 20, 20);
-                        });
+                    if(game.getState() != GameState.IN_GAME) {
+                        return;
                     }
-                    if(tasks == game.getProperties().getMaxTasks()) {
-                        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
-                            participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.45F, 1);
-                            participant.getPlayer().sendTitle("§eThreshold", "§7has been opened", 20, 40, 20);
-                        });
-                        matchmaker.openThreshold(game);
+                    GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
+                    if(participant instanceof ScientistParticipant) {
+                        matchmaker.solveTask(game);
+                    } else {
+                        event.setCancelled(true);
                     }
+
                 }
             }
 
