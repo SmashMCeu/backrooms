@@ -11,6 +11,7 @@ import lombok.Data;
 @Data
 public class BackroomsConfig {
 
+    private boolean build;
     private GeneratorConfig generator;
     private GameConfig game;
 }
