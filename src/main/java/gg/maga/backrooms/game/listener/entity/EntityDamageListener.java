@@ -1,6 +1,7 @@
 package gg.maga.backrooms.game.listener.entity;
 
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.entity.EntityParticipant;
@@ -13,9 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
-
-import java.util.Optional;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -27,18 +25,21 @@ import java.util.Optional;
 public class EntityDamageListener implements Listener {
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
+
+    @Inject
+    private GameProvider provider;
 
     @EventHandler
     public void onDamageByEntity(EntityDamageByEntityEvent event) {
         if(event.getEntity() instanceof Player player && event.getDamager() instanceof Player damager) {
-            if(matchmaker.isInGame(player) && matchmaker.isInGame(damager)) {
-                Game game = matchmaker.getGameByPlayer(player).get();
+            if(service.isInGame(player) && service.isInGame(damager)) {
+                Game game = service.getGameByPlayer(player).get();
                 GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
                 GameParticipant damagerParticipant = game.getParticipantRegistry().getParticipant(damager.getUniqueId());
                 if(participant instanceof ScientistParticipant scientistParticipant && damagerParticipant instanceof EntityParticipant entity) {
                     if(scientistParticipant.getState() == ScientistState.ALIVE) {
-                        entity.onAttackTarget(game, scientistParticipant, event);
+                        entity.onAttackTarget(provider, service, game, scientistParticipant, event);
                         return;
                     }
 
@@ -52,7 +53,7 @@ public class EntityDamageListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player player) {
-            if(matchmaker.isInGame(player))
+            if(service.isInGame(player))
                 if(event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                     event.setCancelled(true);
                 }

@@ -1,6 +1,7 @@
-package gg.maga.backrooms.game.sign;
+package gg.maga.backrooms.game.sign.impl;
 
 import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.sign.SignProcessor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -10,7 +11,7 @@ import org.bukkit.Material;
  * Proprietary and confidential
  * Written by Maga
  **/
-public class ChestSignProcessor implements GameSignProcessor{
+public class ChestSignProcessor implements SignProcessor {
 
     @Override
     public boolean process(Game game, Location location, String[] lines) {

@@ -2,7 +2,7 @@ package gg.maga.backrooms.command;
 
 import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.command.sub.*;
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.GameProvider;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.command.spigot.template.help.HelpCommand;
@@ -24,7 +24,7 @@ public class BackroomsCommand extends HelpCommand<Player> {
     private GameProvider provider;
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
 
     public BackroomsCommand(Backrooms backrooms) {
         super("backrooms", "Backrooms");

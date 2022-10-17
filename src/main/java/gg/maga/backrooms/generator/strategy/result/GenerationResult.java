@@ -1,6 +1,6 @@
 package gg.maga.backrooms.generator.strategy.result;
 
-import gg.maga.backrooms.room.PlacedRoom;
+import gg.maga.backrooms.generator.room.PlacedRoom;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

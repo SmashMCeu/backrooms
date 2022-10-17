@@ -1,20 +1,13 @@
-package gg.maga.backrooms.room.scanner;
+package gg.maga.backrooms.generator.scanner;
 
-import com.google.common.base.Joiner;
-import gg.maga.backrooms.room.Room;
-import gg.maga.backrooms.room.RoomOpening;
-import gg.maga.backrooms.room.scanner.strategy.ScannerStrategy;
-import lombok.AllArgsConstructor;
+import gg.maga.backrooms.generator.room.Room;
+import gg.maga.backrooms.generator.scanner.strategy.ScannerStrategy;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Copyright (c) Maga, All Rights Reserved

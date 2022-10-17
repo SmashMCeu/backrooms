@@ -24,9 +24,7 @@ public class GameMap {
     private Location max;
     private List<Location> scientistSpawns;
     private List<Location> entitySpawns;
-
     private List<Location> chests;
-
     private List<Block> portalBlocks;
 
     public GameMap(GenerationResult result, Location min, Location max) {

@@ -2,7 +2,7 @@ package gg.maga.backrooms.command.sub;
 
 import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameState;
 import in.prismar.library.spigot.command.exception.CommandException;
@@ -30,8 +30,8 @@ public class StartSubCommand extends HelpSubCommand<Player> {
 
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
-        GameMatchmaker matchmaker = backrooms.getGameProvider().getMatchmaker();
-        Optional<Game> optional = matchmaker.getGameByPlayer(player);
+        GameService service = backrooms.getGameProvider().getService();
+        Optional<Game> optional = service.getGameByPlayer(player);
         if(optional.isPresent()) {
             Game game = optional.get();
             if(game.getState() == GameState.LOBBY) {

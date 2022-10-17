@@ -1,7 +1,7 @@
-package gg.maga.backrooms.room.scanner.strategy;
+package gg.maga.backrooms.generator.scanner.strategy;
 
-import gg.maga.backrooms.room.Room;
-import gg.maga.backrooms.room.RoomOpening;
+import gg.maga.backrooms.generator.room.Room;
+import gg.maga.backrooms.generator.room.RoomOpening;
 import in.prismar.library.common.math.MathUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -91,8 +91,8 @@ public class PrototypeScannerStrategy implements ScannerStrategy{
             if(up.getBlock().getType().name().contains("SIGN")) {
                 Sign sign = (Sign) up.getBlock().getState();
                 for(String line : sign.getLines()) {
-                    if(line.startsWith("tag: ")) {
-                        room.setTag(line.replace("tag: ", ""));
+                    if(line.startsWith("name: ")) {
+                        room.setName(line.replace("name: ", ""));
                     } else if(line.startsWith("amount: ")) {
                         String[] split = line.replace("amount: ", "").split("-");
                         room.setAmount(MathUtil.random(Integer.valueOf(split[0]), Integer.valueOf(split[1])));

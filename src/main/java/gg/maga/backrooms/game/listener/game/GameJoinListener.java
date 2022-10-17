@@ -2,7 +2,7 @@ package gg.maga.backrooms.game.listener.game;
 
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.model.Game;
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.event.GameJoinEvent;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
@@ -20,7 +20,7 @@ import org.bukkit.event.Listener;
 public class GameJoinListener implements Listener {
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
 
     @EventHandler
     public void onCall(GameJoinEvent event) {
@@ -32,7 +32,7 @@ public class GameJoinListener implements Listener {
                 game.getProperties().getMaxPlayers() + "§8]";
 
         player.sendMessage(joinMessage);
-        matchmaker.sendMessage(game, joinMessage);
+        service.sendMessage(game, joinMessage);
 
 
     }

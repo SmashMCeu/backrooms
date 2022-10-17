@@ -1,11 +1,8 @@
-package gg.maga.backrooms.room;
+package gg.maga.backrooms.generator.room;
 
 import lombok.Data;
 import org.bukkit.Location;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,7 +15,7 @@ import java.util.Set;
 public class Room {
 
 
-    private String tag;
+    private String name;
     private double chance;
     private int amount;
     private Set<RoomOpening> openings;
@@ -33,7 +30,7 @@ public class Room {
         this.openings = openings;
     }
 
-    public boolean hasTag() {
-        return tag != null;
+    public boolean hasName() {
+        return name != null;
     }
 }

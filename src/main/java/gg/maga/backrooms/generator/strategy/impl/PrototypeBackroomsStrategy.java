@@ -1,14 +1,12 @@
 package gg.maga.backrooms.generator.strategy.impl;
 
-import com.google.common.base.Joiner;
 import gg.maga.backrooms.generator.BackroomsGenerator;
 import gg.maga.backrooms.generator.strategy.AbstractBackroomsStrategy;
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
-import gg.maga.backrooms.room.PlacedRoom;
-import gg.maga.backrooms.room.Room;
-import gg.maga.backrooms.room.RoomOpening;
+import gg.maga.backrooms.generator.room.PlacedRoom;
+import gg.maga.backrooms.generator.room.Room;
+import gg.maga.backrooms.generator.room.RoomOpening;
 import in.prismar.library.common.math.MathUtil;
-import in.prismar.library.common.tuple.Tuple;
 import in.prismar.library.spigot.location.copier.Copier;
 import org.bukkit.Location;
 
@@ -142,8 +140,8 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
 
     private boolean containsPreplacedRoom(Map<Integer, Room> preplacedRooms, Room room) {
         for(Room preRoom : preplacedRooms.values()) {
-            if(preRoom.getTag() != null && room.getTag() != null) {
-                if(preRoom.getTag().equals(room.getTag())) {
+            if(preRoom.hasName() && room.hasName()) {
+                if(preRoom.getName().equals(room.getName())) {
                     return true;
                 }
             }

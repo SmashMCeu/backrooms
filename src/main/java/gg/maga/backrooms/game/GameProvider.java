@@ -3,18 +3,17 @@ package gg.maga.backrooms.game;
 import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.config.ConfigProvider;
 import gg.maga.backrooms.config.model.GameConfig;
-import gg.maga.backrooms.game.event.GameChangeStateEvent;
+import gg.maga.backrooms.game.countdown.impl.LobbyCountdown;
 import gg.maga.backrooms.game.event.GameCreateEvent;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameMap;
 import gg.maga.backrooms.game.model.GameProperties;
-import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
-import gg.maga.backrooms.game.sign.ChestSignProcessor;
-import gg.maga.backrooms.game.sign.GameSignProcessor;
-import gg.maga.backrooms.game.sign.SpawnSignProcessor;
+import gg.maga.backrooms.game.sign.impl.ChestSignProcessor;
+import gg.maga.backrooms.game.sign.SignProcessor;
+import gg.maga.backrooms.game.sign.impl.SpawnSignProcessor;
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
-import gg.maga.backrooms.room.PlacedRoom;
+import gg.maga.backrooms.generator.room.PlacedRoom;
 import in.prismar.library.common.tuple.Tuple;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.meta.anno.SafeInitialize;
@@ -24,7 +23,6 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 
 import java.util.*;
@@ -48,10 +46,10 @@ public class GameProvider {
     private ConfigProvider configProvider;
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
 
     private Map<String, Game> games;
-    private List<GameSignProcessor> signProcessors;
+    private List<SignProcessor> signProcessors;
 
     private Location generationLocation;
 
@@ -81,12 +79,13 @@ public class GameProvider {
             Tuple<Location, Location> minMax = getMinMaxOfGeneration(result);
             GameMap map = new GameMap(result, minMax.getFirst(), minMax.getSecond());
             GameProperties properties = new GameProperties(config.getMaxScientists(), config.getMaxEntities(), config.getMaxTasks());
-            Game game = new Game(this, id, properties, map);
+            Game game = new Game( id, properties, map);
+            game.setCountdown(new LobbyCountdown(backrooms, this, service, game));
 
             BlocksProcessor processor = new BlocksProcessor(backrooms, minMax.getFirst(), minMax.getSecond(), block -> {
                 if(block.getType().name().contains("SIGN")) {
                     Sign sign = (Sign) block.getState();
-                    for(GameSignProcessor signProcessor : signProcessors) {
+                    for(SignProcessor signProcessor : signProcessors) {
                         boolean remove = signProcessor.process(game, block.getLocation(), sign.getLines());
                         if(remove) {
                             block.setType(Material.AIR);
@@ -110,12 +109,6 @@ public class GameProvider {
         return future;
     }
 
-
-    public void changeState(Game game, GameState state) {
-        Bukkit.getPluginManager().callEvent(new GameChangeStateEvent(game, game.getState(), state));
-        game.setState(state);
-    }
-
     public CompletableFuture<Void> clearGames() {
         return CompletableFuture.runAsync(() -> {
             for(Game game : games.values()) {
@@ -135,7 +128,7 @@ public class GameProvider {
         GameParticipant[] participants = game.getParticipantRegistry().getParticipants().values().toArray(new GameParticipant[0]);
         Bukkit.getScheduler().runTask(backrooms, () -> {
             for(GameParticipant participant : participants) {
-                matchmaker.leaveGame(game, participant.getPlayer(), true);
+                service.leaveGame(game, participant.getPlayer(), true);
             }
             game.getParticipantRegistry().getParticipants().clear();
         });

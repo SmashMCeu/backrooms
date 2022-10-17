@@ -1,5 +1,7 @@
 package gg.maga.backrooms.game.participant.entity;
 
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.util.Progress;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.model.Game;
@@ -11,6 +13,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 /**
@@ -34,13 +37,13 @@ public class BacteriaParticipant extends EntityParticipant {
     }
 
     @Override
-    public void onAttackTarget(Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {
+    public void onAttackTarget(GameProvider provider, GameService service, Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {
         if(attackProgressCount <= 0) {
-            startProgress(game);
+            startProgress(provider.getBackrooms());
             double nextHealth = target.getPlayer().getHealth() - DAMAGE;
             if(nextHealth <= 0) {
                 event.setDamage(0);
-                game.getProvider().getMatchmaker().knock(game, target);
+                service.knock(game, target);
                 return;
             }
             event.setDamage(DAMAGE);
@@ -50,7 +53,7 @@ public class BacteriaParticipant extends EntityParticipant {
         getPlayer().sendMessage(BackroomsConstants.PREFIX + "§cYour attack is on delay");
      }
 
-    private void startProgress(Game game) {
+    private void startProgress(Plugin plugin) {
         this.attackProgressCount = ATTACK_PROGRESS_MAX_COUNT;
         new BukkitRunnable() {
             @Override
@@ -63,6 +66,6 @@ public class BacteriaParticipant extends EntityParticipant {
                 }
                 attackProgressCount--;
             }
-        }.runTaskTimer(game.getProvider().getBackrooms(), 20, 20);
+        }.runTaskTimer(plugin, 20, 20);
     }
 }

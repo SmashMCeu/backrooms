@@ -1,5 +1,7 @@
 package gg.maga.backrooms.game.task;
 
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
@@ -29,6 +31,9 @@ public class ParticipantKnockedTask extends BukkitRunnable {
     private static final int MAX_REVIVING_COUNT = 10;
 
     private final Game game;
+
+    private final GameService service;
+    private final GameProvider provider;
     private final ScientistParticipant participant;
 
     private int revivingCount;
@@ -36,7 +41,7 @@ public class ParticipantKnockedTask extends BukkitRunnable {
     @Override
     public void run() {
         if(game.getState() != GameState.IN_GAME || participant.getState() != ScientistState.KNOCKED ||
-        !game.getProvider().existsGame(game.getId())) {
+        !provider.existsGame(game.getId())) {
             if (participant.getKnockedHologram() != null) {
                 participant.getKnockedHologram().disable();
             }
@@ -68,7 +73,7 @@ public class ParticipantKnockedTask extends BukkitRunnable {
                 if(scientist.getPlayer().isSneaking()) {
                     if(scientist.getPlayer().getLocation().distanceSquared(player.getLocation()) <= 4) {
                         if(revivingCount >= MAX_REVIVING_COUNT) {
-                            game.getProvider().getMatchmaker().revive(game, scientist, participant);
+                            service.revive(game, scientist, participant);
                             participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1);
                             participant.getPlayer().sendTitle("§7You have been §arevived", "", 20, 20, 20);
                             return;

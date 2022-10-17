@@ -1,8 +1,6 @@
 package gg.maga.backrooms.game.loot.listener;
 
-import gg.maga.backrooms.game.GameMatchmaker;
-import gg.maga.backrooms.game.item.BackroomItem;
-import gg.maga.backrooms.game.item.BackroomItemRegistry;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.loot.ChestLootRegistry;
 import gg.maga.backrooms.game.loot.model.ChestLoot;
 import gg.maga.backrooms.game.model.Game;
@@ -34,7 +32,7 @@ public class PlayerInteractListener implements Listener {
     private ChestLootRegistry registry;
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
 
 
     @EventHandler
@@ -42,7 +40,7 @@ public class PlayerInteractListener implements Listener {
         Player player = event.getPlayer();
         if(event.getClickedBlock() != null) {
             if(event.getClickedBlock().getType() == Material.CHEST) {
-                Optional<Game> optional = matchmaker.getGameByPlayer(player);
+                Optional<Game> optional = service.getGameByPlayer(player);
                 if(!optional.isPresent()) {
                     return;
                 }

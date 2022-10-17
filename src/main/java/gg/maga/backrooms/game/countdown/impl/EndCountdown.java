@@ -1,6 +1,8 @@
 package gg.maga.backrooms.game.countdown.impl;
 
 import gg.maga.backrooms.BackroomsConstants;
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.countdown.GameCountdown;
 import gg.maga.backrooms.game.event.GameEndEvent;
 import gg.maga.backrooms.game.model.Game;
@@ -8,6 +10,7 @@ import gg.maga.backrooms.game.model.GameState;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -17,11 +20,9 @@ import org.bukkit.entity.Player;
  **/
 public class EndCountdown extends GameCountdown {
 
-    private final Game game;
 
-    public EndCountdown(Game game) {
-        super(game.getProvider().getBackrooms(), 30);
-        this.game = game;
+    public EndCountdown(Plugin plugin, GameProvider provider, GameService service, Game game) {
+        super(plugin, provider, service, game, 30);
     }
 
     @Override
@@ -32,7 +33,7 @@ public class EndCountdown extends GameCountdown {
     @Override
     public void onCount() {
         int count = getCurrentCount();
-        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
+        getService().executeForAll(getGame(), participant -> {
             Player player = participant.getPlayer();
             player.setLevel(count);
         });
@@ -45,7 +46,7 @@ public class EndCountdown extends GameCountdown {
 
     @Override
     public void onEnd() {
-        game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7Thanks for playing §c<3");
-        game.getProvider().stopGame(game);
+        getService().sendMessage(getGame(), BackroomsConstants.PREFIX + "§7Thanks for playing §c<3");
+        getProvider().stopGame(getGame());
     }
 }

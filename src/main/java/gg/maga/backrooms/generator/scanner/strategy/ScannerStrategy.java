@@ -1,6 +1,6 @@
-package gg.maga.backrooms.room.scanner.strategy;
+package gg.maga.backrooms.generator.scanner.strategy;
 
-import gg.maga.backrooms.room.Room;
+import gg.maga.backrooms.generator.room.Room;
 import org.bukkit.Location;
 
 import java.util.List;

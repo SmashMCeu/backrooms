@@ -1,6 +1,6 @@
 package gg.maga.backrooms.game.listener.player;
 
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.GameProvider;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.participant.GameParticipant;
@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import javax.inject.Inject;
@@ -29,12 +28,12 @@ public class PlayerPickUpItemListener implements Listener {
     private GameProvider provider;
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
 
     @EventHandler
     public void onCall(EntityPickupItemEvent event) {
         if(event.getEntity() instanceof Player player) {
-            Optional<Game> optional = matchmaker.getGameByPlayer(player);
+            Optional<Game> optional = service.getGameByPlayer(player);
             if(optional.isPresent()) {
                 Game game = optional.get();
                 GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());

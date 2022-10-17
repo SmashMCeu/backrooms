@@ -1,5 +1,7 @@
 package gg.maga.backrooms.game.item.impl;
 
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.item.BackroomItem;
 import gg.maga.backrooms.game.item.event.BackroomItemEvent;
@@ -21,7 +23,8 @@ public class LeaveBackroomItem extends BackroomItem {
     }
 
     @BackroomItemEvent
-    public void onInteract(Player player, Game game, PlayerInteractEvent event) {
-        game.getProvider().getMatchmaker().leaveGame(game, player, false);
+    public void onInteract(Player player, GameProvider provider, GameService service,
+                           Game game, PlayerInteractEvent event) {
+        service.leaveGame(game, player, false);
     }
 }

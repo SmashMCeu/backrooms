@@ -1,6 +1,7 @@
 package gg.maga.backrooms.game.item.listener;
 
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.item.BackroomItem;
 import gg.maga.backrooms.game.item.BackroomItemRegistry;
@@ -26,8 +27,10 @@ public class PlayerInteractListener implements Listener {
     private BackroomItemRegistry itemRegistry;
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
 
+    @Inject
+    private GameProvider provider;
 
     @EventHandler
     public void onCall(PlayerInteractEvent event) {
@@ -35,7 +38,7 @@ public class PlayerInteractListener implements Listener {
         if(event.getItem() != null) {
             if(event.getItem().hasItemMeta()) {
                 if(event.getItem().getItemMeta().hasDisplayName()) {
-                    Optional<Game> optional = matchmaker.getGameByPlayer(player);
+                    Optional<Game> optional = service.getGameByPlayer(player);
                     if(!optional.isPresent()) {
                         return;
                     }
@@ -43,7 +46,7 @@ public class PlayerInteractListener implements Listener {
                     for(BackroomItem item : itemRegistry.getItems().values()) {
                         if(item.getDisplayName().equals(event.getItem().getItemMeta().getDisplayName())) {
                             event.setCancelled(true);
-                            item.getEventBus().publish(player, game, event);
+                            item.getEventBus().publish(player, provider, service,game, event);
                         }
                     }
                 }

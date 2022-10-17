@@ -1,15 +1,14 @@
 package gg.maga.backrooms.game.task;
 
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistState;
-import lombok.AllArgsConstructor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitTask;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -20,11 +19,11 @@ import org.bukkit.scheduler.BukkitTask;
 public class GameMainTask extends BukkitRunnable {
 
     private final Game game;
-    private final GameMatchmaker matchmaker;
+    private final GameService service;
 
-    public GameMainTask(Game game) {
+    public GameMainTask(GameService service, Game game) {
         this.game = game;
-        this.matchmaker = game.getProvider().getMatchmaker();
+        this.service = service;
     }
 
     @Override
@@ -36,15 +35,15 @@ public class GameMainTask extends BukkitRunnable {
                     if(player.getSpectatorTarget() == null) {
                         player.setGameMode(GameMode.SPECTATOR);
 
-                        int alive = matchmaker.getAliveParticipants(game);
+                        int alive = service.getAliveParticipants(game);
                         if(alive >= 1) {
-                            ScientistParticipant random = matchmaker.findRandomScientist(game);
+                            ScientistParticipant random = service.findRandomScientist(game);
                             scientist.setSpectating(random);
                             player.setSpectatorTarget(random.getPlayer());
                         }
                     } else {
                         if(scientist.getSpectating().getState() != ScientistState.ALIVE) {
-                            ScientistParticipant random = matchmaker.findRandomScientist(game);
+                            ScientistParticipant random = service.findRandomScientist(game);
                             scientist.setSpectating(random);
                             player.setSpectatorTarget(random.getPlayer());
                         }

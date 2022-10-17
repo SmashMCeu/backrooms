@@ -1,6 +1,6 @@
 package gg.maga.backrooms.game.listener.entity;
 
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameService;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.entity.Player;
@@ -18,12 +18,12 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 public class EntityRegainHealthListener implements Listener {
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
 
     @EventHandler
     public void onCall(EntityRegainHealthEvent event) {
         if(event.getEntity() instanceof Player player) {
-            if(matchmaker.isInGame(player)) {
+            if(service.isInGame(player)) {
                 event.setCancelled(true);
             }
         }

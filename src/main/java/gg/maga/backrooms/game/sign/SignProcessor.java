@@ -9,7 +9,7 @@ import org.bukkit.Location;
  * Proprietary and confidential
  * Written by Maga
  **/
-public interface GameSignProcessor {
+public interface SignProcessor {
 
     boolean process(Game game, Location location, String[] lines);
 }

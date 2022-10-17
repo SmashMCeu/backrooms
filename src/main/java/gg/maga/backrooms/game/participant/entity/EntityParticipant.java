@@ -1,5 +1,7 @@
 package gg.maga.backrooms.game.participant.entity;
 
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
@@ -24,5 +26,5 @@ public class EntityParticipant extends GameParticipant {
         this.name = name;
     }
 
-    public void onAttackTarget(Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {}
+    public void onAttackTarget(GameProvider provider, GameService service, Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {}
 }

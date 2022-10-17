@@ -2,8 +2,7 @@ package gg.maga.backrooms.command.sub;
 
 import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
-import gg.maga.backrooms.room.PlacedRoom;
-import gg.maga.backrooms.room.Room;
+import gg.maga.backrooms.generator.room.Room;
 import in.prismar.library.spigot.command.exception.CommandException;
 import in.prismar.library.spigot.command.spigot.SpigotArguments;
 import in.prismar.library.spigot.command.spigot.template.help.HelpSubCommand;

@@ -3,7 +3,7 @@ package gg.maga.backrooms.command.sub;
 import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.game.model.Game;
-import gg.maga.backrooms.game.GameMatchmaker;
+import gg.maga.backrooms.game.GameService;
 import in.prismar.library.spigot.command.exception.CommandException;
 import in.prismar.library.spigot.command.spigot.SpigotArguments;
 import in.prismar.library.spigot.command.spigot.template.help.HelpSubCommand;
@@ -29,10 +29,10 @@ public class LeaveSubCommand extends HelpSubCommand<Player> {
 
     @Override
     public boolean send(Player player, SpigotArguments arguments) throws CommandException {
-        GameMatchmaker matchmaker = backrooms.getGameProvider().getMatchmaker();
-        Optional<Game> optional = matchmaker.getGameByPlayer(player);
+        GameService service = backrooms.getGameProvider().getService();
+        Optional<Game> optional = service.getGameByPlayer(player);
         if(optional.isPresent()) {
-            matchmaker.leaveGame(optional.get(), player, false);
+            service.leaveGame(optional.get(), player, false);
         } else {
             player.sendMessage(BackroomsConstants.PREFIX + "§cYou are not in a game.");
         }

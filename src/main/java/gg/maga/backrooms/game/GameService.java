@@ -1,13 +1,11 @@
 package gg.maga.backrooms.game;
 
+import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.BackroomsConstants;
 import gg.maga.backrooms.config.ConfigProvider;
 import gg.maga.backrooms.game.countdown.impl.EndCountdown;
 import gg.maga.backrooms.game.countdown.impl.IngameCountdown;
-import gg.maga.backrooms.game.event.GameEndEvent;
-import gg.maga.backrooms.game.event.GameJoinEvent;
-import gg.maga.backrooms.game.event.GameLeaveEvent;
-import gg.maga.backrooms.game.event.GameStartEvent;
+import gg.maga.backrooms.game.event.*;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.task.GameMainTask;
 import gg.maga.backrooms.game.model.GameState;
@@ -34,7 +32,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +45,10 @@ import java.util.function.Consumer;
  **/
 @Service
 @Getter
-public class GameMatchmaker {
+public class GameService {
+
+    @Inject
+    private Backrooms backrooms;
 
     @Inject
     private GameProvider provider;
@@ -73,16 +73,18 @@ public class GameMatchmaker {
         return Optional.empty();
     }
 
-    public void beginGame(Game game) {
-        GameProvider provider = game.getProvider();
-        GameMatchmaker matchmaker = game.getProvider().getMatchmaker();
+    public void changeState(Game game, GameState state) {
+        Bukkit.getPluginManager().callEvent(new GameChangeStateEvent(game, game.getState(), state));
+        game.setState(state);
+    }
 
-        provider.changeState(game, GameState.IN_GAME);
-        game.setCountdown(new IngameCountdown(game));
+    public void beginGame(Game game) {
+        changeState(game, GameState.IN_GAME);
+        game.setCountdown(new IngameCountdown(backrooms, provider, this, game));
         game.getCountdown().start();
-        matchmaker.shuffleParticipants(game);
-        matchmaker.executeForAll(game, participant -> {
-            matchmaker.resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
+        shuffleParticipants(game);
+        executeForAll(game, participant -> {
+            resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
             Player player = participant.getPlayer();
             for (int i = 0; i < 200; i++) {
                 player.sendMessage(" ");
@@ -100,7 +102,7 @@ public class GameMatchmaker {
                 player.sendMessage(" ");
 
             } else if (participant instanceof ScientistParticipant) {
-                player.getInventory().addItem(matchmaker.getItemRegistry().createItem("Almond Water"));
+                player.getInventory().addItem(getItemRegistry().createItem("Almond Water"));
                 Location location = game.getMap().getRandomScientistSpawn();
                 player.teleport(location);
                 player.sendTitle("§eScientist", "", 20, 40, 20);
@@ -113,10 +115,10 @@ public class GameMatchmaker {
                 player.sendMessage(CenteredMessage.createCentredMessage("§7if you successfully escape the backrooms."));
                 player.sendMessage(" ");
             }
-            matchmaker.getBoardRegistry().resetSidebar(player);
+            getBoardRegistry().resetSidebar(player);
 
         });
-        matchmaker.sendMessage(game, BackroomsConstants.PREFIX + "§7The §agame §7has started");
+        sendMessage(game, BackroomsConstants.PREFIX + "§7The §agame §7has started");
         startMainTask(game);
         Bukkit.getPluginManager().callEvent(new GameStartEvent(game));
     }
@@ -125,13 +127,13 @@ public class GameMatchmaker {
         int tasks = game.getSolvedTasks() + 1;
         if (tasks <= game.getProperties().getMaxTasks()) {
             game.setSolvedTasks(tasks);
-            game.getProvider().getMatchmaker().executeForAll(game, participant -> {
+            executeForAll(game, participant -> {
                 participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.45F, 1);
                 participant.getPlayer().sendTitle("§aTask solved", "", 20, 20, 20);
             });
         }
         if (tasks == game.getProperties().getMaxTasks()) {
-            game.getProvider().getMatchmaker().executeForAll(game, participant -> {
+            executeForAll(game, participant -> {
                 participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.45F, 1);
                 participant.getPlayer().sendTitle("§eThreshold", "§7has been opened", 20, 40, 20);
             });
@@ -159,7 +161,7 @@ public class GameMatchmaker {
             participant.setKnockedLocation(participant.getPlayer().getLocation());
             participant.setKnockedTimestamp(System.currentTimeMillis());
             participant.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
-            new ParticipantKnockedTask(game, participant).runTaskTimer(provider.getBackrooms(), 20, 20);
+            new ParticipantKnockedTask(game, this, provider, participant).runTaskTimer(provider.getBackrooms(), 20, 20);
         }
     }
 
@@ -194,22 +196,22 @@ public class GameMatchmaker {
     }
 
     public void endGame(Game game) {
-        game.getProvider().changeState(game, GameState.END);
-        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
-            game.getProvider().getMatchmaker().resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
+        changeState(game, GameState.END);
+       executeForAll(game, participant -> {
+           resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
             if(participant instanceof EntityParticipant) {
                 DisguiseAPI.undisguiseToAll(participant.getPlayer());
             }
         });
         //TODO: Find Winner
-        game.setCountdown(new EndCountdown(game));
+        game.setCountdown(new EndCountdown(backrooms, provider, this, game));
         game.getCountdown().start();
         game.getMainTask().cancel();
         Bukkit.getPluginManager().callEvent(new GameEndEvent(game));
     }
 
     public void startMainTask(Game game) {
-        game.setMainTask(new GameMainTask(game).runTaskTimer(getProvider().getBackrooms(), 20, 20));
+        game.setMainTask(new GameMainTask(this, game).runTaskTimer(getProvider().getBackrooms(), 20, 20));
     }
 
     public void joinGame(Game game, Player player) {

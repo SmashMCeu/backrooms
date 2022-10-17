@@ -1,6 +1,8 @@
 package gg.maga.backrooms.game.countdown.impl;
 
 import gg.maga.backrooms.BackroomsConstants;
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.countdown.GameCountdown;
 import gg.maga.backrooms.game.event.GameEndEvent;
 import gg.maga.backrooms.game.event.GameStartEvent;
@@ -16,6 +18,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.function.Consumer;
 
@@ -27,11 +30,9 @@ import java.util.function.Consumer;
  **/
 public class IngameCountdown extends GameCountdown {
 
-    private final Game game;
 
-    public IngameCountdown(Game game) {
-        super(game.getProvider().getBackrooms(), 600);
-        this.game = game;
+    public IngameCountdown(Plugin plugin, GameProvider provider, GameService service, Game game) {
+        super(plugin, provider, service, game, 600);
     }
 
     @Override
@@ -42,17 +43,17 @@ public class IngameCountdown extends GameCountdown {
     @Override
     public void onCount() {
         int count = getCurrentCount();
-        game.getProvider().getMatchmaker().executeForAll(game, participant -> {
+       getService().executeForAll(getGame(), participant -> {
             Player player = participant.getPlayer();
             player.setLevel(count);
         });
         if (count != 0 && count <= 60) {
             if (count == 1) {
-                game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The game will end in §e" + count + " second");
+                getService().sendMessage(getGame(), BackroomsConstants.PREFIX + "§7The game will end in §e" + count + " second");
                 return;
             }
             if (count % 20 == 0 || count == 10 || count <= 5) {
-                game.getProvider().getMatchmaker().sendMessage(game, BackroomsConstants.PREFIX + "§7The game will end in §c" + count + " seconds");
+             getService().sendMessage(getGame(), BackroomsConstants.PREFIX + "§7The game will end in §c" + count + " seconds");
                 return;
             }
         }
@@ -65,6 +66,6 @@ public class IngameCountdown extends GameCountdown {
 
     @Override
     public void onEnd() {
-        game.getProvider().getMatchmaker().endGame(game);
+        getService().endGame(getGame());
     }
 }

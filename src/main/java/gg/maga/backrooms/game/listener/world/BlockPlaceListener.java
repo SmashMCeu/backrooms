@@ -1,7 +1,6 @@
 package gg.maga.backrooms.game.listener.world;
 
-import gg.maga.backrooms.game.GameMatchmaker;
-import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.entity.Player;
@@ -19,12 +18,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
 public class BlockPlaceListener implements Listener {
 
     @Inject
-    private GameMatchmaker matchmaker;
+    private GameService service;
 
     @EventHandler
     public void onCall(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if(matchmaker.isInGame(player)) {
+        if(service.isInGame(player)) {
             event.setCancelled(true);
         }
     }

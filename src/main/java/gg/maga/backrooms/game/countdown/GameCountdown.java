@@ -1,5 +1,8 @@
 package gg.maga.backrooms.game.countdown;
 
+import gg.maga.backrooms.game.GameProvider;
+import gg.maga.backrooms.game.GameService;
+import gg.maga.backrooms.game.model.Game;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -19,11 +22,19 @@ public abstract class GameCountdown implements Countdown {
     private Plugin plugin;
     private final int maxCount;
 
+    private final Game game;
+    private final GameProvider provider;
+    private final GameService service;
+
+
     @Setter
     private int currentCount;
 
-    public GameCountdown(Plugin plugin, int maxCount) {
+    public GameCountdown(Plugin plugin, GameProvider provider, GameService service, Game game, int maxCount) {
         this.plugin = plugin;
+        this.game = game;
+        this.provider = provider;
+        this.service = service;
         this.maxCount = maxCount;
         this.currentCount = maxCount;
     }

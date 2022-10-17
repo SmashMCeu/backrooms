@@ -2,7 +2,7 @@ package gg.maga.backrooms.generator;
 
 import gg.maga.backrooms.generator.strategy.BackroomsStrategy;
 import gg.maga.backrooms.generator.strategy.result.GenerationResult;
-import gg.maga.backrooms.room.Room;
+import gg.maga.backrooms.generator.room.Room;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -51,10 +51,10 @@ public class BackroomsGenerator {
         return this.strategy.generate(location, amount);
     }
 
-    public List<Room> getRoomsByTag(String tag) {
+    public List<Room> getRoomsByName(String name) {
         List<Room> rooms = new ArrayList<>();
         for(Room room : this.rooms) {
-            if(room.getTag().equalsIgnoreCase(tag)) {
+            if(room.getName().equalsIgnoreCase(name)) {
                 rooms.add(room);
             }
         }
