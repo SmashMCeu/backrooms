@@ -12,6 +12,8 @@ import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
+import java.util.function.Function;
+
 /**
  * Copyright (c) Maga, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
@@ -46,7 +48,10 @@ public class EndCountdown extends GameCountdown {
 
     @Override
     public void onEnd() {
-        getService().sendMessage(getGame(), BackroomsConstants.PREFIX + "§7Thanks for playing §c<3");
-        getProvider().stopGame(getGame());
+        getService().sendMessage(getGame(), BackroomsConstants.PREFIX + "§7The game has ended. Thanks for playing §c<3");
+        getProvider().stopGame(getGame()).exceptionally(throwable -> {
+            throwable.printStackTrace();
+            return null;
+        });
     }
 }

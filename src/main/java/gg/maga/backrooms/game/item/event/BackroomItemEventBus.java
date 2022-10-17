@@ -4,6 +4,8 @@ import gg.maga.backrooms.game.GameProvider;
 import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.item.BackroomItem;
 import gg.maga.backrooms.game.model.Game;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Method;
@@ -55,5 +57,15 @@ public class BackroomItemEventBus {
                 subscribers.get(type).add(method);
             }
         }
+    }
+
+    @Getter
+    @AllArgsConstructor
+    public class BackroomItemEventArgs<T> {
+
+        private Player player;
+        private GameProvider provider;
+        private GameService service;
+        private T event;
     }
 }

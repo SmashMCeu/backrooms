@@ -3,6 +3,7 @@ package gg.maga.backrooms.game.listener.entity;
 import gg.maga.backrooms.game.GameProvider;
 import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
 import gg.maga.backrooms.game.participant.entity.EntityParticipant;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
@@ -35,6 +36,9 @@ public class EntityDamageListener implements Listener {
         if(event.getEntity() instanceof Player player && event.getDamager() instanceof Player damager) {
             if(service.isInGame(player) && service.isInGame(damager)) {
                 Game game = service.getGameByPlayer(player).get();
+                if(game.getState() != GameState.IN_GAME) {
+                    return;
+                }
                 GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
                 GameParticipant damagerParticipant = game.getParticipantRegistry().getParticipant(damager.getUniqueId());
                 if(participant instanceof ScientistParticipant scientistParticipant && damagerParticipant instanceof EntityParticipant entity) {
@@ -53,11 +57,16 @@ public class EntityDamageListener implements Listener {
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if(event.getEntity() instanceof Player player) {
-            if(service.isInGame(player))
-                if(event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+            if (service.isInGame(player)) {
+                Game game = service.getGameByPlayer(player).get();
+                if(game.getState() != GameState.IN_GAME) {
+                    event.setCancelled(true);
+                    return;
+                }
+                if (event.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
                     event.setCancelled(true);
                 }
+            }
         }
-
     }
 }

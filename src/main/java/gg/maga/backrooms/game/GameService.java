@@ -101,6 +101,8 @@ public class GameService {
                 player.sendMessage(CenteredMessage.createCentredMessage("§7before they escape."));
                 player.sendMessage(" ");
 
+                player.getInventory().setItem(4, itemRegistry.createItem("Reveal"));
+
             } else if (participant instanceof ScientistParticipant) {
                 player.getInventory().addItem(getItemRegistry().createItem("Almond Water"));
                 Location location = game.getMap().getRandomScientistSpawn();
@@ -129,7 +131,12 @@ public class GameService {
             game.setSolvedTasks(tasks);
             executeForAll(game, participant -> {
                 participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.45F, 1);
-                participant.getPlayer().sendTitle("§aTask solved", "", 20, 20, 20);
+                if(participant instanceof EntityParticipant) {
+                    participant.getPlayer().sendTitle("§cTask solved", "", 20, 20, 20);
+                } else {
+                    participant.getPlayer().sendTitle("§aTask solved", "", 20, 20, 20);
+                }
+
             });
         }
         if (tasks == game.getProperties().getMaxTasks()) {
@@ -143,33 +150,54 @@ public class GameService {
 
     public void knock(Game game, ScientistParticipant participant) {
         if (participant.getKnocks() <= 0) {
-            participant.getPlayer().sendTitle("§cYou died", "", 20, 20, 20);
-
-            participant.setState(ScientistState.DEAD);
-            participant.getPlayer().setGameMode(GameMode.SPECTATOR);
-            int alive = getAliveParticipants(game);
-            if(alive <= 0) {
-                endGame(game);
-            } else {
-                ScientistParticipant random = findRandomScientist(game);
-                participant.setSpectating(random);
-                participant.getPlayer().setSpectatorTarget(random.getPlayer());
-            }
+            kill(game, participant);
         } else {
             participant.setKnocks(participant.getKnocks() - 1);
             participant.setState(ScientistState.KNOCKED);
             participant.setKnockedLocation(participant.getPlayer().getLocation());
-            participant.setKnockedTimestamp(System.currentTimeMillis());
+            participant.setKnockedUntil(System.currentTimeMillis() + 1000 * 60 * 2);
             participant.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
             new ParticipantKnockedTask(game, this, provider, participant).runTaskTimer(provider.getBackrooms(), 20, 20);
         }
     }
 
+    public void kill(Game game, ScientistParticipant participant) {
+        participant.getPlayer().sendTitle("§cYou died", "", 20, 20, 20);
+        participant.setState(ScientistState.DEAD);
+        participant.getPlayer().setGameMode(GameMode.SPECTATOR);
+        int alive = getAliveParticipants(game);
+        if (alive <= 0) {
+            endGame(game);
+        } else {
+            ScientistParticipant random = findRandomScientist(game);
+            participant.setSpectating(random);
+            participant.getPlayer().setSpectatorTarget(random.getPlayer());
+        }
+    }
+
+    public void escape(Game game, ScientistParticipant scientist) {
+        Player player = scientist.getPlayer();
+        scientist.setState(ScientistState.ESCAPED);
+        resetPlayer(player, GameMode.ADVENTURE);
+        player.teleport(provider.getConfigProvider().getEntity().getGame().getLobby());
+        int escaped = getEscapedParticipants(game);
+        int alive = getAliveParticipants(game);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.6f, 1);
+        sendMessage(game, BackroomsConstants.PREFIX + "§e" + player.getName() + " §7has escaped. §8[§e" + escaped + "/§e" + game.getProperties().getMaxScientists() + "§8]");
+        if(alive <= 0) {
+            endGame(game);
+        }
+    }
+
     public void revive(Game game, ScientistParticipant reviver, ScientistParticipant participant) {
         participant.setState(ScientistState.ALIVE);
-        for(PotionEffect effect : participant.getPlayer().getActivePotionEffects()) {
+        for (PotionEffect effect : participant.getPlayer().getActivePotionEffects()) {
             participant.getPlayer().removePotionEffect(effect.getType());
         }
+        participant.getPlayer().setHealth(20);
+        participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1);
+        participant.getPlayer().sendTitle("§7You have been §arevived", "", 20, 20, 20);
+        sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer() + " §7has been revived.");
     }
 
     public ScientistParticipant findRandomScientist(Game game) {
@@ -185,8 +213,8 @@ public class GameService {
     public int getAliveParticipants(Game game) {
         List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
                 .stream().filter(participant -> {
-                    if(participant instanceof ScientistParticipant scientist) {
-                        if(scientist.getState() == ScientistState.ALIVE) {
+                    if (participant instanceof ScientistParticipant scientist) {
+                        if (scientist.getState() == ScientistState.ALIVE) {
                             return true;
                         }
                     }
@@ -195,18 +223,53 @@ public class GameService {
         return participants.size();
     }
 
+    public int getEscapedParticipants(Game game) {
+        List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
+                .stream().filter(participant -> {
+                    if (participant instanceof ScientistParticipant scientist) {
+                        if (scientist.getState() == ScientistState.ESCAPED) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }).toList();
+        return participants.size();
+    }
+
+
     public void endGame(Game game) {
+        if(game.getCountdown().isRunning()) {
+            game.getCountdown().stop(true);
+        }
         changeState(game, GameState.END);
-       executeForAll(game, participant -> {
-           resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
-            if(participant instanceof EntityParticipant) {
+        executeForAll(game, participant -> {
+            resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
+            if (participant instanceof EntityParticipant) {
                 DisguiseAPI.undisguiseToAll(participant.getPlayer());
             }
+            participant.getPlayer().teleport(backrooms.getConfigProvider().getEntity().getGame().getLobby());
+            participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, 1f, 1);
         });
         //TODO: Find Winner
         game.setCountdown(new EndCountdown(backrooms, provider, this, game));
         game.getCountdown().start();
         game.getMainTask().cancel();
+
+        for (int i = 0; i < 200; i++) {
+            sendMessage(game, " ");
+        }
+        int escaped = getEscapedParticipants(game);
+        if(escaped <= 0) {
+            sendMessage(game,  CenteredMessage.createCentredMessage("§4Entities"));
+            sendMessage(game,  CenteredMessage.createCentredMessage("§7have won this round."));
+        } else {
+            sendMessage(game,  CenteredMessage.createCentredMessage("§eScientist"));
+            sendMessage(game,  CenteredMessage.createCentredMessage("§7have won this round."));
+            sendMessage(game,  CenteredMessage.createCentredMessage("§e"+ escaped +" §7out of §e" + game.getProperties().getMaxScientists() + " scientists §7escaped."));
+        }
+        sendMessage(game, " ");
+
+
         Bukkit.getPluginManager().callEvent(new GameEndEvent(game));
     }
 
@@ -252,10 +315,11 @@ public class GameService {
                         game.getCountdown().stop(true);
                     }
                 }
-                boardRegistry.remove(player);
-                boardRegistry.updateTablistAll();
+
             }
         }
+        boardRegistry.remove(player);
+        boardRegistry.updateTablistAll();
 
     }
 

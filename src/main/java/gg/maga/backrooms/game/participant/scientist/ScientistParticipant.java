@@ -22,7 +22,7 @@ public class ScientistParticipant extends GameParticipant {
     private ScientistState state;
     private int knocks;
     private Location knockedLocation;
-    private long knockedTimestamp;
+    private long knockedUntil;
     private Hologram knockedHologram;
 
     private ScientistParticipant spectating;

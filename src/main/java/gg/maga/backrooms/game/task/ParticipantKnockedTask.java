@@ -52,20 +52,26 @@ public class ParticipantKnockedTask extends BukkitRunnable {
         if(player.getLocation().distanceSquared(participant.getKnockedLocation()) >= 10) {
             player.teleport(participant.getKnockedLocation());
         }
-        long time = (System.currentTimeMillis() - participant.getKnockedTimestamp()) * 1000;
-        String[] lines = new String[] {
-                "§e§l" + player.getName(),
-                "§7Time: §c" + TimeUtil.convertToTwoDigits(time),
-                "§7Hold §eshift §7to revive"
-        };
+        long time = (participant.getKnockedUntil() - System.currentTimeMillis()) / 1000;
+        if(time <= 0) {
+            cancel();
+            service.kill(game, participant);
+            return;
+        }
+
         if(participant.getKnockedHologram() == null) {
+            String[] lines = new String[] {
+                    "§e§l" + player.getName(),
+                    "§7Time: §c" + TimeUtil.convertToTwoDigits(time),
+                    "§7Hold §eshift §7to revive"
+            };
             Hologram hologram = new Hologram(participant.getKnockedLocation(),
                     lines);
             hologram.enable();
             participant.setKnockedHologram(hologram);
         } else {
             Hologram hologram = participant.getKnockedHologram();
-            hologram.updateLines(lines);
+            hologram.updateLine(1,  "§7Time: §c" + TimeUtil.convertToTwoDigits(time));
         }
 
         for(GameParticipant otherParticipants : game.getParticipantRegistry().getParticipants().values()) {
@@ -74,8 +80,6 @@ public class ParticipantKnockedTask extends BukkitRunnable {
                     if(scientist.getPlayer().getLocation().distanceSquared(player.getLocation()) <= 4) {
                         if(revivingCount >= MAX_REVIVING_COUNT) {
                             service.revive(game, scientist, participant);
-                            participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1);
-                            participant.getPlayer().sendTitle("§7You have been §arevived", "", 20, 20, 20);
                             return;
                         }
                         participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.6f, 1);

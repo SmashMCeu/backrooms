@@ -9,6 +9,8 @@ package gg.maga.backrooms.game.participant.scientist;
 public enum ScientistState {
 
     ALIVE,
+
+    ESCAPED,
     KNOCKED,
     DEAD;
 }
