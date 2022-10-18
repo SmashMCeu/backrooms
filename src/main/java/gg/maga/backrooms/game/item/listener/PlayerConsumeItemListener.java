@@ -46,7 +46,6 @@ public class PlayerConsumeItemListener implements Listener {
                     Game game = optional.get();
                     for(BackroomItem item : itemRegistry.getItems().values()) {
                         if(item.getDisplayName().equals(event.getItem().getItemMeta().getDisplayName())) {
-                            event.setCancelled(true);
                             item.getEventBus().publish(player, provider, service,game, event);
                         }
                     }
