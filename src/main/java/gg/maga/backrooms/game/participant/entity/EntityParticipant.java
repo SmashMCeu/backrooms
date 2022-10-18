@@ -24,9 +24,11 @@ public class EntityParticipant extends GameParticipant {
     public EntityParticipant(Player player, String name) {
         super(player);
         this.name = name;
+        disableJump();
     }
 
     public void stun(GameProvider provider, GameService service, Game game, boolean blindness) {}
+    public void onSeeScientist(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {}
     public void onScientistSee(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {}
     public void onAttackTarget(GameProvider provider, GameService service, Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {}
 }

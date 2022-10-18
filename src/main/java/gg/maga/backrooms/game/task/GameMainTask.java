@@ -37,43 +37,40 @@ public class GameMainTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        for(GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
-            if(participant instanceof ScientistParticipant scientist) {
-                Player player = scientist.getPlayer();
-                if(scientist.getState() == ScientistState.DEAD) {
-                    if(player.getSpectatorTarget() == null) {
-                        player.setGameMode(GameMode.SPECTATOR);
-
-                        int alive = service.getAliveParticipants(game);
-                        if(alive >= 1) {
-                            ScientistParticipant random = service.findRandomScientist(game);
-                            scientist.setSpectating(random);
-                            player.setSpectatorTarget(random.getPlayer());
-                        }
-                    } else {
-                        if(scientist.getSpectating().getState() != ScientistState.ALIVE) {
-                            ScientistParticipant random = service.findRandomScientist(game);
-                            scientist.setSpectating(random);
-                            player.setSpectatorTarget(random.getPlayer());
-                        }
+        for (GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
+            Player player = participant.getPlayer();
+            if (participant instanceof ScientistParticipant scientist) {
+               if (scientist.getState() == ScientistState.ALIVE) {
+                    GameParticipant targetParticipant = raytraceParticipants(player);
+                    if (targetParticipant instanceof EntityParticipant entity) {
+                        entity.onScientistSee(provider, service, game, scientist);
+                    } else if (targetParticipant instanceof ScientistParticipant target && participant instanceof EntityParticipant entity) {
+                        entity.onSeeScientist(provider, service, game, target);
                     }
-                } else if(scientist.getState() == ScientistState.ALIVE) {
-                    RayTraceResult result =
-                            player.getWorld().rayTraceEntities(player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(2)),
-                                    player.getLocation().getDirection(), GameConstants.MAX_SOUND_PLAY_RAYTRACE, 1);
-                   if(result != null) {
-                       if(result.getHitEntity() != null) {
-                           if(result.getHitEntity() instanceof Player entityPlayer) {
-                               GameParticipant targetParticipant = game.getParticipantRegistry().getParticipant(entityPlayer.getUniqueId());
-                               if(targetParticipant instanceof EntityParticipant entity) {
-                                   entity.onScientistSee(provider, service, game, scientist);
-                               }
-                           }
-                       }
-                   }
 
+                }
+            } else if (participant instanceof EntityParticipant entity) {
+                GameParticipant targetParticipant = raytraceParticipants(player);
+                if (targetParticipant instanceof ScientistParticipant target) {
+                    entity.onSeeScientist(provider, service, game, target);
+                }
+            }
+            participant.onUpdate(provider, service, game);
+        }
+    }
+
+    private GameParticipant raytraceParticipants(Player player) {
+        RayTraceResult result =
+                player.getWorld().rayTraceEntities(player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(2)),
+                        player.getLocation().getDirection(), GameConstants.MAX_SOUND_PLAY_RAYTRACE, 1);
+        if (result != null) {
+            if (result.getHitEntity() != null) {
+                if (result.getHitEntity() instanceof Player entityPlayer) {
+                    GameParticipant targetParticipant = game.getParticipantRegistry().getParticipant(entityPlayer.getUniqueId());
+                    return targetParticipant;
                 }
             }
         }
+        return null;
     }
 }

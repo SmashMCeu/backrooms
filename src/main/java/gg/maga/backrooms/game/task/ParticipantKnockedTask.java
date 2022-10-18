@@ -28,7 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 @RequiredArgsConstructor
 public class ParticipantKnockedTask extends BukkitRunnable {
 
-    private static final int MAX_REVIVING_COUNT = 10;
+    private static final int MAX_REVIVING_COUNT = 5;
 
     private final Game game;
 

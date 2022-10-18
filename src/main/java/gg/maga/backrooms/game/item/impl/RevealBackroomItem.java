@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 public class RevealBackroomItem extends CountdownBackroomItem {
 
     public RevealBackroomItem() {
-        super("Reveal", Material.WITHER_SKELETON_SKULL, 30);
+        super("Reveal", Material.WITHER_SKELETON_SKULL, 60);
         setDisplayName("§cReveal");
         addLore("§7Reveal one scientist");
     }
@@ -47,7 +47,8 @@ public class RevealBackroomItem extends CountdownBackroomItem {
                             return;
                         }
                         count--;
-                        ParticleUtil.spawnParticleAlongLine(player, player.getEyeLocation(), scientist.getPlayer().getEyeLocation(), Particle.FLAME, 150, 0);
+                        ParticleUtil.spawnParticleAlongLine(player, player.getLocation().clone().add(0, 0.2, 0), scientist.getPlayer().getLocation()
+                                .clone().add(0, 0.2, 0), Particle.FLAME, 150, 0);
                     }
                 }.runTaskTimer(provider.getBackrooms(), 0, 20);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_AMBIENT, 0.6f, 1);

@@ -32,7 +32,7 @@ public class IngameCountdown extends GameCountdown {
 
 
     public IngameCountdown(Plugin plugin, GameProvider provider, GameService service, Game game) {
-        super(plugin, provider, service, game, 600);
+        super(plugin, provider, service, game, 900);
     }
 
     @Override

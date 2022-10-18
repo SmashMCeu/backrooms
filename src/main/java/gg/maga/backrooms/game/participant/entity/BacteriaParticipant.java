@@ -29,8 +29,10 @@ import org.bukkit.scheduler.BukkitRunnable;
  **/
 public class BacteriaParticipant extends EntityParticipant {
 
-    private static final float WALK_SPEED = 0.25f;
+    private static final float NORMAL_WALK_SPEED = 0.15f;
+    private static final float AGRO_WALK_SPEED = 0.25f;
     private static final float STUN_WALK_SPEED = 0.10f;
+    private static final int AGRO_TIMEOUT = 10;
     private static final int STUN_DURATION = 20 * 10;
     private static final int ATTACK_PROGRESS_MAX_COUNT = 10;
     private static final double DAMAGE = 10;
@@ -42,32 +44,53 @@ public class BacteriaParticipant extends EntityParticipant {
     private int attackProgressCount;
 
     private long lastSoundTimestamp;
+    private long lastSeenScientist;
+
+    private boolean stunned;
 
     public BacteriaParticipant(Player player) {
         super(player, "Bacteria");
-        player.setWalkSpeed(WALK_SPEED);
+        player.setWalkSpeed(NORMAL_WALK_SPEED);
         DisguiseAPI.disguiseToAll(player, new MobDisguise(DisguiseType.ENDERMAN));
     }
 
     @Override
+    public void onUpdate(GameProvider provider, GameService service, Game game) {
+        long difference = (System.currentTimeMillis() - lastSeenScientist) / 1000;
+        if(difference <= AGRO_TIMEOUT) {
+            if(!stunned) {
+                getPlayer().setWalkSpeed(AGRO_WALK_SPEED);
+            }
+        } else {
+            if(!stunned) {
+                getPlayer().setWalkSpeed(NORMAL_WALK_SPEED);
+            }
+        }
+    }
+
+    @Override
     public void stun(GameProvider provider, GameService service, Game game, boolean blindness) {
+        stunned = true;
         if(blindness) {
             getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, STUN_DURATION, 1));
         }
-        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, STUN_DURATION, 200));
         getPlayer().setWalkSpeed(STUN_WALK_SPEED);
         Bukkit.getScheduler().runTaskLater(provider.getBackrooms(), () -> {
-            getPlayer().setWalkSpeed(WALK_SPEED);
+            getPlayer().setWalkSpeed(NORMAL_WALK_SPEED);
+            stunned = false;
         }, STUN_DURATION);
     }
 
     @Override
-    public void onScientistSee(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {
+    public void onSeeScientist(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {
         long distance = (System.currentTimeMillis() - lastSoundTimestamp) / 1000;
         if(distance >= LAST_SOUND_DISTANCE_SECONDS) {
             lastSoundTimestamp = System.currentTimeMillis();
             getPlayer().getWorld().playSound(getPlayer().getLocation(), BACTERIA_SOUND, 0.5f, 1f);
         }
+        lastSeenScientist = System.currentTimeMillis();
+
+
     }
 
     @Override

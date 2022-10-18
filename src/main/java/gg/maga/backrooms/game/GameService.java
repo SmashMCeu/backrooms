@@ -119,6 +119,7 @@ public class GameService {
                 player.sendMessage(" ");
             }
             getBoardRegistry().resetSidebar(player);
+            participant.disableJump();
 
         });
         sendMessage(game, BackroomsConstants.PREFIX + "§7The §agame §7has started");
@@ -167,6 +168,10 @@ public class GameService {
     }
 
     public void kill(Game game, ScientistParticipant participant) {
+        if(participant.getKnockedHologram() != null) {
+            participant.getKnockedHologram().disable();
+            participant.setKnockedHologram(null);
+        }
         participant.getPlayer().sendTitle("§cYou died", "", 20, 20, 20);
         participant.setState(ScientistState.DEAD);
         participant.getPlayer().setGameMode(GameMode.SPECTATOR);
@@ -205,13 +210,14 @@ public class GameService {
         participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1);
         participant.getPlayer().sendTitle("§7You have been §arevived", "", 20, 20, 20);
         sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer().getName() + " §7has been revived.");
+        participant.disableJump();
     }
 
     public ScientistParticipant findRandomScientist(Game game) {
         List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
                 .stream().filter(participant -> participant instanceof ScientistParticipant).toList();
         ScientistParticipant randomPart = (ScientistParticipant) participants.get(MathUtil.random(participants.size() - 1));
-        while (randomPart.getState() == ScientistState.KNOCKED) {
+        while (randomPart.getState() != ScientistState.ALIVE) {
             randomPart = (ScientistParticipant) participants.get(MathUtil.random(participants.size() - 1));
         }
         return randomPart;
@@ -349,8 +355,7 @@ public class GameService {
         for (int i = 0; i < entities; i++) {
             int random = MathUtil.random(game.getParticipantRegistry().getCount() - 1);
             GameParticipant entityParticipant = participants[random];
-            game.getParticipantRegistry().register(entityParticipant.getPlayer().getUniqueId(),
-                    getRandomEntity(entityParticipant.getPlayer()));
+            game.getParticipantRegistry().register(entityParticipant.getPlayer().getUniqueId(), getRandomEntity(entityParticipant.getPlayer()));
             participants[random] = null;
         }
         for (int i = 0; i < participants.length; i++) {

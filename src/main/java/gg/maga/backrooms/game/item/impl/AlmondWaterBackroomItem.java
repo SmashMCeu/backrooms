@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 
 /**
@@ -27,19 +28,18 @@ public class AlmondWaterBackroomItem extends BackroomItem {
 
     @BackroomItemEvent
     public void onInteract(Player player, GameProvider provider, GameService service,
-                           Game game, PlayerInteractEvent event) {
+                          Game game, PlayerInteractEvent event) {
+        event.setCancelled(false);
+    }
+
+    @BackroomItemEvent
+    public void onConsume(Player player, GameProvider provider, GameService service,
+                           Game game, PlayerItemConsumeEvent event) {
         double nextHealth = player.getHealth() + 10;
         if(nextHealth > 20) {
             nextHealth = 20;
         }
         player.setHealth(nextHealth);
         player.playSound(player.getLocation(), Sound.ENTITY_WITCH_DRINK, 0.8f, 1);
-
-        if (event.getHand() == EquipmentSlot.HAND) {
-            player.getInventory().setItemInMainHand(null);
-        } else if(event.getHand() == EquipmentSlot.OFF_HAND) {
-            player.getInventory().setItemInOffHand(null);
-        }
-        player.updateInventory();
     }
 }
