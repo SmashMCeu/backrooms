@@ -5,6 +5,7 @@ import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
 import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.scientist.ScientistParticipant;
+import gg.maga.backrooms.util.ParticleUtil;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Particle;
@@ -25,7 +26,7 @@ import java.util.function.Predicate;
 public class RevealBackroomItem extends CountdownBackroomItem {
 
     public RevealBackroomItem() {
-        super("Reveal", Material.WITHER_SKELETON_SKULL, 10);
+        super("Reveal", Material.WITHER_SKELETON_SKULL, 30);
         setDisplayName("§cReveal");
         addLore("§7Reveal one scientist");
     }
@@ -38,7 +39,7 @@ public class RevealBackroomItem extends CountdownBackroomItem {
                 ScientistParticipant scientist = service.findRandomScientist(game);
 
                 new BukkitRunnable() {
-                    int count = 3;
+                    int count = 10;
                     @Override
                     public void run() {
                         if(count <= 0 || game.getState() != GameState.IN_GAME) {
@@ -46,22 +47,13 @@ public class RevealBackroomItem extends CountdownBackroomItem {
                             return;
                         }
                         count--;
-                        spawnParticleAlongLine(player, player.getEyeLocation(), scientist.getPlayer().getEyeLocation(), Particle.REDSTONE, 30, 0);
+                        ParticleUtil.spawnParticleAlongLine(player, player.getEyeLocation(), scientist.getPlayer().getEyeLocation(), Particle.FLAME, 150, 0);
                     }
-                }.runTaskTimer(provider.getBackrooms(), 0, 30);
+                }.runTaskTimer(provider.getBackrooms(), 0, 20);
                 player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_AMBIENT, 0.6f, 1);
             }
         }
     }
 
-    public void spawnParticleAlongLine(Player player, Location start, Location end, Particle particle, int pointsPerLine, int particleCount) {
-        double d = start.distance(end) / pointsPerLine;
-        for (int i = 0; i < pointsPerLine; i++) {
-            Location l = start.clone();
-            Vector direction = end.toVector().subtract(start.toVector()).normalize();
-            Vector v = direction.multiply(i * d);
-            l.add(v.getX(), v.getY(), v.getZ());
-            player.spawnParticle(particle, l, particleCount);
-        }
-    }
+
 }

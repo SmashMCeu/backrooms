@@ -1,6 +1,7 @@
 package gg.maga.backrooms.game.item;
 
 import gg.maga.backrooms.game.item.impl.AlmondWaterBackroomItem;
+import gg.maga.backrooms.game.item.impl.FlashlightBackroomItem;
 import gg.maga.backrooms.game.item.impl.LeaveBackroomItem;
 import gg.maga.backrooms.game.item.impl.RevealBackroomItem;
 import in.prismar.library.meta.anno.Service;
@@ -26,6 +27,7 @@ public class BackroomItemRegistry {
         register(new LeaveBackroomItem());
         register(new AlmondWaterBackroomItem());
         register(new RevealBackroomItem());
+        register(new FlashlightBackroomItem());
     }
 
 

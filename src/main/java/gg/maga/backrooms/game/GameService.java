@@ -105,6 +105,7 @@ public class GameService {
 
             } else if (participant instanceof ScientistParticipant) {
                 player.getInventory().addItem(getItemRegistry().createItem("Almond Water"));
+                player.getInventory().addItem(getItemRegistry().createItem("Flashlight"));
                 Location location = game.getMap().getRandomScientistSpawn();
                 player.teleport(location);
                 player.sendTitle("§eScientist", "", 20, 40, 20);
@@ -159,6 +160,10 @@ public class GameService {
             participant.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
             new ParticipantKnockedTask(game, this, provider, participant).runTaskTimer(provider.getBackrooms(), 20, 20);
         }
+        int alive = getAliveParticipants(game);
+        if(alive <= 0) {
+            endGame(game);
+        }
     }
 
     public void kill(Game game, ScientistParticipant participant) {
@@ -195,9 +200,11 @@ public class GameService {
             participant.getPlayer().removePotionEffect(effect.getType());
         }
         participant.getPlayer().setHealth(20);
+        participant.getKnockedHologram().disable();
+        participant.setKnockedHologram(null);
         participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1);
         participant.getPlayer().sendTitle("§7You have been §arevived", "", 20, 20, 20);
-        sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer() + " §7has been revived.");
+        sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer().getName() + " §7has been revived.");
     }
 
     public ScientistParticipant findRandomScientist(Game game) {
@@ -246,6 +253,12 @@ public class GameService {
             resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
             if (participant instanceof EntityParticipant) {
                 DisguiseAPI.undisguiseToAll(participant.getPlayer());
+            } else if(participant instanceof ScientistParticipant scientist) {
+                if(scientist.getState() == ScientistState.KNOCKED) {
+                    if (scientist.getKnockedHologram() != null) {
+                        scientist.getKnockedHologram().disable();
+                    }
+                }
             }
             participant.getPlayer().teleport(backrooms.getConfigProvider().getEntity().getGame().getLobby());
             participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, 1f, 1);
@@ -274,7 +287,7 @@ public class GameService {
     }
 
     public void startMainTask(Game game) {
-        game.setMainTask(new GameMainTask(this, game).runTaskTimer(getProvider().getBackrooms(), 20, 20));
+        game.setMainTask(new GameMainTask(provider, this, game).runTaskTimer(getProvider().getBackrooms(), 20, 20));
     }
 
     public void joinGame(Game game, Player player) {

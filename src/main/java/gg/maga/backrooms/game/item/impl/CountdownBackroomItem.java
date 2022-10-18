@@ -69,6 +69,7 @@ public abstract class CountdownBackroomItem extends BackroomItem {
                 } else {
                     item.setAmount(entry.getCount());
                 }
+                entry.setCount(entry.getCount() - 1);
                 player.updateInventory();
             }
         }.runTaskTimer(provider.getBackrooms(), 20, 20);
@@ -78,7 +79,6 @@ public abstract class CountdownBackroomItem extends BackroomItem {
     public abstract void onCountdownInteract(Player player, GameProvider provider, GameService service, Game game, PlayerInteractEvent event);
 
 
-    @RequiredArgsConstructor
     @Getter
     @Setter
     public class CountdownEntry {
@@ -86,6 +86,12 @@ public abstract class CountdownBackroomItem extends BackroomItem {
         private final BukkitTask task;
         private final int max;
         private int count;
+
+        public CountdownEntry(BukkitTask task, int max) {
+            this.task = task;
+            this.max = max;
+            this.count = max;
+        }
     }
 
 }

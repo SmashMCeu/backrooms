@@ -26,5 +26,7 @@ public class EntityParticipant extends GameParticipant {
         this.name = name;
     }
 
+    public void stun(GameProvider provider, GameService service, Game game, boolean blindness) {}
+    public void onScientistSee(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {}
     public void onAttackTarget(GameProvider provider, GameService service, Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {}
 }

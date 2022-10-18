@@ -12,4 +12,6 @@ public final class GameConstants {
 
     public static final Material PORTAL_SCAN_BLOCK = Material.REDSTONE_BLOCK;
     public static final Material PORTAL_BLOCK = Material.NETHER_PORTAL;
+
+    public static final double MAX_SOUND_PLAY_RAYTRACE = 20;
 }

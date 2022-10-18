@@ -12,6 +12,7 @@ import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -29,11 +30,18 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class BacteriaParticipant extends EntityParticipant {
 
     private static final float WALK_SPEED = 0.25f;
-    private static final float ATTACK_WALK_SPEED = 0.10f;
+    private static final float STUN_WALK_SPEED = 0.10f;
+    private static final int STUN_DURATION = 20 * 10;
     private static final int ATTACK_PROGRESS_MAX_COUNT = 10;
     private static final double DAMAGE = 10;
+    private static final double LAST_SOUND_DISTANCE_SECONDS = 60;
+
+    private static final String BACTERIA_SOUND = "custom:bacteria";
+
 
     private int attackProgressCount;
+
+    private long lastSoundTimestamp;
 
     public BacteriaParticipant(Player player) {
         super(player, "Bacteria");
@@ -42,11 +50,32 @@ public class BacteriaParticipant extends EntityParticipant {
     }
 
     @Override
+    public void stun(GameProvider provider, GameService service, Game game, boolean blindness) {
+        if(blindness) {
+            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, STUN_DURATION, 1));
+        }
+        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, STUN_DURATION, 200));
+        getPlayer().setWalkSpeed(STUN_WALK_SPEED);
+        Bukkit.getScheduler().runTaskLater(provider.getBackrooms(), () -> {
+            getPlayer().setWalkSpeed(WALK_SPEED);
+        }, STUN_DURATION);
+    }
+
+    @Override
+    public void onScientistSee(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {
+        long distance = (System.currentTimeMillis() - lastSoundTimestamp) / 1000;
+        if(distance >= LAST_SOUND_DISTANCE_SECONDS) {
+            lastSoundTimestamp = System.currentTimeMillis();
+            getPlayer().getWorld().playSound(getPlayer().getLocation(), BACTERIA_SOUND, 0.5f, 1f);
+        }
+    }
+
+    @Override
     public void onAttackTarget(GameProvider provider, GameService service, Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {
         if(attackProgressCount <= 0) {
-            getPlayer().setWalkSpeed(ATTACK_WALK_SPEED);
+            stun(provider, service, game, false);
+            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, STUN_DURATION / 2, 200));
             getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_BLAZE_HURT, 0.6f, 1f);
-            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10, 0));
             startProgress(provider.getBackrooms(), game);
             double nextHealth = target.getPlayer().getHealth() - DAMAGE;
             if(nextHealth <= 0) {
@@ -71,7 +100,6 @@ public class BacteriaParticipant extends EntityParticipant {
                         TextComponent.fromLegacyText(Progress.getProgress(ATTACK_PROGRESS_MAX_COUNT, attackProgressCount, false)));
                 if(attackProgressCount <= 0 || game.getState() != GameState.IN_GAME) {
                     cancel();
-                    getPlayer().setWalkSpeed(WALK_SPEED);
                     return;
                 }
                 attackProgressCount--;

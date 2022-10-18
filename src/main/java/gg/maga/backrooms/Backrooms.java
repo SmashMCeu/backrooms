@@ -28,6 +28,8 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * Copyright (c) Maga, All Rights Reserved
  * Unauthorized copying of this file, via any medium is strictly prohibited
@@ -71,6 +73,11 @@ public class Backrooms extends JavaPlugin {
         this.setup.register();
 
         initializeGenerator();
+        provideGame();
+    }
+
+    private void provideGame() {
+        getGameProvider().prepareGame();
     }
 
 
