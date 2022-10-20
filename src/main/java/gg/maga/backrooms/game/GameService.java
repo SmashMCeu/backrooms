@@ -7,6 +7,7 @@ import gg.maga.backrooms.game.countdown.impl.EndCountdown;
 import gg.maga.backrooms.game.countdown.impl.IngameCountdown;
 import gg.maga.backrooms.game.event.*;
 import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.participant.spectator.SpectatorParticipant;
 import gg.maga.backrooms.game.task.GameMainTask;
 import gg.maga.backrooms.game.model.GameState;
 import gg.maga.backrooms.game.participant.GameParticipant;
@@ -158,7 +159,7 @@ public class GameService {
             participant.setState(ScientistState.KNOCKED);
             participant.setKnockedLocation(participant.getPlayer().getLocation());
             participant.setKnockedUntil(System.currentTimeMillis() + 1000 * 60 * 2);
-            participant.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1));
+            participant.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false), true);
             new ParticipantKnockedTask(game, this, provider, participant).runTaskTimer(provider.getBackrooms(), 20, 20);
         }
         int alive = getAliveParticipants(game);
@@ -213,11 +214,36 @@ public class GameService {
         participant.disableJump();
     }
 
+    public GameParticipant findRandomParticipantExcept(Game game, Player player) {
+        GameParticipant[] participants = game.getParticipantRegistry().getParticipants().values().toArray(new GameParticipant[0]);
+        GameParticipant chosen = participants[MathUtil.random(participants.length - 1)];
+        while (chosen.getPlayer().getName().equals(player.getName())) {
+            chosen = participants[MathUtil.random(participants.length - 1)];
+        }
+        return chosen;
+    }
+
     public ScientistParticipant findRandomScientist(Game game) {
         List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
-                .stream().filter(participant -> participant instanceof ScientistParticipant).toList();
+                .stream().filter(participant -> {
+                    if( participant instanceof ScientistParticipant scientist) {
+                        return scientist.getState() == ScientistState.ALIVE;
+                    }
+                    return false;
+                } ).toList();
+        return (ScientistParticipant) participants.get(MathUtil.random(participants.size() - 1));
+    }
+
+    public ScientistParticipant findRandomAliveScientistExcept(Game game, Player player) {
+        List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
+                .stream().filter(participant -> {
+                    if( participant instanceof ScientistParticipant scientist) {
+                        return scientist.getState() == ScientistState.ALIVE;
+                    }
+                    return false;
+                } ).toList();
         ScientistParticipant randomPart = (ScientistParticipant) participants.get(MathUtil.random(participants.size() - 1));
-        while (randomPart.getState() != ScientistState.ALIVE) {
+        while (randomPart.getPlayer().getName().equals(player.getName())) {
             randomPart = (ScientistParticipant) participants.get(MathUtil.random(participants.size() - 1));
         }
         return randomPart;
@@ -294,6 +320,17 @@ public class GameService {
 
     public void startMainTask(Game game) {
         game.setMainTask(new GameMainTask(provider, this, game).runTaskTimer(getProvider().getBackrooms(), 20, 20));
+    }
+
+    public void joinGameAsSpectator(Game game, Player player) {
+        resetPlayer(player, GameMode.SPECTATOR);
+        game.getParticipantRegistry().register(player.getUniqueId(), new SpectatorParticipant(player));
+
+        GameParticipant participant = findRandomParticipantExcept(game, player);
+        player.teleport(participant.getPlayer().getLocation());
+
+        boardRegistry.add(player, game);
+        boardRegistry.updateTablistAll();
     }
 
     public void joinGame(Game game, Player player) {

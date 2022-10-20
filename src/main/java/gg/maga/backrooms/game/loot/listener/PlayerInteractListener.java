@@ -57,6 +57,8 @@ public class PlayerInteractListener implements Listener {
                         player.getWorld().playSound(event.getClickedBlock().getLocation(), Sound.BLOCK_WOOD_BREAK, 0.5F, 1);
                         event.getClickedBlock().setType(Material.AIR);
                     }
+                } else {
+                    event.setCancelled(true);
                 }
             }
         }

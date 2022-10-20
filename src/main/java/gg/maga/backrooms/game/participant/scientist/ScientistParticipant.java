@@ -25,6 +25,8 @@ import org.bukkit.scoreboard.Team;
 @Setter
 public class ScientistParticipant extends GameParticipant {
 
+    private static final float NORMAL_WALK_SPEED = 0.26f;
+
     private ScientistState state;
     private int knocks;
     private Location knockedLocation;
@@ -37,18 +39,26 @@ public class ScientistParticipant extends GameParticipant {
         super(player);
         this.knocks = 2;
         this.state = ScientistState.ALIVE;
+
         disableJump();
     }
 
     @Override
     public void onUpdate(GameProvider provider, GameService service, Game game) {
+        getPlayer().setWalkSpeed(NORMAL_WALK_SPEED);
+        getPlayer().setFoodLevel(2);
         if(getState() == ScientistState.DEAD) {
             if (getPlayer().getSpectatorTarget() == null) {
                 getPlayer().setGameMode(GameMode.SPECTATOR);
 
                 int alive = service.getAliveParticipants(game);
-                if (alive >= 1) {
+                if (alive == 1) {
                     ScientistParticipant random = service.findRandomScientist(game);
+                    setSpectating(random);
+                    getPlayer().setSpectatorTarget(random.getPlayer());
+                } else if(alive >= 2) {
+                    ScientistParticipant random = getSpectating() == null ? service.findRandomScientist(game) :
+                            service.findRandomAliveScientistExcept(game, getSpectating().getPlayer());
                     setSpectating(random);
                     getPlayer().setSpectatorTarget(random.getPlayer());
                 }

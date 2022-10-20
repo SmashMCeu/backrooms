@@ -4,6 +4,7 @@ import gg.maga.backrooms.Backrooms;
 import gg.maga.backrooms.config.ConfigProvider;
 import gg.maga.backrooms.game.GameService;
 import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.model.GameState;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.Bukkit;
@@ -47,7 +48,15 @@ public class PlayerJoinListener implements Listener {
 
         Optional<Game> optional = service.findGame();
         if(optional.isPresent()) {
-            service.joinGame(optional.get(), player);
+            Game game = optional.get();
+            if(game.getState() == GameState.LOBBY) {
+                service.joinGame(optional.get(), player);
+            } else if(game.getState() == GameState.IN_GAME) {
+                service.joinGameAsSpectator(game, player);
+            } else {
+                player.kickPlayer("§cThe server is shutting down.");
+            }
+
         } else {
             player.kickPlayer("§cPlease wait before the server is fully started.");
         }

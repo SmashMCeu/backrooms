@@ -28,7 +28,7 @@ public class GameParticipant {
 
 
     public void disableJump() {
-        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 200));
+        getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, Integer.MAX_VALUE, 200, false, false), true);
     }
 
     public void onUpdate(GameProvider provider, GameService service, Game game) {

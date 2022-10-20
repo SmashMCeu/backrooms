@@ -62,6 +62,7 @@ public abstract class CountdownBackroomItem extends BackroomItem {
                 CountdownEntry entry = entries.get(player.getUniqueId());
                 if(entry.getCount() <= 0) {
                     entries.remove(player.getUniqueId());
+                    cancel();
                     return;
                 }
                 if(entry.getCount() >= 64) {

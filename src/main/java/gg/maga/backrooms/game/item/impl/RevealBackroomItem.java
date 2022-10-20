@@ -26,7 +26,7 @@ import java.util.function.Predicate;
 public class RevealBackroomItem extends CountdownBackroomItem {
 
     public RevealBackroomItem() {
-        super("Reveal", Material.WITHER_SKELETON_SKULL, 60);
+        super("Reveal", Material.WITHER_SKELETON_SKULL, 50);
         setDisplayName("§cReveal");
         addLore("§7Reveal one scientist");
     }

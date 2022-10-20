@@ -1,6 +1,8 @@
 package gg.maga.backrooms.game.listener.player;
 
 import gg.maga.backrooms.game.GameService;
+import gg.maga.backrooms.game.model.Game;
+import gg.maga.backrooms.game.model.GameState;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.entity.Player;
@@ -24,8 +26,9 @@ public class PlayerFoodLevelChangeListener implements Listener {
     public void onCall(FoodLevelChangeEvent event) {
         Player player = (Player) event.getEntity();
         if(service.isInGame(player)) {
+            Game game = service.getGameByPlayer(player).get();
             event.setCancelled(true);
-            event.setFoodLevel(20);
+
         }
     }
 }
