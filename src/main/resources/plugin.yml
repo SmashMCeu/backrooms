@@ -1,7 +1,7 @@
-name: Backrooms
-main: gg.maga.backrooms.Backrooms
-version: '${project.version}'
-softdepend: [Multiverse-Core]
-api-version: 1.19
-author: ReaperMaga & Nyxie
-description: Very beautiful backrooms minigame plugin
+main: ${bukkit.main}
+name: ${project.name}
+version: ${project.version}
+api-version: ${mc-api.version}
+description: ${project.description}
+author: SmashMc
+softdepend: [SmashCore, Multiverse-Core]
