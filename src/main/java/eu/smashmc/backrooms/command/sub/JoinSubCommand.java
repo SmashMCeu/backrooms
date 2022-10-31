@@ -24,6 +24,7 @@ public class JoinSubCommand extends HelpSubCommand<Player> {
     public JoinSubCommand(Backrooms backrooms) {
         super("join");
         setDescription("Join a game");
+        setPermission(BackroomsConstants.PERMISSION_PREFIX + "join");
         this.backrooms = backrooms;
     }
 

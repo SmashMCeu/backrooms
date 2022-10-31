@@ -52,9 +52,9 @@ public class CustomBoardRegistry {
         CustomBoard board = boards.remove(player.getUniqueId());
         board.getSidebar().destroy();
         board.getTablist().destroy();
-        for(Team team : board.getBoard().getTeams()) {
+        /*for(Team team : board.getBoard().getTeams()) {
             team.unregister();
-        }
+        }*/
     }
 
     public CustomBoard getBoardByPlayer(Player player) {

@@ -22,7 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class RevealBackroomItem extends CountdownBackroomItem {
 
     public RevealBackroomItem() {
-        super("Reveal", Material.WITHER_SKELETON_SKULL, 50);
+        super("Reveal", Material.WITHER_SKELETON_SKULL, 40);
         setDisplayName("§cReveal");
         addLore("§7Reveal one scientist");
     }
@@ -35,7 +35,7 @@ public class RevealBackroomItem extends CountdownBackroomItem {
                 ScientistParticipant scientist = service.findRandomScientist(game);
 
                 new BukkitRunnable() {
-                    int count = 10;
+                    int count = 15;
                     @Override
                     public void run() {
                         if(count <= 0 || game.getState() != GameState.IN_GAME) {

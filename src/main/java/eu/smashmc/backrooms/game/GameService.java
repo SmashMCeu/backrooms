@@ -67,7 +67,7 @@ public class GameService {
 
     public Optional<Game> findGame() {
         for (Game game : provider.getGames().values()) {
-            if (game.getState() == GameState.LOBBY) {
+            if (game.getState() == GameState.LOBBY || game.getState() == GameState.IN_GAME) {
                 if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
                     return Optional.of(game);
                 }
@@ -376,12 +376,18 @@ public class GameService {
                 resetPlayer(player, GameMode.SURVIVAL);
                 game.getParticipantRegistry().unregister(player.getUniqueId());
                 backrooms.getGameState().setIngamePlayers(game.getParticipantRegistry().getCount());
-                if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
-                    if (game.getCountdown().isRunning()) {
-                        game.getCountdown().stop(true);
+                if(game.getState() == GameState.IN_GAME) {
+                    if(game.getParticipantRegistry().getParticipants().size() <= 1) {
+                        endGame(game);
+                        return;
+                    }
+                } else if(game.getState() == GameState.LOBBY) {
+                    if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
+                        if (game.getCountdown().isRunning()) {
+                            game.getCountdown().stop(true);
+                        }
                     }
                 }
-
             }
         }
         boardRegistry.remove(player);

@@ -5,6 +5,7 @@ import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.countdown.GameCountdown;
 import eu.smashmc.backrooms.game.model.Game;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -43,9 +44,11 @@ public class EndCountdown extends GameCountdown {
     @Override
     public void onEnd() {
         getService().sendMessage(getGame(), BackroomsConstants.PREFIX + "§7The game has ended. Thanks for playing §c<3");
-        getProvider().stopGame(getGame()).exceptionally(throwable -> {
+        Bukkit.shutdown();
+        /*getProvider().stopGame(getGame()).exceptionally(throwable -> {
             throwable.printStackTrace();
             return null;
-        });
+        });*/
+
     }
 }

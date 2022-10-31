@@ -25,6 +25,7 @@ public class StartSubCommand extends HelpSubCommand<Player> {
     public StartSubCommand(Backrooms backrooms) {
         super("start");
         setDescription("Reduce countdown");
+        setPermission(BackroomsConstants.PERMISSION_PREFIX + "start");
         this.backrooms = backrooms;
     }
 

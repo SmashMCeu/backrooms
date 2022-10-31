@@ -37,6 +37,10 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
         </repository>
+        <repository>
+            <id>prismarin</id>
+            <url>https://nexus.prismar.in/repository/prismarin/</url>
+        </repository>
     </repositories>
 
     <dependencies>

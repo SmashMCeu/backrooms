@@ -28,14 +28,14 @@ import org.bukkit.scheduler.BukkitRunnable;
  * Written by Maga
  **/
 public class BacteriaParticipant extends EntityParticipant {
-    private static final float NORMAL_WALK_SPEED = 0.2f;
+    private static final float NORMAL_WALK_SPEED = 0.22f;
     private static final float AGRO_WALK_SPEED = 0.3f;
     private static final float STUN_WALK_SPEED = 0.13f;
     private static final int AGRO_TIMEOUT = 10;
     private static final int STUN_DURATION = 20 * 10;
     private static final int ATTACK_PROGRESS_MAX_COUNT = 10;
     private static final double DAMAGE = 10;
-    private static final double LAST_SOUND_DISTANCE_SECONDS = 30;
+    private static final double LAST_SOUND_DISTANCE_SECONDS = 12;
 
     private static final String BACTERIA_SOUND = "custom:bacteria";
 

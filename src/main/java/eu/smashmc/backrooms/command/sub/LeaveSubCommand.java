@@ -24,6 +24,7 @@ public class LeaveSubCommand extends HelpSubCommand<Player> {
     public LeaveSubCommand(Backrooms backrooms) {
         super("leave");
         setDescription("Leave your current game");
+        setPermission(BackroomsConstants.PERMISSION_PREFIX + "leave");
         this.backrooms = backrooms;
     }
 
