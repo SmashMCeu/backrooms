@@ -2,6 +2,7 @@ package eu.smashmc.backrooms.game;
 
 import eu.smashmc.api.SmashMc;
 import eu.smashmc.api.vanish.Vanish;
+import eu.smashmc.backrooms.command.sub.EntitySubCommand;
 import eu.smashmc.backrooms.game.countdown.impl.EndCountdown;
 import eu.smashmc.backrooms.game.countdown.impl.IngameCountdown;
 import eu.smashmc.backrooms.game.event.*;
@@ -38,6 +39,7 @@ import org.bukkit.potion.PotionEffectType;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 import java.util.function.Consumer;
 
 /**
@@ -49,6 +51,8 @@ import java.util.function.Consumer;
 @Service
 @Getter
 public class GameService {
+
+    private static final Random RANDOM = new Random();
 
     @Inject
     private Backrooms backrooms;
@@ -224,7 +228,7 @@ public class GameService {
 
     public GameParticipant findRandomParticipantExcept(Game game, Player player) {
         GameParticipant[] participants = game.getParticipantRegistry().getParticipants().values().toArray(new GameParticipant[0]);
-        GameParticipant chosen = participants[MathUtil.random(participants.length - 1)];
+        GameParticipant chosen = participants[RANDOM.nextInt(game.getParticipantRegistry().getCount())];
         while (chosen.getPlayer().getName().equals(player.getName())) {
             chosen = participants[MathUtil.random(participants.length - 1)];
         }
@@ -407,6 +411,10 @@ public class GameService {
                 .filter(gameParticipant -> !vanish.isVanished(gameParticipant.getPlayer())).toArray(GameParticipant[]::new);
 
         int entities = game.getProperties().getMaxEntities();
+        if(EntitySubCommand.ENFORCED_ENTITY != null) {
+            entities--;
+            game.getParticipantRegistry().register(EntitySubCommand.ENFORCED_ENTITY, getRandomEntity(Bukkit.getPlayer(EntitySubCommand.ENFORCED_ENTITY)));
+        }
         for (int i = 0; i < entities; i++) {
             int random = MathUtil.random(game.getParticipantRegistry().getCount() - 1);
             GameParticipant entityParticipant = participants[random];
@@ -416,6 +424,11 @@ public class GameService {
         for (int i = 0; i < participants.length; i++) {
             GameParticipant participant = participants[i];
             if (participant != null) {
+                if(EntitySubCommand.ENFORCED_ENTITY != null) {
+                    if(participant.getPlayer().getUniqueId().equals(EntitySubCommand.ENFORCED_ENTITY)) {
+                        continue;
+                    }
+                }
                 game.getParticipantRegistry().register(participant.getPlayer().getUniqueId(), new ScientistParticipant(participant.getPlayer()));
             }
         }
