@@ -49,7 +49,7 @@ steps:
         from_secret: mario_key
       port: 22334
       script:
-        - cp -f /tmp/cicd/${DRONE_COMMIT}/target/* /home/minecraft/cloudnet/local/templates/Backrooms/default/plugins/
+        - cp -f /tmp/cicd/${DRONE_COMMIT}/target/backrooms.jar /home/minecraft/cloudnet/local/templates/Backrooms/default/plugins/
         - rm -r /tmp/cicd/${DRONE_COMMIT}
     when:
       branch:

@@ -32,7 +32,7 @@ public class BacteriaParticipant extends EntityParticipant {
     private static final float AGRO_WALK_SPEED = 0.3f;
     private static final float STUN_WALK_SPEED = 0.13f;
     private static final int AGRO_TIMEOUT = 10;
-    private static final int STUN_DURATION = 20 * 6;
+    private static final int STUN_DURATION = 20 * 10;
     private static final int ATTACK_PROGRESS_MAX_COUNT = 8;
     private static final double DAMAGE = 10;
     private static final double LAST_SOUND_DISTANCE_SECONDS = 12;

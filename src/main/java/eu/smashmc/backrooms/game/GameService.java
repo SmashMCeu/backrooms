@@ -112,8 +112,6 @@ public class GameService {
                 player.getInventory().setItem(4, itemRegistry.createItem("Reveal"));
 
             } else if (participant instanceof ScientistParticipant) {
-                player.getInventory().addItem(getItemRegistry().createItem("Almond Water"));
-                player.getInventory().addItem(getItemRegistry().createItem("Flashlight"));
                 Location location = game.getMap().getRandomScientistSpawn();
                 player.teleport(location);
                 player.sendTitle("§eScientist", "", 20, 40, 20);
