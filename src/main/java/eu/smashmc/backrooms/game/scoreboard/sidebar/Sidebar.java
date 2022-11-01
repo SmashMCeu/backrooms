@@ -89,6 +89,11 @@ public class Sidebar {
             addDynamicLine("  §8➥ ", "Players", team -> {
                 team.setSuffix("§7" + Bukkit.getOnlinePlayers().size() + "§8/§7" + Bukkit.getMaxPlayers());
             });
+            addStaticLine("§3§7§8§6 ");
+            addStaticLine(" §e§lMap");
+            addDynamicLine("  §8➥ ", "Map", team -> {
+                team.setSuffix("§7Level 0");
+            });
             addStaticLine("§3§8§7                   §3§8§7");
         }
 
