@@ -86,7 +86,7 @@ public class Sidebar {
         } else if(game.getState() == GameState.LOBBY) {
             addStaticLine("§3§7 ");
             addStaticLine(" §e§lPlayers");
-            addDynamicLine("  §8➥ ", "Players", team -> {
+            addDynamicLine("  §a§8➥ ", "Players", team -> {
                 team.setSuffix("§7" + Bukkit.getOnlinePlayers().size() + "§8/§7" + Bukkit.getMaxPlayers());
             });
             addStaticLine("§3§7§8§6 ");
