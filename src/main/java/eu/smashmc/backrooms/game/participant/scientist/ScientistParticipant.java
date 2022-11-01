@@ -44,27 +44,7 @@ public class ScientistParticipant extends GameParticipant {
         getPlayer().setWalkSpeed(NORMAL_WALK_SPEED);
         getPlayer().setFoodLevel(2);
         if(getState() == ScientistState.DEAD) {
-            if (getPlayer().getSpectatorTarget() == null) {
-                getPlayer().setGameMode(GameMode.SPECTATOR);
-
-                int alive = service.getAliveParticipants(game);
-                if (alive == 1) {
-                    ScientistParticipant random = service.findRandomScientist(game);
-                    setSpectating(random);
-                    getPlayer().setSpectatorTarget(random.getPlayer());
-                } else if(alive >= 2) {
-                    ScientistParticipant random = getSpectating() == null ? service.findRandomScientist(game) :
-                            service.findRandomAliveScientistExcept(game, getSpectating().getPlayer());
-                    setSpectating(random);
-                    getPlayer().setSpectatorTarget(random.getPlayer());
-                }
-            } else {
-                if (getSpectating().getState() != ScientistState.ALIVE) {
-                    ScientistParticipant random = service.findRandomScientist(game);
-                    setSpectating(random);
-                    getPlayer().setSpectatorTarget(random.getPlayer());
-                }
-            }
+            spectating = service.spectate(getPlayer(), game, spectating);
         }
 
     }

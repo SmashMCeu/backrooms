@@ -15,6 +15,7 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.plugin.Plugin;
@@ -37,6 +38,8 @@ public class BacteriaParticipant extends EntityParticipant {
     private static final int ATTACK_PROGRESS_MAX_COUNT = 8;
     private static final double DAMAGE = 10;
     private static final double LAST_SOUND_DISTANCE_SECONDS = 12;
+
+    private static final double PLAY_SOUND_DISTANCE_ENTITIES = 30;
 
     private static final String BACTERIA_SOUND = "custom:bacteria";
 
@@ -87,9 +90,17 @@ public class BacteriaParticipant extends EntityParticipant {
         long distance = (System.currentTimeMillis() - lastSoundTimestamp) / 1000;
         if(distance >= LAST_SOUND_DISTANCE_SECONDS) {
             lastSoundTimestamp = System.currentTimeMillis();
-            getPlayer().getWorld().playSound(getPlayer().getLocation(), BACTERIA_SOUND, 0.4f, 1f);
+            for(Entity entity : getPlayer().getWorld().getNearbyEntities(getPlayer().getLocation(), PLAY_SOUND_DISTANCE_ENTITIES,
+                    PLAY_SOUND_DISTANCE_ENTITIES, PLAY_SOUND_DISTANCE_ENTITIES)) {
+                if(entity instanceof Player target) {
+                    target.playSound(getPlayer().getLocation(), BACTERIA_SOUND, 0.5f, 1f);
+                }
+            }
+
         }
         lastSeenScientist = System.currentTimeMillis();
+
+
 
 
     }

@@ -93,6 +93,34 @@ public class GameService {
         game.setState(state);
     }
 
+    public ScientistParticipant spectate(Player player, Game game, ScientistParticipant spectating) {
+        if (player.getSpectatorTarget() == null) {
+            player.setGameMode(GameMode.SPECTATOR);
+
+            int alive = getAliveParticipants(game);
+            if (alive == 1) {
+                ScientistParticipant random = findRandomScientist(game);
+                player.setSpectatorTarget(random.getPlayer());
+                return random;
+            } else if(alive >= 2) {
+                ScientistParticipant random = spectating == null ? findRandomScientist(game) :
+                        findRandomAliveScientistExcept(game, spectating.getPlayer());
+                player.setSpectatorTarget(random.getPlayer());
+                return random;
+            }
+        } else {
+            if(spectating != null) {
+                if (spectating.getState() != ScientistState.ALIVE) {
+                    ScientistParticipant random = findRandomScientist(game);
+                    player.setSpectatorTarget(random.getPlayer());
+                    return random;
+                }
+            }
+
+        }
+        return null;
+    }
+
     public void beginGame(Game game) {
         changeState(game, GameState.IN_GAME);
         backrooms.getGameState().setToIngame();
