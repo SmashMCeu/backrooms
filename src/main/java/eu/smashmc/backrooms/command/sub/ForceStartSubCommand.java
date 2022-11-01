@@ -39,6 +39,9 @@ public class ForceStartSubCommand extends HelpSubCommand<Player> {
             if(game.getState() == GameState.LOBBY) {
                 game.getProperties().setMaxPlayers(Bukkit.getOnlinePlayers().size());
                 game.getCountdown().setCurrentCount(0);
+                if(!game.getCountdown().isRunning()) {
+                    game.getCountdown().start();
+                }
                 player.sendMessage(BackroomsConstants.PREFIX + "§7Successfully force started the §agame");
             } else {
                 player.sendMessage(BackroomsConstants.PREFIX + "§cThis game is already running.");
