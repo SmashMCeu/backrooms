@@ -8,7 +8,10 @@ import eu.smashmc.backrooms.generator.strategy.AbstractBackroomsStrategy;
 import eu.smashmc.backrooms.generator.strategy.result.GenerationResult;
 import in.prismar.library.common.math.MathUtil;
 import in.prismar.library.spigot.location.copier.Copier;
+import in.prismar.library.spigot.location.copier.CopierBlockCallback;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -24,10 +27,17 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
     private final double roomSize;
     private final double halfRoomSize;
 
-    public PrototypeBackroomsStrategy(BackroomsGenerator generator, double roomSize) {
+    private final double replaceLightBlockChance;
+    private final Material lightBlock;
+    private final Material replaceLightBlock;
+
+    public PrototypeBackroomsStrategy(BackroomsGenerator generator, double roomSize, double replaceLightBlockChance, Material lightBlock, Material replaceLightBlock) {
         super(generator);
         this.roomSize = roomSize;
         this.halfRoomSize = Math.floor(roomSize / 2);
+        this.replaceLightBlockChance = replaceLightBlockChance;
+        this.lightBlock = lightBlock;
+        this.replaceLightBlock = replaceLightBlock;
     }
 
     @Override
@@ -151,6 +161,18 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
 
     private Copier copy(Room room, Location location) {
         Copier copier = new Copier(room.getPivot(), room.getMin(), room.getMax());
+
+        double chance = Math.random();
+        if(chance <= replaceLightBlockChance) {
+            copier.setCallback((from, to) -> {
+                if(from.getType() == lightBlock) {
+                    to.setType(replaceLightBlock);
+                    return true;
+                }
+                return false;
+            });
+        }
+
         copier.paste(location);
         return copier;
     }

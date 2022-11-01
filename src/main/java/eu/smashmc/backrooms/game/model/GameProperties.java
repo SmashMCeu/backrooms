@@ -23,4 +23,9 @@ public class GameProperties {
     public int getMaxPlayers() {
         return maxScientists + maxEntities;
     }
+
+    public void setMaxPlayers(int players) {
+        this.maxScientists = players - 1;
+        this.maxEntities = 1;
+    }
 }

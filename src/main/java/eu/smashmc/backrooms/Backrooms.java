@@ -131,7 +131,7 @@ public class Backrooms extends JavaPlugin {
         this.scanner.setStrategy(new PrototypeScannerStrategy(config.getSize(), config.getSpaceBetweenRooms(), config.getHeight(), Material.valueOf(config.getFloorMaterialType())));
         this.generator = new BackroomsGenerator(this);
         this.generator.setRooms(scanner.scan());
-        this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, config.getSize()));
+        this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, config.getSize(), 0.05, Material.GLOWSTONE, Material.CHISELED_SANDSTONE));
     }
 
 }
