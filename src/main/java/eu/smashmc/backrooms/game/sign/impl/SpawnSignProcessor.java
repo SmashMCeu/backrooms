@@ -2,6 +2,7 @@ package eu.smashmc.backrooms.game.sign.impl;
 
 import eu.smashmc.backrooms.game.sign.SignProcessor;
 import eu.smashmc.backrooms.game.model.Game;
+import in.prismar.library.spigot.location.LocationUtil;
 import org.bukkit.Location;
 
 /**
@@ -17,10 +18,12 @@ public class SpawnSignProcessor implements SignProcessor {
         for(String line : lines) {
             final String lowered = line.toLowerCase();
             if(lowered.startsWith("spawn: scientist")) {
-                game.getMap().getScientistSpawns().add(location);
+                Location center = LocationUtil.getCenterOfBlock(location);
+                game.getMap().getScientistSpawns().add(center);
                 return true;
             } else if(lowered.startsWith("spawn: entity")) {
-                game.getMap().getEntitySpawns().add(location);
+                Location center = LocationUtil.getCenterOfBlock(location);
+                game.getMap().getEntitySpawns().add(center);
                 return true;
             }
         }

@@ -71,6 +71,14 @@ public class GameService {
 
     public Optional<Game> findGame() {
         for (Game game : provider.getGames().values()) {
+            return Optional.of(game);
+        }
+        return Optional.empty();
+    }
+
+    /*
+    public Optional<Game> findGame() {
+        for (Game game : provider.getGames().values()) {
             if (game.getState() == GameState.LOBBY || game.getState() == GameState.IN_GAME) {
                 if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
                     return Optional.of(game);
@@ -78,7 +86,7 @@ public class GameService {
             }
         }
         return Optional.empty();
-    }
+    }*/
 
     public void changeState(Game game, GameState state) {
         Bukkit.getPluginManager().callEvent(new GameChangeStateEvent(game, game.getState(), state));
