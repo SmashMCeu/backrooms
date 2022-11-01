@@ -22,7 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class RevealBackroomItem extends CountdownBackroomItem {
 
     public RevealBackroomItem() {
-        super("Reveal", Material.WITHER_SKELETON_SKULL, 30);
+        super("Reveal", Material.WITHER_SKELETON_SKULL, 35);
         setDisplayName("§cReveal");
         addLore("§7Reveal one scientist");
     }
@@ -32,8 +32,10 @@ public class RevealBackroomItem extends CountdownBackroomItem {
         if (game.getState() == GameState.IN_GAME) {
             int alive = service.getAliveParticipants(game);
             if (alive >= 1) {
-                ScientistParticipant scientist = service.findRandomScientist(game);
-
+                ScientistParticipant scientist = service.findNearestParticipant(player, game);
+                if(scientist == null) {
+                    return;
+                }
                 new BukkitRunnable() {
                     int count = 15;
                     @Override

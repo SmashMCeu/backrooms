@@ -75,8 +75,8 @@ public class ParticipantKnockedTask extends BukkitRunnable {
 
         for(GameParticipant otherParticipants : game.getParticipantRegistry().getParticipants().values()) {
             if(otherParticipants instanceof ScientistParticipant scientist ) {
-                if(scientist.getPlayer().isSneaking()) {
-                    if(scientist.getPlayer().getLocation().distanceSquared(player.getLocation()) <= 4) {
+                if(scientist.getPlayer().isSneaking() && scientist.getState() == ScientistState.ALIVE) {
+                    if(scientist.getPlayer().getLocation().distanceSquared(participant.getKnockedLocation()) <= 4) {
                         if(revivingCount >= MAX_REVIVING_COUNT) {
                             service.revive(game, scientist, participant);
                             return;

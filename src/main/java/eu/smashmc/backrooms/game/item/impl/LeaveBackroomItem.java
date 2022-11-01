@@ -24,8 +24,8 @@ import java.io.IOException;
 public class LeaveBackroomItem extends BackroomItem {
 
     public LeaveBackroomItem() {
-        super("Leave", Material.OAK_DOOR);
-        setDisplayName("§cLeave");
+        super("Leave", Material.SLIME_BALL);
+        setDisplayName("§8§l➤ §a§lBack to lobby §8§l│ §7Right click");
     }
 
     @BackroomItemEvent

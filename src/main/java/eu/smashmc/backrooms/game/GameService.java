@@ -233,6 +233,23 @@ public class GameService {
         return chosen;
     }
 
+    public ScientistParticipant findNearestParticipant(Player player, Game game) {
+        ScientistParticipant nearest = null;
+        double distance = Double.MAX_VALUE;
+        for(GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
+            if(participant instanceof ScientistParticipant scientist) {
+                if(scientist.getState() == ScientistState.ALIVE) {
+                    double scientistDistance = scientist.getPlayer().getLocation().distanceSquared(player.getLocation());
+                    if(scientistDistance <= distance) {
+                        distance = scientistDistance;
+                        nearest = scientist;
+                    }
+                }
+            }
+        }
+        return nearest;
+    }
+
     public ScientistParticipant findRandomScientist(Game game) {
         List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
                 .stream().filter(participant -> {
