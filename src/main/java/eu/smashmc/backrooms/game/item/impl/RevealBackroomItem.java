@@ -22,7 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 public class RevealBackroomItem extends CountdownBackroomItem {
 
     public RevealBackroomItem() {
-        super("Reveal", Material.WITHER_SKELETON_SKULL, 35);
+        super("Reveal", Material.WITHER_SKELETON_SKULL, 60);
         setDisplayName("§cReveal");
         addLore("§7Reveal one scientist");
     }

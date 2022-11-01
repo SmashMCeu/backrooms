@@ -5,6 +5,9 @@ import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.item.BackroomItem;
 import eu.smashmc.backrooms.game.item.BackroomItemRegistry;
 import eu.smashmc.backrooms.game.model.Game;
+import eu.smashmc.backrooms.game.participant.GameParticipant;
+import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
+import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.entity.Player;
@@ -43,6 +46,13 @@ public class PlayerInteractListener implements Listener {
                         return;
                     }
                     Game game = optional.get();
+                    GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
+                    if(participant instanceof ScientistParticipant scientist) {
+                        if(scientist.getState() != ScientistState.ALIVE) {
+                            event.setCancelled(true);
+                            return;
+                        }
+                    }
                     for(BackroomItem item : itemRegistry.getItems().values()) {
                         if(item.getDisplayName().equals(event.getItem().getItemMeta().getDisplayName())) {
                             event.setCancelled(true);

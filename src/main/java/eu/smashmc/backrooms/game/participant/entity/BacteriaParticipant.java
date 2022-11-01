@@ -1,5 +1,6 @@
 package eu.smashmc.backrooms.game.participant.entity;
 
+import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
 import eu.smashmc.backrooms.util.Progress;
 import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
@@ -80,6 +81,9 @@ public class BacteriaParticipant extends EntityParticipant {
 
     @Override
     public void onSeeScientist(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {
+        if(scientist.getState() != ScientistState.ALIVE || stunned) {
+            return;
+        }
         long distance = (System.currentTimeMillis() - lastSoundTimestamp) / 1000;
         if(distance >= LAST_SOUND_DISTANCE_SECONDS) {
             lastSoundTimestamp = System.currentTimeMillis();
