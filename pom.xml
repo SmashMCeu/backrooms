@@ -52,7 +52,25 @@
         </dependency>
         <dependency>
             <groupId>in.prismar.library</groupId>
-            <artifactId>all</artifactId>
+            <artifactId>common</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>in.prismar.library</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>in.prismar.library</groupId>
+            <artifactId>meta</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>in.prismar.library</groupId>
+            <artifactId>file</artifactId>
             <version>1.0.0</version>
             <scope>compile</scope>
         </dependency>
