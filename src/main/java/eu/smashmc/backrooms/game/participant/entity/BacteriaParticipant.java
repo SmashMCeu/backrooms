@@ -34,7 +34,7 @@ public class BacteriaParticipant extends EntityParticipant {
     private static final float AGRO_WALK_SPEED = 0.3f;
     private static final float STUN_WALK_SPEED = 0.13f;
     private static final int AGRO_TIMEOUT = 10;
-    private static final int STUN_DURATION = 20 * 15;
+    private static final int STUN_DURATION =  15;
     private static final int ATTACK_PROGRESS_MAX_COUNT = 3;
     private static final double DAMAGE = 10;
     private static final double LAST_SOUND_DISTANCE_SECONDS = 12;
@@ -49,7 +49,8 @@ public class BacteriaParticipant extends EntityParticipant {
     private long lastSoundTimestamp;
     private long lastSeenScientist;
 
-    private boolean stunned;
+    private long lastStunned;
+
 
     public BacteriaParticipant(Player player) {
         super(player, "Bacteria");
@@ -60,7 +61,7 @@ public class BacteriaParticipant extends EntityParticipant {
     public void onUpdate(GameProvider provider, GameService service, Game game) {
         getPlayer().setFoodLevel(2);
         long difference = (System.currentTimeMillis() - lastSeenScientist) / 1000;
-        if(stunned) {
+        if(isStunned()) {
             getPlayer().setWalkSpeed(STUN_WALK_SPEED);
             return;
         }
@@ -71,20 +72,22 @@ public class BacteriaParticipant extends EntityParticipant {
         }
     }
 
+    public boolean isStunned() {
+        long difference = System.currentTimeMillis() - lastStunned;
+        return difference <= 1000 * STUN_DURATION;
+    }
+
     @Override
     public void stun(GameProvider provider, GameService service, Game game, boolean blindness) {
-        stunned = true;
+        lastStunned = System.currentTimeMillis();
         if(blindness) {
-            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, STUN_DURATION, 1, false, false), true);
+            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, STUN_DURATION * 20, 1, false, false), true);
         }
-        Bukkit.getScheduler().runTaskLater(provider.getBackrooms(), () -> {
-            stunned = false;
-        }, STUN_DURATION);
     }
 
     @Override
     public void onSeeScientist(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {
-        if(scientist.getState() != ScientistState.ALIVE || stunned) {
+        if(scientist.getState() != ScientistState.ALIVE || isStunned()) {
             return;
         }
         long distance = (System.currentTimeMillis() - lastSoundTimestamp) / 1000;
