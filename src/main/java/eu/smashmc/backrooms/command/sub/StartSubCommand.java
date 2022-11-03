@@ -36,7 +36,12 @@ public class StartSubCommand extends HelpSubCommand<Player> {
         if(optional.isPresent()) {
             Game game = optional.get();
             if(game.getState() == GameState.LOBBY) {
+                if(game.getCountdown().getCurrentCount() <= 10) {
+                    player.sendMessage(BackroomsConstants.PREFIX + "§cThis game is already starting.");
+                    return true;
+                }
                 game.getCountdown().setCurrentCount(10);
+
                 player.sendMessage(BackroomsConstants.PREFIX + "§7Successfully reduced the §acountdown");
             } else {
                 player.sendMessage(BackroomsConstants.PREFIX + "§cThis game is already running.");
