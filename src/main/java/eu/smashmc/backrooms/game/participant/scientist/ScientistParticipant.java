@@ -43,9 +43,8 @@ public class ScientistParticipant extends GameParticipant {
         ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
         getPlayer().setWalkSpeed(config.getScientist().getNormalWalkSpeed());
         getPlayer().setFoodLevel(2);
-        if(getState() == ScientistState.DEAD) {
+        if(getState() == ScientistState.DEAD || getState() == ScientistState.ESCAPED) {
             spectating = service.spectate(getPlayer(), game, spectating);
         }
-
     }
 }
