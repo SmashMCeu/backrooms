@@ -22,7 +22,7 @@ public class BacteriaConfig {
 
     private double damage = 10;
 
-    private String agroSound = "custom:bacteria";
+    private String[] agroSound = {"custom:bacteria"};
     private int agroSoundDelay = 12;
     private double agroSoundBlockDistance = 30;
 

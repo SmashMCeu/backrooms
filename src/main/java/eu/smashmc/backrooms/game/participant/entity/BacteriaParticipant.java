@@ -9,6 +9,7 @@ import eu.smashmc.backrooms.game.model.GameState;
 import eu.smashmc.backrooms.BackroomsConstants;
 import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
+import in.prismar.library.common.math.MathUtil;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
 import me.libraryaddict.disguise.disguisetypes.MobDisguise;
@@ -40,6 +41,8 @@ public class BacteriaParticipant extends EntityParticipant {
     private long lastSeenScientist;
 
     private long lastStunned;
+
+    private String lastSound = "";
 
 
     public BacteriaParticipant(Player player) {
@@ -88,10 +91,11 @@ public class BacteriaParticipant extends EntityParticipant {
         if(distance >= config.getBacteria().getAgroSoundDelay()) {
             lastSoundTimestamp = System.currentTimeMillis();
             double soundDistance = config.getBacteria().getAgroSoundBlockDistance();
+            lastSound = getRandomSound(config);
             for(Entity entity : getPlayer().getWorld().getNearbyEntities(getPlayer().getLocation(), soundDistance,
                     soundDistance, soundDistance)) {
                 if(entity instanceof Player target) {
-                    target.playSound(getPlayer().getLocation(), config.getBacteria().getAgroSound(), 0.5f, 1f);
+                    target.playSound(getPlayer().getLocation(), lastSound, 0.5f, 1f);
                 }
             }
 
@@ -136,5 +140,17 @@ public class BacteriaParticipant extends EntityParticipant {
                 attackDelayCount--;
             }
         }.runTaskTimer(plugin, 20, 20);
+    }
+
+    private String getRandomSound(ParticipantConfig config) {
+        String[] sounds = config.getBacteria().getAgroSound();
+        if(sounds.length <= 1) {
+            return sounds[0];
+        }
+        String randomSound = sounds[MathUtil.random(sounds.length - 1)];
+        while (randomSound.equals(lastSound)) {
+            randomSound = sounds[MathUtil.random(sounds.length - 1)];
+        }
+        return randomSound;
     }
 }
