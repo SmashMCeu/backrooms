@@ -1,5 +1,6 @@
 package eu.smashmc.backrooms.game.participant.entity;
 
+import eu.smashmc.backrooms.config.model.participant.ParticipantConfig;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
 import eu.smashmc.backrooms.util.Progress;
 import eu.smashmc.backrooms.game.GameProvider;
@@ -30,21 +31,10 @@ import org.bukkit.scheduler.BukkitRunnable;
  * Written by Maga
  **/
 public class BacteriaParticipant extends EntityParticipant {
-    private static final float NORMAL_WALK_SPEED = 0.23f;
-    private static final float AGRO_WALK_SPEED = 0.3f;
-    private static final float STUN_WALK_SPEED = 0.13f;
-    private static final int AGRO_TIMEOUT = 10;
-    private static final int STUN_DURATION =  15;
-    private static final int ATTACK_PROGRESS_MAX_COUNT = 3;
-    private static final double DAMAGE = 10;
-    private static final double LAST_SOUND_DISTANCE_SECONDS = 12;
-
-    private static final double PLAY_SOUND_DISTANCE_ENTITIES = 30;
-
-    private static final String BACTERIA_SOUND = "custom:bacteria";
 
 
-    private int attackProgressCount;
+
+    private int attackDelayCount;
 
     private long lastSoundTimestamp;
     private long lastSeenScientist;
@@ -59,88 +49,91 @@ public class BacteriaParticipant extends EntityParticipant {
 
     @Override
     public void onUpdate(GameProvider provider, GameService service, Game game) {
+        ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
+
         getPlayer().setFoodLevel(2);
         long difference = (System.currentTimeMillis() - lastSeenScientist) / 1000;
-        if(isStunned()) {
-            getPlayer().setWalkSpeed(STUN_WALK_SPEED);
+        if(isStunned(config)) {
+            getPlayer().setWalkSpeed(config.getBacteria().getStunWalkSpeed());
             return;
         }
-        if(difference <= AGRO_TIMEOUT) {
-            getPlayer().setWalkSpeed(AGRO_WALK_SPEED);
+        if(difference <= config.getBacteria().getAgroDuration()) {
+            getPlayer().setWalkSpeed(config.getBacteria().getAgroWalkSpeed());
         } else {
-            getPlayer().setWalkSpeed(NORMAL_WALK_SPEED);
+            getPlayer().setWalkSpeed(config.getBacteria().getNormalWalkSpeed());
         }
     }
 
-    public boolean isStunned() {
+    public boolean isStunned(ParticipantConfig config) {
         long difference = System.currentTimeMillis() - lastStunned;
-        return difference <= 1000 * STUN_DURATION;
+        return difference <= 1000 * config.getBacteria().getStunDuration();
     }
 
     @Override
     public void stun(GameProvider provider, GameService service, Game game, boolean blindness) {
         lastStunned = System.currentTimeMillis();
         if(blindness) {
-            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, STUN_DURATION * 20, 1, false, false), true);
+            ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
+            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, config.getBacteria().getStunDuration() * 20, 1, false, false));
         }
     }
 
     @Override
     public void onSeeScientist(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {
-        if(scientist.getState() != ScientistState.ALIVE || isStunned()) {
+        ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
+        if(scientist.getState() != ScientistState.ALIVE || isStunned(config)) {
             return;
         }
         long distance = (System.currentTimeMillis() - lastSoundTimestamp) / 1000;
-        if(distance >= LAST_SOUND_DISTANCE_SECONDS) {
+        if(distance >= config.getBacteria().getAgroSoundDelay()) {
             lastSoundTimestamp = System.currentTimeMillis();
-            for(Entity entity : getPlayer().getWorld().getNearbyEntities(getPlayer().getLocation(), PLAY_SOUND_DISTANCE_ENTITIES,
-                    PLAY_SOUND_DISTANCE_ENTITIES, PLAY_SOUND_DISTANCE_ENTITIES)) {
+            double soundDistance = config.getBacteria().getAgroSoundBlockDistance();
+            for(Entity entity : getPlayer().getWorld().getNearbyEntities(getPlayer().getLocation(), soundDistance,
+                    soundDistance, soundDistance)) {
                 if(entity instanceof Player target) {
-                    target.playSound(getPlayer().getLocation(), BACTERIA_SOUND, 0.5f, 1f);
+                    target.playSound(getPlayer().getLocation(), config.getBacteria().getAgroSound(), 0.5f, 1f);
                 }
             }
 
         }
         lastSeenScientist = System.currentTimeMillis();
-
-
-
-
     }
 
     @Override
     public void onAttackTarget(GameProvider provider, GameService service, Game game, ScientistParticipant target, EntityDamageByEntityEvent event) {
-        if(attackProgressCount <= 0) {
+        ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
+        if(attackDelayCount <= 0) {
             stun(provider, service, game, false);
-            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, STUN_DURATION / 2, 200, false, false), true);
+            getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.JUMP, config.getBacteria().getStunDuration() / 2, 200, false, false));
             getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_BLAZE_HURT, 0.6f, 1f);
-            startProgress(provider.getBackrooms(), game);
-            double nextHealth = target.getPlayer().getHealth() - DAMAGE;
+            startAttackProgress(provider.getBackrooms(), provider, game);
+            double nextHealth = target.getPlayer().getHealth() - config.getBacteria().getDamage();
             if(nextHealth <= 0) {
                 event.setDamage(0);
                 service.knock(game, target);
                 return;
             }
             target.getPlayer().playSound(target.getPlayer().getLocation(), Sound.ENTITY_BAT_HURT, 0.8f, 1);
-            event.setDamage(DAMAGE);
+            event.setDamage(config.getBacteria().getDamage());
             return;
         }
         event.setCancelled(true);
         getPlayer().sendMessage(BackroomsConstants.PREFIX + "§cYour attack is on delay");
      }
 
-    private void startProgress(Plugin plugin, Game game) {
-        this.attackProgressCount = ATTACK_PROGRESS_MAX_COUNT;
+    private void startAttackProgress(Plugin plugin, GameProvider provider, Game game) {
+        ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
+        this.attackDelayCount = config.getBacteria().getAttackDelay();
         new BukkitRunnable() {
             @Override
             public void run() {
                 getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR,
-                        TextComponent.fromLegacyText(Progress.getProgress(ATTACK_PROGRESS_MAX_COUNT, attackProgressCount, false)));
-                if(attackProgressCount <= 0 || game.getState() != GameState.IN_GAME) {
+                        TextComponent.fromLegacyText(Progress.getProgress(config.getBacteria().getAttackDelay(), attackDelayCount, false)));
+                if(attackDelayCount <= 0 || game.getState() != GameState.IN_GAME) {
                     cancel();
                     return;
                 }
-                attackProgressCount--;
+                attackDelayCount--;
             }
         }.runTaskTimer(plugin, 20, 20);
     }

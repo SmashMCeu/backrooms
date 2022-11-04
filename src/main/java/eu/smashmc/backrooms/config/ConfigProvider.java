@@ -5,6 +5,7 @@ import eu.smashmc.backrooms.Backrooms;
 import eu.smashmc.backrooms.config.model.BackroomsConfig;
 import eu.smashmc.backrooms.config.model.GameConfig;
 import eu.smashmc.backrooms.config.model.GeneratorConfig;
+import eu.smashmc.backrooms.config.model.participant.ParticipantConfig;
 import in.prismar.library.file.gson.GsonFileWrapper;
 import in.prismar.library.meta.anno.Service;
 import in.prismar.library.spigot.file.GsonLocationAdapter;
@@ -32,12 +33,19 @@ public class ConfigProvider extends GsonFileWrapper<BackroomsConfig> {
             GameConfig game = new GameConfig();
             game.setGenerationStart(new Location(Bukkit.getWorlds().get(0), 0, 0, 0));
             game.setLobby(new Location(Bukkit.getWorlds().get(0), 0, 0, 0));
+
             config.setGame(game);
+            config.setParticipant(ParticipantConfig.create());
 
 
             setEntity(config);
 
             save();
+        } else {
+            if(getEntity().getParticipant() == null) {
+                getEntity().setParticipant(ParticipantConfig.create());
+                save();
+            }
         }
     }
 

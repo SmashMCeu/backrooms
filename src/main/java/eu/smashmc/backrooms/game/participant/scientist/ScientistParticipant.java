@@ -1,5 +1,6 @@
 package eu.smashmc.backrooms.game.participant.scientist;
 
+import eu.smashmc.backrooms.config.model.participant.ParticipantConfig;
 import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.model.Game;
@@ -21,8 +22,6 @@ import org.bukkit.entity.Player;
 @Setter
 public class ScientistParticipant extends GameParticipant {
 
-    private static final float NORMAL_WALK_SPEED = 0.26f;
-
     private ScientistState state;
     private int knocks;
     private Location knockedLocation;
@@ -41,7 +40,8 @@ public class ScientistParticipant extends GameParticipant {
 
     @Override
     public void onUpdate(GameProvider provider, GameService service, Game game) {
-        getPlayer().setWalkSpeed(NORMAL_WALK_SPEED);
+        ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
+        getPlayer().setWalkSpeed(config.getScientist().getNormalWalkSpeed());
         getPlayer().setFoodLevel(2);
         if(getState() == ScientistState.DEAD) {
             spectating = service.spectate(getPlayer(), game, spectating);
