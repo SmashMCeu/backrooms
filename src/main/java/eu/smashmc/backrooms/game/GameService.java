@@ -94,31 +94,33 @@ public class GameService {
     }
 
     public ScientistParticipant spectate(Player player, Game game, ScientistParticipant spectating) {
+        ScientistParticipant spectate = null;
         if (player.getSpectatorTarget() == null) {
             player.setGameMode(GameMode.SPECTATOR);
-
             int alive = getAliveParticipants(game);
             if (alive == 1) {
-                ScientistParticipant random = findRandomScientist(game);
-                player.setSpectatorTarget(random.getPlayer());
-                return random;
-            } else if(alive >= 2) {
-                ScientistParticipant random = spectating == null ? findRandomScientist(game) :
+                spectate = findRandomScientist(game);
+            } else if (alive >= 2) {
+                spectate = spectating == null ? findRandomScientist(game) :
                         findRandomAliveScientistExcept(game, spectating.getPlayer());
-                player.setSpectatorTarget(random.getPlayer());
-                return random;
             }
         } else {
-            if(spectating != null) {
+            if (spectating != null) {
                 if (spectating.getState() != ScientistState.ALIVE) {
-                    ScientistParticipant random = findRandomScientist(game);
-                    player.setSpectatorTarget(random.getPlayer());
-                    return random;
+                    spectate = findRandomScientist(game);
                 }
             }
-
         }
-        return null;
+        if (spectate != null) {
+            player.setSpectatorTarget(spectate.getPlayer());
+            sendSpectatingTitle(player, spectate.getPlayer().getName());
+        }
+
+        return spectate;
+    }
+
+    private void sendSpectatingTitle(Player player, String target) {
+        player.sendTitle("", "§7Now spectating §e" + target, 20, 20, 20);
     }
 
     public void beginGame(Game game) {
@@ -159,7 +161,7 @@ public class GameService {
                 player.sendMessage(CenteredMessage.createCentredMessage("§7each Task, §d2 §7Gates will be opened. §7You win"));
                 player.sendMessage(CenteredMessage.createCentredMessage("§7if you successfully escape the backrooms."));
                 player.sendMessage(" ");
-            } else if(participant instanceof SpectatorParticipant) {
+            } else if (participant instanceof SpectatorParticipant) {
                 player.teleport(game.getMap().getRandomScientistSpawn());
             }
             getBoardRegistry().resetSidebar(player);
@@ -177,7 +179,7 @@ public class GameService {
             game.setSolvedTasks(tasks);
             executeForAll(game, participant -> {
                 participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.45F, 1);
-                if(participant instanceof EntityParticipant) {
+                if (participant instanceof EntityParticipant) {
                     participant.getPlayer().sendTitle("§cTask solved", "", 20, 20, 20);
                 } else {
                     participant.getPlayer().sendTitle("§aTask solved", "", 20, 20, 20);
@@ -207,13 +209,13 @@ public class GameService {
             sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer().getName() + " §7has been knocked.");
         }
         int alive = getAliveParticipants(game);
-        if(alive <= 0) {
+        if (alive <= 0) {
             endGame(game);
         }
     }
 
     public void kill(Game game, ScientistParticipant participant) {
-        if(participant.getKnockedHologram() != null) {
+        if (participant.getKnockedHologram() != null) {
             participant.getKnockedHologram().disable();
             participant.setKnockedHologram(null);
         }
@@ -241,7 +243,7 @@ public class GameService {
         int alive = getAliveParticipants(game);
         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.6f, 1);
         sendMessage(game, BackroomsConstants.PREFIX + "§e" + player.getName() + " §7has escaped. §8[§e" + escaped + "/§e" + game.getProperties().getMaxScientists() + "§8]");
-        if(alive <= 0) {
+        if (alive <= 0) {
             endGame(game);
         }
     }
@@ -272,11 +274,11 @@ public class GameService {
     public ScientistParticipant findNearestParticipant(Player player, Game game) {
         ScientistParticipant nearest = null;
         double distance = Double.MAX_VALUE;
-        for(GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
-            if(participant instanceof ScientistParticipant scientist) {
-                if(scientist.getState() == ScientistState.ALIVE) {
+        for (GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
+            if (participant instanceof ScientistParticipant scientist) {
+                if (scientist.getState() == ScientistState.ALIVE) {
                     double scientistDistance = scientist.getPlayer().getLocation().distanceSquared(player.getLocation());
-                    if(scientistDistance <= distance) {
+                    if (scientistDistance <= distance) {
                         distance = scientistDistance;
                         nearest = scientist;
                     }
@@ -289,22 +291,22 @@ public class GameService {
     public ScientistParticipant findRandomScientist(Game game) {
         List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
                 .stream().filter(participant -> {
-                    if( participant instanceof ScientistParticipant scientist) {
+                    if (participant instanceof ScientistParticipant scientist) {
                         return scientist.getState() == ScientistState.ALIVE;
                     }
                     return false;
-                } ).toList();
+                }).toList();
         return (ScientistParticipant) participants.get(MathUtil.random(participants.size() - 1));
     }
 
     public ScientistParticipant findRandomAliveScientistExcept(Game game, Player player) {
         List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
                 .stream().filter(participant -> {
-                    if( participant instanceof ScientistParticipant scientist) {
+                    if (participant instanceof ScientistParticipant scientist) {
                         return scientist.getState() == ScientistState.ALIVE;
                     }
                     return false;
-                } ).toList();
+                }).toList();
         ScientistParticipant randomPart = (ScientistParticipant) participants.get(MathUtil.random(participants.size() - 1));
         while (randomPart.getPlayer().getName().equals(player.getName())) {
             randomPart = (ScientistParticipant) participants.get(MathUtil.random(participants.size() - 1));
@@ -340,7 +342,7 @@ public class GameService {
 
 
     public void endGame(Game game) {
-        if(game.getCountdown().isRunning()) {
+        if (game.getCountdown().isRunning()) {
             game.getCountdown().stop(true);
         }
         changeState(game, GameState.END);
@@ -348,8 +350,8 @@ public class GameService {
             resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
             if (participant instanceof EntityParticipant) {
                 DisguiseAPI.undisguiseToAll(participant.getPlayer());
-            } else if(participant instanceof ScientistParticipant scientist) {
-                if(scientist.getState() == ScientistState.KNOCKED) {
+            } else if (participant instanceof ScientistParticipant scientist) {
+                if (scientist.getState() == ScientistState.KNOCKED) {
                     if (scientist.getKnockedHologram() != null) {
                         scientist.getKnockedHologram().disable();
                     }
@@ -367,13 +369,13 @@ public class GameService {
             sendMessage(game, " ");
         }
         int escaped = getEscapedParticipants(game);
-        if(escaped <= 0) {
-            sendMessage(game,  CenteredMessage.createCentredMessage("§4Entities"));
-            sendMessage(game,  CenteredMessage.createCentredMessage("§7have won this round."));
+        if (escaped <= 0) {
+            sendMessage(game, CenteredMessage.createCentredMessage("§4Entities"));
+            sendMessage(game, CenteredMessage.createCentredMessage("§7have won this round."));
         } else {
-            sendMessage(game,  CenteredMessage.createCentredMessage("§eScientist"));
-            sendMessage(game,  CenteredMessage.createCentredMessage("§7have won this round."));
-            sendMessage(game,  CenteredMessage.createCentredMessage("§e"+ escaped +" §7out of §e" + game.getProperties().getMaxScientists() + " scientists §7escaped."));
+            sendMessage(game, CenteredMessage.createCentredMessage("§eScientist"));
+            sendMessage(game, CenteredMessage.createCentredMessage("§7have won this round."));
+            sendMessage(game, CenteredMessage.createCentredMessage("§e" + escaped + " §7out of §e" + game.getProperties().getMaxScientists() + " scientists §7escaped."));
         }
         sendMessage(game, " ");
 
@@ -391,7 +393,6 @@ public class GameService {
 
         GameParticipant participant = findRandomParticipantExcept(game, player);
         player.teleport(participant.getPlayer().getLocation());
-
 
         boardRegistry.add(player, game);
         boardRegistry.updateTablistAll();
@@ -431,12 +432,12 @@ public class GameService {
                 resetPlayer(player, GameMode.SURVIVAL);
                 game.getParticipantRegistry().unregister(player.getUniqueId());
                 backrooms.getGameState().setIngamePlayers(game.getParticipantRegistry().getCount());
-                if(game.getState() == GameState.IN_GAME) {
-                    if(game.getParticipantRegistry().getParticipants().size() <= 1) {
+                if (game.getState() == GameState.IN_GAME) {
+                    if (game.getParticipantRegistry().getParticipants().size() <= 1) {
                         endGame(game);
                         return;
                     }
-                } else if(game.getState() == GameState.LOBBY) {
+                } else if (game.getState() == GameState.LOBBY) {
                     if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
                         if (game.getCountdown().isRunning()) {
                             game.getCountdown().stop(true);
@@ -458,11 +459,11 @@ public class GameService {
 
     public void shuffleParticipants(Game game) {
         Vanish<Player> vanish = SmashMc.getComponent(Vanish.class);
-        GameParticipant[] participants =  game.getParticipantRegistry().getParticipants().values().stream()
+        GameParticipant[] participants = game.getParticipantRegistry().getParticipants().values().stream()
                 .filter(gameParticipant -> !vanish.isVanished(gameParticipant.getPlayer())).toArray(GameParticipant[]::new);
 
         int entities = game.getProperties().getMaxEntities();
-        if(EntitySubCommand.ENFORCED_ENTITY != null) {
+        if (EntitySubCommand.ENFORCED_ENTITY != null) {
             entities--;
             game.getParticipantRegistry().register(EntitySubCommand.ENFORCED_ENTITY, getRandomEntity(Bukkit.getPlayer(EntitySubCommand.ENFORCED_ENTITY)));
         }
@@ -475,8 +476,8 @@ public class GameService {
         for (int i = 0; i < participants.length; i++) {
             GameParticipant participant = participants[i];
             if (participant != null) {
-                if(EntitySubCommand.ENFORCED_ENTITY != null) {
-                    if(participant.getPlayer().getUniqueId().equals(EntitySubCommand.ENFORCED_ENTITY)) {
+                if (EntitySubCommand.ENFORCED_ENTITY != null) {
+                    if (participant.getPlayer().getUniqueId().equals(EntitySubCommand.ENFORCED_ENTITY)) {
                         continue;
                     }
                 }
@@ -486,7 +487,7 @@ public class GameService {
 
         GameParticipant[] vanishedParticipants = game.getParticipantRegistry().getParticipants().values().stream()
                 .filter(gameParticipant -> vanish.isVanished(gameParticipant.getPlayer())).toArray(GameParticipant[]::new);
-        for(GameParticipant vanished : vanishedParticipants) {
+        for (GameParticipant vanished : vanishedParticipants) {
             joinGameAsSpectator(game, vanished.getPlayer());
         }
 
