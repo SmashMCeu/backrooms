@@ -314,6 +314,17 @@ public class GameService {
         return randomPart;
     }
 
+    public int getEntityParticipants(Game game) {
+        List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
+                .stream().filter(participant -> {
+                    if (participant instanceof EntityParticipant scientist) {
+                        return true;
+                    }
+                    return false;
+                }).toList();
+        return participants.size();
+    }
+
     public int getAliveParticipants(Game game) {
         List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
                 .stream().filter(participant -> {
@@ -434,6 +445,11 @@ public class GameService {
                 backrooms.getGameState().setIngamePlayers(game.getParticipantRegistry().getCount());
                 if (game.getState() == GameState.IN_GAME) {
                     if (game.getParticipantRegistry().getParticipants().size() <= 1) {
+                        endGame(game);
+                        return;
+                    }
+                    int entities = getEntityParticipants(game);
+                    if(entities == 0) {
                         endGame(game);
                         return;
                     }
