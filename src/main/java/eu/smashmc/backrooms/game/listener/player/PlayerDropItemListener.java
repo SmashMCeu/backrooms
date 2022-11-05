@@ -5,6 +5,8 @@ import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.game.model.GameState;
 import eu.smashmc.backrooms.game.participant.GameParticipant;
 import eu.smashmc.backrooms.game.participant.entity.EntityParticipant;
+import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
+import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,6 +42,10 @@ public class PlayerDropItemListener implements Listener {
             GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
             if(participant instanceof EntityParticipant) {
                 event.setCancelled(true);
+            } else if(participant instanceof ScientistParticipant scientist) {
+                if(scientist.getState() != ScientistState.ALIVE) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
