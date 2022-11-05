@@ -18,7 +18,7 @@ public class GameConfig {
     private int maxEntities = 1;
     private int maxTasks = 4;
 
-    private int ambientRepeat = 20;
+    private int ambientRepeat = 29;
     private float ambientVolume = 0.5f;
     private String[] ambientSounds = {"custom:ambient"};
 
