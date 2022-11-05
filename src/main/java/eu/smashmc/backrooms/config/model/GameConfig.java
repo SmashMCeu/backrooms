@@ -18,6 +18,10 @@ public class GameConfig {
     private int maxEntities = 1;
     private int maxTasks = 4;
 
+    private int ambientRepeat = 20;
+    private float ambientVolume = 0.5f;
+    private String[] ambientSounds = {"custom:ambient"};
+
     private Location lobby;
     private Location generationStart;
 }

@@ -46,6 +46,10 @@ public class ConfigProvider extends GsonFileWrapper<BackroomsConfig> {
                 getEntity().setParticipant(ParticipantConfig.create());
                 save();
             }
+            if(getEntity().getGame().getAmbientSounds() == null) {
+                getEntity().getGame().setAmbientSounds(new String[]{"custom:ambient"});
+                save();
+            }
         }
     }
 

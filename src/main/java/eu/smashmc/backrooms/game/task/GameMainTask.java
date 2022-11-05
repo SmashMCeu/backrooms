@@ -1,5 +1,7 @@
 package eu.smashmc.backrooms.game.task;
 
+import eu.smashmc.backrooms.config.model.BackroomsConfig;
+import eu.smashmc.backrooms.config.model.GameConfig;
 import eu.smashmc.backrooms.game.GameConstants;
 import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
@@ -8,6 +10,7 @@ import eu.smashmc.backrooms.game.participant.GameParticipant;
 import eu.smashmc.backrooms.game.participant.entity.EntityParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
+import eu.smashmc.backrooms.util.UniqueRandomizer;
 import eu.smashmc.backrooms.util.raytrace.ScreenEntityFinder;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -30,10 +33,17 @@ public class GameMainTask extends BukkitRunnable {
 
     private final GameProvider provider;
 
+    private final BackroomsConfig config;
+
+    private String lastAmbientSound = "";
+    private int ambientSoundCount;
+
     public GameMainTask(GameProvider provider, GameService service, Game game) {
         this.game = game;
         this.provider = provider;
+        this.config = provider.getConfigProvider().getEntity();
         this.service = service;
+        this.ambientSoundCount = 0;
     }
 
     @Override
@@ -59,8 +69,17 @@ public class GameMainTask extends BukkitRunnable {
                     }
                 }
             }
+            if (ambientSoundCount <= 0) {
+                lastAmbientSound = UniqueRandomizer.getRandom(lastAmbientSound, config.getGame().getAmbientSounds());
+                participant.getPlayer().playSound(participant.getPlayer().getLocation(), lastAmbientSound, config.getGame().getAmbientVolume(), 1);
+            }
             participant.onUpdate(provider, service, game);
         }
+        if (ambientSoundCount <= 0) {
+            this.ambientSoundCount = provider.getConfigProvider().getEntity().getGame().getAmbientRepeat();
+            return;
+        }
+        ambientSoundCount--;
     }
 
     private List<GameParticipant> raytraceParticipants(Player player) {

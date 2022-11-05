@@ -9,6 +9,7 @@ import eu.smashmc.backrooms.game.model.GameState;
 import eu.smashmc.backrooms.BackroomsConstants;
 import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
+import eu.smashmc.backrooms.util.UniqueRandomizer;
 import in.prismar.library.common.math.MathUtil;
 import me.libraryaddict.disguise.DisguiseAPI;
 import me.libraryaddict.disguise.disguisetypes.DisguiseType;
@@ -145,13 +146,6 @@ public class BacteriaParticipant extends EntityParticipant {
 
     private String getRandomSound(ParticipantConfig config) {
         String[] sounds = config.getBacteria().getAgroSound();
-        if(sounds.length <= 1) {
-            return sounds[0];
-        }
-        String randomSound = sounds[MathUtil.random(sounds.length - 1)];
-        while (randomSound.equals(lastSound)) {
-            randomSound = sounds[MathUtil.random(sounds.length - 1)];
-        }
-        return randomSound;
+        return UniqueRandomizer.getRandom(lastSound, sounds);
     }
 }

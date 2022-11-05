@@ -27,7 +27,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 @RequiredArgsConstructor
 public class ParticipantKnockedTask extends BukkitRunnable {
 
-    private static final int MAX_REVIVING_COUNT = 8;
 
     private final Game game;
 
@@ -76,13 +75,14 @@ public class ParticipantKnockedTask extends BukkitRunnable {
         for(GameParticipant otherParticipants : game.getParticipantRegistry().getParticipants().values()) {
             if(otherParticipants instanceof ScientistParticipant scientist ) {
                 if(scientist.getPlayer().isSneaking() && scientist.getState() == ScientistState.ALIVE) {
-                    if(scientist.getPlayer().getLocation().distanceSquared(participant.getKnockedLocation()) <= 4) {
-                        if(revivingCount >= MAX_REVIVING_COUNT) {
+                    if(scientist.getPlayer().getLocation().distanceSquared(participant.getKnockedLocation()) <= 3) {
+                        final int maxRevivingCount = provider.getConfigProvider().getEntity().getParticipant().getScientist().getRevivingTime();
+                        if(revivingCount >= maxRevivingCount) {
                             service.revive(game, scientist, participant);
                             return;
                         }
                         participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 0.6f, 1);
-                        final String actionBarMessage = Progress.getProgress(MAX_REVIVING_COUNT, revivingCount, false);
+                        final String actionBarMessage = Progress.getProgress(maxRevivingCount, revivingCount, false);
                         final BaseComponent[] component = TextComponent.fromLegacyText(actionBarMessage);
                         scientist.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, component);
                         participant.getPlayer().spigot().sendMessage(ChatMessageType.ACTION_BAR, component);

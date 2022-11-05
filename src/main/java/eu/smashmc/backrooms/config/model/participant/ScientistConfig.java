@@ -12,4 +12,5 @@ import lombok.Data;
 public class ScientistConfig {
 
     private float normalWalkSpeed = 0.26f;
+    public int revivingTime = 8;
 }
