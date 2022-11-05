@@ -65,7 +65,7 @@ public class GameMainTask extends BukkitRunnable {
 
     private List<GameParticipant> raytraceParticipants(Player player) {
         List<GameParticipant> participants = new ArrayList<>();
-        List<Entity> entities = new ScreenEntityFinder(player).findEntities(16);
+        List<Entity> entities = new ScreenEntityFinder(player).findEntities(24);
         for(Entity entity : entities) {
             if(entity instanceof Player target) {
                 GameParticipant targetParticipant = game.getParticipantRegistry().getParticipant(target.getUniqueId());
