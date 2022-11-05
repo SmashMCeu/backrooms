@@ -92,7 +92,11 @@ public class BacteriaParticipant extends EntityParticipant {
             for(Entity entity : getPlayer().getWorld().getNearbyEntities(getPlayer().getLocation(), soundDistance,
                     soundDistance, soundDistance)) {
                 if(entity instanceof Player target) {
-                    target.playSound(getPlayer().getLocation(), lastSound, 0.7f, 1f);
+                    if(target.getUniqueId().equals(getPlayer().getUniqueId())) {
+                        target.playSound(getPlayer().getLocation(), lastSound, 0.3f, 1f);
+                    } else {
+                        target.playSound(getPlayer().getLocation(), lastSound, 0.7f, 1f);
+                    }
                 }
             }
 
