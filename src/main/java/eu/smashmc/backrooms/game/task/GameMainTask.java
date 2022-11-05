@@ -8,9 +8,13 @@ import eu.smashmc.backrooms.game.participant.GameParticipant;
 import eu.smashmc.backrooms.game.participant.entity.EntityParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
+import eu.smashmc.backrooms.util.raytrace.ScreenEntityFinder;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
+
+import java.util.List;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -37,10 +41,10 @@ public class GameMainTask extends BukkitRunnable {
             Player player = participant.getPlayer();
             if (participant instanceof ScientistParticipant scientist) {
                if (scientist.getState() == ScientistState.ALIVE) {
-                    GameParticipant targetParticipant = raytraceParticipants(player);
+                    /*GameParticipant targetParticipant = raytraceParticipants(player);
                     if (targetParticipant instanceof EntityParticipant entity) {
                         entity.onScientistSee(provider, service, game, scientist);
-                    }
+                    }*/
 
                 }
             } else if (participant instanceof EntityParticipant entity) {
@@ -54,15 +58,11 @@ public class GameMainTask extends BukkitRunnable {
     }
 
     private GameParticipant raytraceParticipants(Player player) {
-        RayTraceResult result =
-                player.getWorld().rayTraceEntities(player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(2)),
-                        player.getLocation().getDirection(), GameConstants.MAX_SOUND_PLAY_RAYTRACE, 1);
-        if (result != null) {
-            if (result.getHitEntity() != null) {
-                if (result.getHitEntity() instanceof Player entityPlayer) {
-                    GameParticipant targetParticipant = game.getParticipantRegistry().getParticipant(entityPlayer.getUniqueId());
-                    return targetParticipant;
-                }
+        List<Entity> entities = new ScreenEntityFinder(player).findEntities(16);
+        for(Entity entity : entities) {
+            if(entity instanceof Player target) {
+                GameParticipant targetParticipant = game.getParticipantRegistry().getParticipant(target.getUniqueId());
+                return targetParticipant;
             }
         }
         return null;
