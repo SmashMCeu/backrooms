@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.RayTraceResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,23 +49,29 @@ public class GameMainTask extends BukkitRunnable {
 
                 }
             } else if (participant instanceof EntityParticipant entity) {
-                GameParticipant targetParticipant = raytraceParticipants(player);
-                if (targetParticipant instanceof ScientistParticipant target) {
-                    entity.onSeeScientist(provider, service, game, target);
+                for(GameParticipant targetParticipant : raytraceParticipants(player)) {
+                    if(targetParticipant instanceof ScientistParticipant scientist) {
+                        if(scientist.getState() == ScientistState.ALIVE) {
+                            entity.onSeeScientist(provider, service, game, scientist);
+                            break;
+                        }
+
+                    }
                 }
             }
             participant.onUpdate(provider, service, game);
         }
     }
 
-    private GameParticipant raytraceParticipants(Player player) {
+    private List<GameParticipant> raytraceParticipants(Player player) {
+        List<GameParticipant> participants = new ArrayList<>();
         List<Entity> entities = new ScreenEntityFinder(player).findEntities(16);
         for(Entity entity : entities) {
             if(entity instanceof Player target) {
                 GameParticipant targetParticipant = game.getParticipantRegistry().getParticipant(target.getUniqueId());
-                return targetParticipant;
+                participants.add(targetParticipant);
             }
         }
-        return null;
+        return participants;
     }
 }

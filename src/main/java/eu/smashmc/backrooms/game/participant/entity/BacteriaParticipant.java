@@ -84,7 +84,7 @@ public class BacteriaParticipant extends EntityParticipant {
     @Override
     public void onSeeScientist(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {
         ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
-        if(scientist.getState() != ScientistState.ALIVE || isStunned(config)) {
+        if(isStunned(config)) {
             return;
         }
         long distance = (System.currentTimeMillis() - lastSoundTimestamp) / 1000;
