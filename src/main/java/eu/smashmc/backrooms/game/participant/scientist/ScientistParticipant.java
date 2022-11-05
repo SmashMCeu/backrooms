@@ -41,7 +41,7 @@ public class ScientistParticipant extends GameParticipant {
     @Override
     public void onUpdate(GameProvider provider, GameService service, Game game) {
         ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
-        getPlayer().setWalkSpeed(config.getScientist().getNormalWalkSpeed());
+        getPlayer().setWalkSpeed(state == ScientistState.KNOCKED ? 0 : config.getScientist().getNormalWalkSpeed());
         getPlayer().setFoodLevel(2);
         if(getState() == ScientistState.DEAD || getState() == ScientistState.ESCAPED) {
             spectating = service.spectate(getPlayer(), game, spectating);
