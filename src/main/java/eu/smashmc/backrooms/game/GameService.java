@@ -379,8 +379,9 @@ public class GameService {
         for (int i = 0; i < 200; i++) {
             sendMessage(game, " ");
         }
+        int entities = getEntityParticipants(game);
         int escaped = getEscapedParticipants(game);
-        if (escaped <= 0) {
+        if (escaped <= 0 && entities >= 1) {
             sendMessage(game, CenteredMessage.createCentredMessage("§4Entities"));
             sendMessage(game, CenteredMessage.createCentredMessage("§7have won this round."));
         } else {
