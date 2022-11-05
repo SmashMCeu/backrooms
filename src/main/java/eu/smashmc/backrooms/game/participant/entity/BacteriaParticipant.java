@@ -84,9 +84,6 @@ public class BacteriaParticipant extends EntityParticipant {
     @Override
     public void onSeeScientist(GameProvider provider, GameService service, Game game, ScientistParticipant scientist) {
         ParticipantConfig config = provider.getConfigProvider().getEntity().getParticipant();
-        if(isStunned(config)) {
-            return;
-        }
         long distance = (System.currentTimeMillis() - lastSoundTimestamp) / 1000;
         if(distance >= config.getBacteria().getAgroSoundDelay()) {
             lastSoundTimestamp = System.currentTimeMillis();
