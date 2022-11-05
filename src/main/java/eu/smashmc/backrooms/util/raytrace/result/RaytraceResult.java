@@ -1,8 +1,6 @@
 package eu.smashmc.backrooms.util.raytrace.result;
 
-import eu.smashmc.backrooms.util.raytrace.result.RaytraceHit;
 import lombok.Data;
-import lombok.Getter;
 
 import java.util.List;
 

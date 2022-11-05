@@ -2,7 +2,6 @@ package eu.smashmc.backrooms.util.raytrace.hitbox;
 
 import eu.smashmc.backrooms.util.raytrace.result.RaytraceBlockHit;
 import eu.smashmc.backrooms.util.raytrace.result.RaytraceHit;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.bukkit.Location;

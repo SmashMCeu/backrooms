@@ -1,6 +1,5 @@
 package eu.smashmc.backrooms.util.raytrace;
 
-import eu.smashmc.backrooms.util.raytrace.hitbox.RaytraceEntityHitbox;
 import eu.smashmc.backrooms.util.raytrace.hitbox.RaytraceHitbox;
 import eu.smashmc.backrooms.util.raytrace.hitbox.RaytraceHitboxFace;
 import eu.smashmc.backrooms.util.raytrace.hitbox.RaytraceHitboxHelper;
@@ -8,8 +7,6 @@ import eu.smashmc.backrooms.util.raytrace.result.RaytraceHit;
 import eu.smashmc.backrooms.util.raytrace.result.RaytraceResult;
 import lombok.Getter;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
@@ -56,6 +53,13 @@ public class Raytrace {
                 Location intersection = intersectFace(face);
                 if(face.isBetween(intersection)) {
                     double distance = intersection.distanceSquared(origin);
+                    
+                    // check if the intersection point lies on the positive direction
+                    var delta = intersection.toVector().subtract(origin.toVector());
+                    if(delta.dot(direction) < 0) {
+                    	continue;
+                    }
+                    
                     if(distance <= closestFaceDistance) {
                         closestFaceDistance = distance;
                         closestFace = face;
@@ -80,6 +84,4 @@ public class Raytrace {
         Location point = origin.clone().subtract(direction.clone().multiply(length));
         return point;
     }
-
-
 }

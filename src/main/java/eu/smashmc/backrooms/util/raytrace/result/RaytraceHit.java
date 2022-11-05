@@ -1,9 +1,10 @@
 package eu.smashmc.backrooms.util.raytrace.result;
 
+import org.bukkit.Location;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.Location;
 
 /**
  * Copyright (c) Maga, All Rights Reserved

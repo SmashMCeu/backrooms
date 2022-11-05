@@ -12,6 +12,14 @@ import org.bukkit.util.Vector;
  **/
 public interface RaytraceHitbox {
 
+    static final Vector UP = new Vector(0, 1, 0);
+    static final Vector DOWN = new Vector(0, -1, 0);
+    static final Vector POSITIVE_Z = new Vector(0, 0, 1);
+    static final Vector NEGATIVE_Z = new Vector(0, 0, -1);
+
+    static final Vector POSITIVE_X = new Vector(1, 0, 0);
+    static final Vector NEGATIVE_X = new Vector(-1, 0, 0);
+
     RaytraceHitboxFace[] getFaces();
 
     RaytraceHit asHit(Location point);
@@ -30,28 +38,28 @@ public interface RaytraceHitbox {
                 new Vector(min.getX(), max.getY(), max.getZ()),
                 new Vector(max.getX(), max.getY(), max.getZ()),
                 new Vector(max.getX(), max.getY(), min.getZ()),
-                new Vector(0, 1, 0)
+                UP
         );
         RaytraceHitboxFace bottom = new RaytraceHitboxFace(
                 new Vector(min.getX(), min.getY(), min.getZ()),
                 new Vector(min.getX(), min.getY(), max.getZ()),
                 new Vector(max.getX(), min.getY(), max.getZ()),
                 new Vector(max.getX(), min.getY(), min.getZ()),
-                new Vector(0, -1, 0)
+                DOWN
         );
         RaytraceHitboxFace front = new RaytraceHitboxFace(
                 new Vector(min.getX(), min.getY(), min.getZ()),
                 new Vector(min.getX(), max.getY(), min.getZ()),
                 new Vector(max.getX(), max.getY(), min.getZ()),
                 new Vector(max.getX(), min.getY(), min.getZ()),
-                new Vector(0, 0, 1)
+                NEGATIVE_Z
         );
         RaytraceHitboxFace back = new RaytraceHitboxFace(
                 new Vector(min.getX(), min.getY(), max.getZ()),
                 new Vector(min.getX(), max.getY(), max.getZ()),
                 new Vector(max.getX(), max.getY(), max.getZ()),
                 new Vector(max.getX(), min.getY(), max.getZ()),
-                new Vector(0, 0, -1)
+                POSITIVE_Z
         );
 
         RaytraceHitboxFace left = new RaytraceHitboxFace(
@@ -59,7 +67,7 @@ public interface RaytraceHitbox {
                 new Vector(min.getX(), min.getY(), max.getZ()),
                 new Vector(min.getX(), max.getY(), max.getZ()),
                 new Vector(min.getX(), max.getY(), min.getZ()),
-                new Vector(-1, 0, 0)
+                NEGATIVE_X
         );
 
         RaytraceHitboxFace right = new RaytraceHitboxFace(
@@ -67,7 +75,7 @@ public interface RaytraceHitbox {
                 new Vector(max.getX(), min.getY(), max.getZ()),
                 new Vector(max.getX(), max.getY(), max.getZ()),
                 new Vector(max.getX(), max.getY(), min.getZ()),
-                new Vector(-1, 0, 0)
+                POSITIVE_X
         );
         return new RaytraceHitboxFace[]{top, bottom, front, back, right, left};
     }
