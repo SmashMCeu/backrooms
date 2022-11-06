@@ -8,6 +8,7 @@ import eu.smashmc.backrooms.generator.scanner.strategy.PrototypeScannerStrategy;
 import eu.smashmc.backrooms.generator.BackroomsGenerator;
 import eu.smashmc.backrooms.generator.strategy.impl.PrototypeBackroomsStrategy;
 import eu.smashmc.backrooms.generator.scanner.BackroomsScanner;
+import eu.smashmc.backrooms.generator.strategy.impl.PrototypeV2BackroomsStrategy;
 import eu.smashmc.backrooms.util.GameStateHack;
 import eu.smashmc.lib.bukkit.SmashLib;
 import eu.smashmc.lib.bukkit.server.GameState;
@@ -131,7 +132,7 @@ public class Backrooms extends JavaPlugin {
         this.scanner.setStrategy(new PrototypeScannerStrategy(config.getSize(), config.getSpaceBetweenRooms(), config.getHeight(), Material.valueOf(config.getFloorMaterialType())));
         this.generator = new BackroomsGenerator(this);
         this.generator.setRooms(scanner.scan());
-        this.generator.setStrategy(new PrototypeBackroomsStrategy(generator, config.getSize(), 0.05, Material.GLOWSTONE, Material.CHISELED_SANDSTONE));
+        this.generator.setStrategy(new PrototypeV2BackroomsStrategy(generator, config.getSize(), 0.05, Material.GLOWSTONE, Material.CHISELED_SANDSTONE));
     }
 
 }
