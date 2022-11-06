@@ -95,6 +95,11 @@ public class GameService {
 
     public ScientistParticipant spectate(Player player, Game game, ScientistParticipant spectating) {
         ScientistParticipant spectate = null;
+        if(spectating != null) {
+            if(spectating.getState() != ScientistState.ALIVE) {
+                player.setSpectatorTarget(null);
+            }
+        }
         if (player.getSpectatorTarget() == null) {
             player.setGameMode(GameMode.SPECTATOR);
             int alive = getAliveParticipants(game);
