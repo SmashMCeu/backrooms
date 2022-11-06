@@ -134,7 +134,7 @@ public class PrototypeV2BackroomsStrategy extends AbstractBackroomsStrategy<Gene
                     placedRooms.add(new PlacedRoom(roomX, startLocationX.clone().subtract(halfRoomSize, 0, halfRoomSize)));
                 } else {
                     placedRooms.add(new PlacedRoom(roomX, startLocationX.clone().subtract(halfRoomSize, 0, halfRoomSize)));
-                    universalRooms.add(new Tuple<>(startLocationX, placedRooms.size() - 1));
+                    universalRooms.add(new Tuple<>(startLocationX.clone(), placedRooms.size() - 1));
                 }
                 copy(roomX, startLocationX);
 
