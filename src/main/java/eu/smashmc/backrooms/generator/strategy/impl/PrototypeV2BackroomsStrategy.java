@@ -1,5 +1,6 @@
 package eu.smashmc.backrooms.generator.strategy.impl;
 
+import com.google.common.base.Joiner;
 import eu.smashmc.backrooms.generator.BackroomsGenerator;
 import eu.smashmc.backrooms.generator.room.PlacedRoom;
 import eu.smashmc.backrooms.generator.room.Room;
@@ -114,29 +115,28 @@ public class PrototypeV2BackroomsStrategy extends AbstractBackroomsStrategy<Gene
                             roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.NORTH, RoomOpening.WEST},
                                     new RoomOpening[]{RoomOpening.EAST});
                         }
-
                     } else {
                         if (i == amount - 1) {
                             roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.WEST, RoomOpening.EAST},
                                     new RoomOpening[]{RoomOpening.NORTH});
                         } else {
-                            roomX = getRandomRoomByOpenings(counterOpeningsX);
+                            roomX = getRandomRoomByOpenings(new RoomOpening[]{RoomOpening.WEST, RoomOpening.EAST, RoomOpening.SOUTH, RoomOpening.NORTH});
                             while (roomX.hasName()) {
-                                roomX = getRandomRoomByOpenings(counterOpeningsX);
+                                roomX = getRandomRoomByOpenings(new RoomOpening[]{RoomOpening.WEST, RoomOpening.EAST, RoomOpening.SOUTH, RoomOpening.NORTH});
                             }
                             universal = true;
                         }
 
                     }
                 }
-                copy(roomX, startLocationX);
+
                 if(!universal) {
                     placedRooms.add(new PlacedRoom(roomX, startLocationX.clone().subtract(halfRoomSize, 0, halfRoomSize)));
                 } else {
                     placedRooms.add(new PlacedRoom(roomX, startLocationX.clone().subtract(halfRoomSize, 0, halfRoomSize)));
                     universalRooms.add(new Tuple<>(startLocationX, placedRooms.size() - 1));
                 }
-
+                copy(roomX, startLocationX);
 
 
                 startRoomX = roomX;
