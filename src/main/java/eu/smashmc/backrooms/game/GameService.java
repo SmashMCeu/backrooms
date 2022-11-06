@@ -253,7 +253,7 @@ public class GameService {
         for (PotionEffect effect : participant.getPlayer().getActivePotionEffects()) {
             participant.getPlayer().removePotionEffect(effect.getType());
         }
-        participant.getPlayer().setHealth(20);
+        participant.getPlayer().setHealth(10);
         participant.getKnockedHologram().disable();
         participant.setKnockedHologram(null);
         participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1);
