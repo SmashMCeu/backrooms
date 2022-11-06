@@ -1,5 +1,6 @@
 package eu.smashmc.backrooms.game.sign;
 
+import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.model.Game;
 import org.bukkit.Location;
 
@@ -11,5 +12,5 @@ import org.bukkit.Location;
  **/
 public interface SignProcessor {
 
-    boolean process(Game game, Location location, String[] lines);
+    boolean process(GameProvider provider, Game game, Location location, String[] lines);
 }

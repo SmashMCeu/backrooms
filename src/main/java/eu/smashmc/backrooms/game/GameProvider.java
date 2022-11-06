@@ -86,7 +86,7 @@ public class GameProvider {
                 if(block.getType().name().contains("SIGN")) {
                     Sign sign = (Sign) block.getState();
                     for(SignProcessor signProcessor : signProcessors) {
-                        boolean remove = signProcessor.process(game, block.getLocation(), sign.getLines());
+                        boolean remove = signProcessor.process(this, game, block.getLocation(), sign.getLines());
                         if(remove) {
                             block.setType(Material.AIR);
                         }

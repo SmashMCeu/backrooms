@@ -1,5 +1,6 @@
 package eu.smashmc.backrooms.game.sign.impl;
 
+import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.sign.SignProcessor;
 import eu.smashmc.backrooms.game.model.Game;
 import in.prismar.library.spigot.location.LocationUtil;
@@ -14,7 +15,7 @@ import org.bukkit.Location;
 public class SpawnSignProcessor implements SignProcessor {
 
     @Override
-    public boolean process(Game game, Location location, String[] lines) {
+    public boolean process(GameProvider provider, Game game, Location location, String[] lines) {
         for(String line : lines) {
             final String lowered = line.toLowerCase();
             if(lowered.startsWith("spawn: scientist")) {
