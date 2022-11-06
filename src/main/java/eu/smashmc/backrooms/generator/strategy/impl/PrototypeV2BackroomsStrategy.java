@@ -46,7 +46,7 @@ public class PrototypeV2BackroomsStrategy extends AbstractBackroomsStrategy<Gene
     public CompletableFuture<GenerationResult> generate(Location location, int amount) {
         CompletableFuture<GenerationResult> future = new CompletableFuture<>();
         List<PlacedRoom> placedRooms = new ArrayList<>();
-
+        List<Room> preplacedRooms = findPreplacedRooms();
 
         long now = System.currentTimeMillis();
 
@@ -121,6 +121,9 @@ public class PrototypeV2BackroomsStrategy extends AbstractBackroomsStrategy<Gene
                                     new RoomOpening[]{RoomOpening.NORTH});
                         } else {
                             roomX = getRandomRoomByOpenings(counterOpeningsX);
+                            while (roomX.hasName()) {
+                                roomX = getRandomRoomByOpenings(counterOpeningsX);
+                            }
                             universal = true;
                         }
 
@@ -142,7 +145,6 @@ public class PrototypeV2BackroomsStrategy extends AbstractBackroomsStrategy<Gene
             startLocation = startLocation.subtract(0, 0, roomSize);
 
         }
-        List<Room> preplacedRooms = findPreplacedRooms();
         for(Room room : preplacedRooms) {
             Tuple<Location, Integer> random = universalRooms.get(MathUtil.random(universalRooms.size() - 1));
             copy(room, random.getFirst());
@@ -155,6 +157,7 @@ public class PrototypeV2BackroomsStrategy extends AbstractBackroomsStrategy<Gene
         future.complete(new GenerationResult(time, placedRooms));
         return future;
     }
+
 
 
 
