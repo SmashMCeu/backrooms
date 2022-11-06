@@ -206,10 +206,14 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                         random = allowedNumbers.get(MathUtil.random(allowedNumbers.size() - 1));
                     }
                     rooms.put(random, room);
-
                 }
             }
         }
+        System.out.println("Enforced rooms: ");
+        for(Room room : rooms.values()) {
+            System.out.println(" - " + room.getName());
+        }
+
         return rooms;
     }
 
