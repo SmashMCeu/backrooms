@@ -3,18 +3,25 @@ package eu.smashmc.backrooms.game.listener.player;
 import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.model.Game;
+import eu.smashmc.backrooms.game.model.GameState;
 import eu.smashmc.backrooms.game.participant.GameParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
+import eu.smashmc.lib.common.math.MathUtil;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
+
+import java.util.Optional;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -47,6 +54,44 @@ public class PlayerMoveListener implements Listener {
             }
             return;
         }
+        Optional<Game> optional = service.getGameByPlayer(player);
+        if(optional.isPresent()) {
+            Game game = optional.get();
+            if(game.getState() == GameState.IN_GAME) {
+                double deathY = provider.getGenerationLocation().getY() - provider.getConfigProvider().getEntity().getGame().getHoleTeleportHeight();
+                if(player.getLocation().getY() <= deathY) {
+                    Location location = findRandomMapLocation(game);
+                    player.teleport(location);
+                    player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.7f, 1);
 
+                    GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
+                    if(participant instanceof ScientistParticipant scientist) {
+                        if(player.getHealth() <= 12) {
+                            service.knock(game, scientist);
+                        } else {
+                            player.setHealth(10);
+                        }
+                    }
+                    return;
+                }
+            }
+
+        }
+
+    }
+
+    private Location findRandomMapLocation(Game game) {
+        Location spot = findRandomSpot(game);
+        while (spot.getBlock().getType() != Material.AIR || spot.getBlock().getLightLevel() < 0) {
+            spot = findRandomSpot(game);
+        }
+        return spot;
+    }
+
+    private Location findRandomSpot(Game game) {
+        World world = game.getMap().getMin().getWorld();
+        Location search = new Location(world, MathUtil.random(game.getMap().getMin().getX(), game.getMap().getMax().getX()),
+                provider.getGenerationLocation().getY() + 1.5, MathUtil.random(game.getMap().getMin().getZ(), game.getMap().getMax().getZ()));
+        return search;
     }
 }

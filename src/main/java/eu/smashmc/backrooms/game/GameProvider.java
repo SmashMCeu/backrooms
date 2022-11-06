@@ -9,6 +9,7 @@ import eu.smashmc.backrooms.game.model.GameMap;
 import eu.smashmc.backrooms.game.model.GameProperties;
 import eu.smashmc.backrooms.game.participant.GameParticipant;
 import eu.smashmc.backrooms.game.sign.SignProcessor;
+import eu.smashmc.backrooms.game.sign.impl.HoleSignProcessor;
 import eu.smashmc.backrooms.game.sign.impl.SpawnSignProcessor;
 import eu.smashmc.backrooms.generator.room.PlacedRoom;
 import eu.smashmc.backrooms.Backrooms;
@@ -63,6 +64,7 @@ public class GameProvider {
     private void registerDefaultSignProcessors() {
         this.signProcessors.add(new SpawnSignProcessor());
         this.signProcessors.add(new ChestSignProcessor());
+        this.signProcessors.add(new HoleSignProcessor());
     }
 
     @SafeInitialize

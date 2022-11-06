@@ -204,7 +204,7 @@ public class GameService {
             participant.setState(ScientistState.KNOCKED);
             participant.setKnockedLocation(participant.getPlayer().getLocation());
             participant.setKnockedUntil(System.currentTimeMillis() + 1000 * 60 * 2);
-            participant.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false), true);
+            participant.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, Integer.MAX_VALUE, 1, false, false));
             new ParticipantKnockedTask(game, this, provider, participant).runTaskTimer(provider.getBackrooms(), 20, 20);
             sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer().getName() + " §7has been knocked.");
         }
