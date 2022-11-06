@@ -117,13 +117,16 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
                             roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.WEST, RoomOpening.EAST},
                                     new RoomOpening[]{RoomOpening.NORTH});
                         } else {
+
                             if(preplacedRooms.containsKey(index)) {
                                 roomX = preplacedRooms.get(index);
+                                System.out.println("Placing enforced room at index: " + index);
                             } else {
                                 roomX = getRandomRoomByOpenings(counterOpeningsX);
                                 while (containsPreplacedRoom(preplacedRooms, roomX)) {
                                     roomX = getRandomRoomByOpenings(counterOpeningsX);
                                 }
+                                System.out.println("Placing universal room at index: " + index);
                             }
 
                         }
@@ -210,8 +213,8 @@ public class PrototypeBackroomsStrategy extends AbstractBackroomsStrategy<Genera
             }
         }
         System.out.println("Enforced rooms: ");
-        for(Room room : rooms.values()) {
-            System.out.println(" - " + room.getName());
+        for(Map.Entry<Integer, Room> entry : rooms.entrySet()) {
+            System.out.println(" - " + entry.getValue().getName() + " Index: " + entry.getKey());
         }
 
         return rooms;
