@@ -1,6 +1,7 @@
 package eu.smashmc.backrooms.config.model;
 
 import lombok.Data;
+import org.bukkit.Material;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -16,4 +17,8 @@ public class GeneratorConfig {
     private double height = 8;
     private double size = 23;
     private double spaceBetweenRooms = 2;
+
+    public Material getFloor() {
+        return Material.valueOf(floorMaterialType);
+    }
 }

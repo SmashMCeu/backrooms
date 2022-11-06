@@ -50,7 +50,7 @@ public class HoleSignProcessor implements SignProcessor {
                             if(air.contains(place)) {
                                 continue;
                             }
-                            place.getBlock().setType(GameConstants.WALL_BLOCK);
+                            place.getBlock().setType(provider.getConfigProvider().getEntity().getGenerator().getFloor());
                         }
                     }
                 }
@@ -61,7 +61,7 @@ public class HoleSignProcessor implements SignProcessor {
             for (int j = -2; j < 3; j++) {
                 for (int k = -2; k < 3; k++) {
                     Location place = center.clone().add(j, 0, k);
-                    place.getBlock().setType(GameConstants.WALL_BLOCK);
+                    place.getBlock().setType(provider.getConfigProvider().getEntity().getGenerator().getFloor());
                 }
             }
             return true;
