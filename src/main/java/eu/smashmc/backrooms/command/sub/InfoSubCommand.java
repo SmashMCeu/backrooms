@@ -54,7 +54,7 @@ public class InfoSubCommand extends HelpSubCommand<Player> {
             List<String> enforcedRooms = game.getMap().getResult().getRooms().stream().
                     filter(placedRoom -> placedRoom.getRoom().hasName()).
                     map(room -> room.getRoom().getName()).collect(Collectors.toList());
-            player.sendMessage(BackroomsConstants.PREFIX + "   §7Enforced rooms: §a"  + Joiner.on("§8, ").join(enforcedRooms));
+            player.sendMessage(BackroomsConstants.PREFIX + "   §7Enforced rooms: §a"  + Joiner.on("§8, §a").join(enforcedRooms));
             player.sendMessage(" ");
         } else {
             player.sendMessage(BackroomsConstants.PREFIX + "§cYou are not in a game.");
