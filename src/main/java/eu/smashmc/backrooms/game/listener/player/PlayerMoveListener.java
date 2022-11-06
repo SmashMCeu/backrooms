@@ -63,11 +63,12 @@ public class PlayerMoveListener implements Listener {
                 if(player.getLocation().getY() <= deathY) {
                     Location location = findRandomMapLocation(game);
                     player.teleport(location);
-                    player.damage(0);
+
                     player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.7f, 1);
 
                     GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
                     if(participant instanceof ScientistParticipant scientist) {
+                        player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 0.6f, 1);
                         if(player.getHealth() <= 12) {
                             service.knock(game, scientist);
                         } else {
