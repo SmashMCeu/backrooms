@@ -9,6 +9,7 @@ import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
 import eu.smashmc.lib.common.math.MathUtil;
 import in.prismar.library.meta.anno.Inject;
+import in.prismar.library.spigot.location.LocationUtil;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -86,6 +87,7 @@ public class PlayerMoveListener implements Listener {
         while (spot.getBlock().getType() != Material.AIR || spot.getBlock().getLightLevel() < 0) {
             spot = findRandomSpot(game);
         }
+        spot = LocationUtil.getCenterOfBlock(spot);
         return spot;
     }
 
