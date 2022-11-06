@@ -43,15 +43,18 @@ public class HoleSignProcessor implements SignProcessor {
                         air.add(place);
                     }
                 }
-                for (int j = -2; j < 3; j++) {
-                    for (int k = -2; k < 3; k++) {
-                        Location place = center.clone().add(j, 0, k);
-                        if(air.contains(place)) {
-                            continue;
+                if(i != 0) {
+                    for (int j = -2; j < 3; j++) {
+                        for (int k = -2; k < 3; k++) {
+                            Location place = center.clone().add(j, 0, k);
+                            if(air.contains(place)) {
+                                continue;
+                            }
+                            place.getBlock().setType(GameConstants.WALL_BLOCK);
                         }
-                        place.getBlock().setType(GameConstants.WALL_BLOCK);
                     }
                 }
+
 
                 center = center.subtract(0, 1, 0);
             }
