@@ -25,6 +25,13 @@ public class HoleSignProcessor implements SignProcessor {
     public boolean process(GameProvider provider, Game game, Location location, String[] lines) {
         if(lines[0].equalsIgnoreCase("spawn: hole")) {
             GameConfig config = provider.getConfigProvider().getEntity().getGame();
+            double chance = 1;
+            if(lines[1].startsWith("chance: ")) {
+                chance = Double.valueOf(lines[1].replace("chance: ", ""));
+            }
+            if(Math.random() > chance) {
+                return true;
+            }
 
             Location center = location.getBlock().getLocation().clone().subtract(0, 1, 0);
             Set<Location> air = new HashSet<>();
