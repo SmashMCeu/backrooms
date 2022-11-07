@@ -126,6 +126,7 @@ public class GameService {
 
     private void sendSpectatingTitle(Player player, String target) {
         player.sendTitle("", "§7Now spectating §e" + target, 20, 20, 20);
+        player.sendMessage(BackroomsConstants.PREFIX + "§eShift §7to switch your spectating target.");
     }
 
     public void beginGame(Game game) {
