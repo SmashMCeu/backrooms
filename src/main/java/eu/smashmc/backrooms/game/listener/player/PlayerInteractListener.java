@@ -60,7 +60,7 @@ public class PlayerInteractListener implements Listener {
                         power.setPowered(true);
                         block.setBlockData(power);
                         USED_LEVERS.add(block.getLocation());
-                        service.solveTask(game);
+                        service.solveTask(game, participant);
                     } else {
                         event.setCancelled(true);
                     }

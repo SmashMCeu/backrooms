@@ -48,6 +48,11 @@ public class GameStatsAdapter implements GameStats {
     }
 
     @Override
+    public void addTaskSolve(Player player) {
+        helper.plusIntValue("taskSolved", player, 1);
+    }
+
+    @Override
     public void addRevive(Player player) {
         helper.plusIntValue("revives", player, 1);
     }

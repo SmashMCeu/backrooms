@@ -180,10 +180,12 @@ public class GameService {
         Bukkit.getPluginManager().callEvent(new GameStartEvent(game));
     }
 
-    public void solveTask(Game game) {
+    public void solveTask(Game game, GameParticipant solver) {
+
         int tasks = game.getSolvedTasks() + 1;
         if (tasks <= game.getProperties().getMaxTasks()) {
             game.setSolvedTasks(tasks);
+            backrooms.getStats().addTaskSolve(solver.getPlayer());
             executeForAll(game, participant -> {
                 participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.BLOCK_PISTON_EXTEND, 0.45F, 1);
                 if (participant instanceof EntityParticipant) {

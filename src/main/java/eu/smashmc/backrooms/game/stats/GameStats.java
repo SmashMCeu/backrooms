@@ -16,6 +16,7 @@ public interface GameStats {
     void startGame(String map, Collection<GameParticipant> participants);
     void endGame();
     void addKill(Player player);
+    void addTaskSolve(Player player);
 
     void addRevive(Player player);
     void addDeath(Player player);
