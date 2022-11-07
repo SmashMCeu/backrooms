@@ -273,6 +273,7 @@ public class GameService {
         participant.getPlayer().setHealth(10);
         participant.getKnockedHologram().disable();
         participant.setKnockedHologram(null);
+        participant.setKnockedBy(null);
         participant.getPlayer().getWorld().playSound(participant.getKnockedLocation(), Sound.UI_BUTTON_CLICK, 0.6f, 1);
         participant.getPlayer().sendTitle("§7You have been §arevived", "", 20, 20, 20);
         sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer().getName() + " §7has been revived.");
@@ -391,6 +392,9 @@ public class GameService {
                 if (scientist.getState() == ScientistState.KNOCKED) {
                     if (scientist.getKnockedHologram() != null) {
                         scientist.getKnockedHologram().disable();
+                    }
+                    if(scientist.getKnockedBy() != null) {
+                        backrooms.getStats().addKill(scientist.getKnockedBy().getPlayer());
                     }
                 }
             }
