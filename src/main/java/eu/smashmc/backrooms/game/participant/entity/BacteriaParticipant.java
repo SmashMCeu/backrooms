@@ -116,7 +116,7 @@ public class BacteriaParticipant extends EntityParticipant {
             double nextHealth = target.getPlayer().getHealth() - config.getBacteria().getDamage();
             if(nextHealth <= 0) {
                 event.setDamage(0);
-                service.knock(game, target);
+                service.knock(game, this, target);
                 return;
             }
             target.getPlayer().playSound(target.getPlayer().getLocation(), Sound.ENTITY_BAT_HURT, 0.8f, 1);

@@ -70,7 +70,7 @@ public class PlayerMoveListener implements Listener {
                     if(participant instanceof ScientistParticipant scientist) {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 0.6f, 1);
                         if(player.getHealth() <= 12) {
-                            service.knock(game, scientist);
+                            service.knock(game, null, scientist);
                         } else {
                             player.setHealth(10);
                         }

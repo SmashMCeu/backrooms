@@ -50,6 +50,10 @@ public class ConfigProvider extends GsonFileWrapper<BackroomsConfig> {
                 getEntity().getGame().setAmbientSounds(new String[]{"custom:ambient"});
                 save();
             }
+            if(getEntity().getGame().getMapName() == null) {
+                getEntity().getGame().setMapName("Level 0");
+                save();
+            }
         }
     }
 

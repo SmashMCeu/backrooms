@@ -173,6 +173,7 @@ public class GameService {
             participant.disableJump();
 
         });
+        backrooms.getStats().startGame(configProvider.getEntity().getGame().getMapName(), game.getParticipantRegistry().getParticipants().values());
         sendMessage(game, BackroomsConstants.PREFIX + "§7The §agame §7has started");
         startMainTask(game);
         Bukkit.getPluginManager().callEvent(new GameStartEvent(game));
@@ -201,10 +202,16 @@ public class GameService {
         }
     }
 
-    public void knock(Game game, ScientistParticipant participant) {
+    public void knock(Game game, EntityParticipant entity, ScientistParticipant participant) {
         if (participant.getKnocks() <= 0) {
             kill(game, participant);
+            if(entity != null) {
+                backrooms.getStats().addKill(entity.getPlayer());
+            }
         } else {
+            if(entity != null) {
+                participant.setKnockedBy(entity);
+            }
             participant.setKnocks(participant.getKnocks() - 1);
             participant.setState(ScientistState.KNOCKED);
             participant.setKnockedLocation(participant.getPlayer().getLocation());
@@ -224,11 +231,15 @@ public class GameService {
             participant.getKnockedHologram().disable();
             participant.setKnockedHologram(null);
         }
+        if(participant.getKnockedBy() != null) {
+            backrooms.getStats().addKill(participant.getKnockedBy().getPlayer());
+        }
         participant.getPlayer().sendTitle("§cYou died", "", 20, 20, 20);
         participant.setState(ScientistState.DEAD);
         participant.getPlayer().setGameMode(GameMode.SPECTATOR);
 
         sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer().getName() + " §7has died.");
+        backrooms.getStats().addDeath(participant.getPlayer());
         int alive = getAliveParticipants(game);
         if (alive <= 0) {
             endGame(game);
@@ -248,6 +259,7 @@ public class GameService {
         int alive = getAliveParticipants(game);
         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 0.6f, 1);
         sendMessage(game, BackroomsConstants.PREFIX + "§e" + player.getName() + " §7has escaped. §8[§e" + escaped + "/§e" + game.getProperties().getMaxScientists() + "§8]");
+        backrooms.getStats().addScientistWin(scientist.getPlayer());
         if (alive <= 0) {
             endGame(game);
         }
@@ -362,10 +374,19 @@ public class GameService {
             game.getCountdown().stop(true);
         }
         changeState(game, GameState.END);
+
+        int entities = getEntityParticipants(game);
+        int escaped = getEscapedParticipants(game);
+
+        boolean entityWin = escaped <= 0 && entities >= 1;
+
         executeForAll(game, participant -> {
             resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
             if (participant instanceof EntityParticipant) {
                 DisguiseAPI.undisguiseToAll(participant.getPlayer());
+                if(entityWin) {
+                    backrooms.getStats().addEntityWin(participant.getPlayer());
+                }
             } else if (participant instanceof ScientistParticipant scientist) {
                 if (scientist.getState() == ScientistState.KNOCKED) {
                     if (scientist.getKnockedHologram() != null) {
@@ -376,6 +397,7 @@ public class GameService {
             participant.getPlayer().teleport(backrooms.getConfigProvider().getEntity().getGame().getLobby());
             participant.getPlayer().playSound(participant.getPlayer().getLocation(), Sound.ENTITY_ENDERMAN_SCREAM, 1f, 1);
         });
+        backrooms.getStats().endGame();
         //TODO: Find Winner
         game.setCountdown(new EndCountdown(backrooms, provider, this, game));
         game.getCountdown().start();
@@ -384,9 +406,7 @@ public class GameService {
         for (int i = 0; i < 200; i++) {
             sendMessage(game, " ");
         }
-        int entities = getEntityParticipants(game);
-        int escaped = getEscapedParticipants(game);
-        if (escaped <= 0 && entities >= 1) {
+        if (entityWin) {
             sendMessage(game, CenteredMessage.createCentredMessage("§4Entities"));
             sendMessage(game, CenteredMessage.createCentredMessage("§7have won this round."));
         } else {
@@ -416,9 +436,7 @@ public class GameService {
     }
 
     public void joinGame(Game game, Player player) {
-        GameJoinEvent event = new GameJoinEvent(game, player);
-        Bukkit.getPluginManager().callEvent(event);
-        if (!event.isCancelled() && game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
+        if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
             game.getParticipantRegistry().register(player.getUniqueId(), new LobbyParticipant(player));
             player.teleport(configProvider.getEntity().getGame().getLobby());
             resetPlayer(player, GameMode.ADVENTURE);
@@ -442,28 +460,29 @@ public class GameService {
             player.teleport(configProvider.getEntity().getGame().getLobby());
             resetPlayer(player, GameMode.SURVIVAL);
         } else {
-            GameLeaveEvent event = new GameLeaveEvent(game, player);
-            Bukkit.getPluginManager().callEvent(event);
-            if (!event.isCancelled()) {
-                player.teleport(configProvider.getEntity().getGame().getLobby());
-                resetPlayer(player, GameMode.SURVIVAL);
-                game.getParticipantRegistry().unregister(player.getUniqueId());
-                backrooms.getGameState().setIngamePlayers(game.getParticipantRegistry().getCount());
-                if (game.getState() == GameState.IN_GAME) {
-                    if (game.getParticipantRegistry().getParticipants().size() <= 1) {
-                        endGame(game);
-                        return;
+            player.teleport(configProvider.getEntity().getGame().getLobby());
+            resetPlayer(player, GameMode.SURVIVAL);
+            GameParticipant participant = game.getParticipantRegistry().unregister(player.getUniqueId());
+            backrooms.getGameState().setIngamePlayers(game.getParticipantRegistry().getCount());
+            if (game.getState() == GameState.IN_GAME) {
+                if(participant instanceof ScientistParticipant scientist) {
+                    if(scientist.getState() == ScientistState.KNOCKED && scientist.getKnockedBy() != null) {
+                        backrooms.getStats().addKill(scientist.getKnockedBy().getPlayer());
                     }
-                    int entities = getEntityParticipants(game);
-                    if(entities == 0) {
-                        endGame(game);
-                        return;
-                    }
-                } else if (game.getState() == GameState.LOBBY) {
-                    if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
-                        if (game.getCountdown().isRunning()) {
-                            game.getCountdown().stop(true);
-                        }
+                }
+                if (game.getParticipantRegistry().getParticipants().size() <= 1) {
+                    endGame(game);
+                    return;
+                }
+                int entities = getEntityParticipants(game);
+                if(entities == 0) {
+                    endGame(game);
+                    return;
+                }
+            } else if (game.getState() == GameState.LOBBY) {
+                if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
+                    if (game.getCountdown().isRunning()) {
+                        game.getCountdown().stop(true);
                     }
                 }
             }

@@ -5,6 +5,7 @@ import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.game.participant.GameParticipant;
+import eu.smashmc.backrooms.game.participant.entity.EntityParticipant;
 import in.prismar.library.spigot.hologram.Hologram;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +28,7 @@ public class ScientistParticipant extends GameParticipant {
     private Location knockedLocation;
     private long knockedUntil;
     private Hologram knockedHologram;
+    private EntityParticipant knockedBy;
 
     private ScientistParticipant spectating;
 

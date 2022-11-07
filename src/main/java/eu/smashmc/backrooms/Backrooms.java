@@ -3,10 +3,11 @@ package eu.smashmc.backrooms;
 import eu.smashmc.backrooms.config.ConfigProvider;
 import eu.smashmc.backrooms.config.model.GeneratorConfig;
 import eu.smashmc.backrooms.game.GameProvider;
+import eu.smashmc.backrooms.game.stats.GameStats;
+import eu.smashmc.backrooms.game.stats.GameStatsAdapter;
 import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.generator.scanner.strategy.PrototypeScannerStrategy;
 import eu.smashmc.backrooms.generator.BackroomsGenerator;
-import eu.smashmc.backrooms.generator.strategy.impl.PrototypeBackroomsStrategy;
 import eu.smashmc.backrooms.generator.scanner.BackroomsScanner;
 import eu.smashmc.backrooms.generator.strategy.impl.PrototypeV2BackroomsStrategy;
 import eu.smashmc.backrooms.util.GameStateHack;
@@ -31,11 +32,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_19_R1.CraftServer;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Optional;
-import java.util.concurrent.Callable;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -56,6 +55,8 @@ public class Backrooms extends JavaPlugin {
     @Inject
     private GameProvider gameProvider;
 
+    private GameStats stats;
+
     private BackroomsGenerator generator;
     private BackroomsScanner scanner;
 
@@ -70,9 +71,6 @@ public class Backrooms extends JavaPlugin {
     }
 
     private void initialize() {
-
-
-
         this.hologramBootstrap = new HologramBootstrap(this);
         this.setup = new SpigotSetup(this, "backrooms");
         initializeCommandsExceptions();
@@ -93,6 +91,7 @@ public class Backrooms extends JavaPlugin {
                     }
                     return false;
                 }).build(this);
+        this.stats = new GameStatsAdapter();
         this.gameState = new GameStateHack(this);
 
         initializeGenerator();

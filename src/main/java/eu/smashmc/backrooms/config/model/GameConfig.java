@@ -20,6 +20,7 @@ public class GameConfig {
     private double chestDefaultChance = 0.10;
     private int holeDepth = 20;
     private double holeTeleportHeight = 15;
+    private String mapName = "Level 0";
 
     private int ambientRepeat = 29;
     private float ambientVolume = 0.5f;
