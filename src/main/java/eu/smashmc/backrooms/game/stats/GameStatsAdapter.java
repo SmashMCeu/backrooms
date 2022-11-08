@@ -1,6 +1,7 @@
 package eu.smashmc.backrooms.game.stats;
 
 import eu.smashmc.api.SmashMc;
+import eu.smashmc.api.economy.CoinRewardAccumulator;
 import eu.smashmc.api.stats.Statistics;
 import eu.smashmc.api.stats.StatsHelper;
 import eu.smashmc.backrooms.game.participant.GameParticipant;
@@ -20,9 +21,11 @@ import java.util.List;
 public class GameStatsAdapter implements GameStats {
 
     private StatsHelper helper;
+    private CoinRewardAccumulator accumulator;
 
     public GameStatsAdapter() {
         this.helper = SmashMc.getComponent(Statistics.class).createHelper("backrooms");
+        this.accumulator = new CoinRewardAccumulator("backrooms");
     }
 
     @Override
@@ -35,11 +38,13 @@ public class GameStatsAdapter implements GameStats {
     @Override
     public void endGame() {
         helper.endGame(true);
+        accumulator.commit();
     }
 
     @Override
     public void addKill(Player player) {
         helper.addKill(player);
+        accumulator.rewardKill(player);
     }
 
     @Override
@@ -50,6 +55,7 @@ public class GameStatsAdapter implements GameStats {
     @Override
     public void addTaskSolve(Player player) {
         helper.plusIntValue("taskSolved", player, 1);
+        accumulator.rewardCoins(player, 10, 1);
     }
 
     @Override
@@ -61,11 +67,13 @@ public class GameStatsAdapter implements GameStats {
     public void addEntityWin(Player player) {
         helper.addWin(player);
         helper.plusIntValue("entityWins", player, 1);
+        accumulator.rewardWin(player);
     }
 
     @Override
     public void addScientistWin(Player player) {
         helper.addWin(player);
         helper.plusIntValue("scientistWins", player, 1);
+        accumulator.rewardWin(player);
     }
 }
