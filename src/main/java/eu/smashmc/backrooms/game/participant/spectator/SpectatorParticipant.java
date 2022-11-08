@@ -1,5 +1,7 @@
 package eu.smashmc.backrooms.game.participant.spectator;
 
+import eu.smashmc.api.SmashMc;
+import eu.smashmc.api.vanish.Vanish;
 import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.model.Game;
@@ -20,13 +22,18 @@ import org.bukkit.entity.Player;
 public class SpectatorParticipant extends GameParticipant {
 
     private ScientistParticipant spectating;
+    private Vanish<Player> vanish;
 
     public SpectatorParticipant(Player player) {
         super(player, "§7");
+        this.vanish = SmashMc.getComponent(Vanish.class);
     }
 
     @Override
     public void onUpdate(GameProvider provider, GameService service, Game game) {
+        if(vanish.isVanished(getPlayer())) {
+            return;
+        }
         spectating = service.spectate(getPlayer(), game, spectating);
     }
 }
