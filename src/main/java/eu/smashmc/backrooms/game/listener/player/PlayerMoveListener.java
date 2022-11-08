@@ -5,6 +5,7 @@ import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.game.model.GameState;
 import eu.smashmc.backrooms.game.participant.GameParticipant;
+import eu.smashmc.backrooms.game.participant.entity.EntityParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistState;
 import eu.smashmc.lib.common.math.MathUtil;
@@ -59,6 +60,24 @@ public class PlayerMoveListener implements Listener {
         if(optional.isPresent()) {
             Game game = optional.get();
             if(game.getState() == GameState.IN_GAME) {
+                GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
+                Location from = event.getFrom();
+                Location to = event.getTo();
+                if(participant instanceof EntityParticipant entity) {
+                    if(from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ()) {
+                        for(GameParticipant targetParticipant : service.raytraceParticipants(game, player)) {
+                            if(targetParticipant instanceof ScientistParticipant scientist) {
+                                if(scientist.getState() == ScientistState.ALIVE) {
+                                    entity.onSeeScientist(provider, service, game, scientist);
+                                    break;
+                                }
+
+                            }
+                        }
+                    }
+                }
+
+
                 double deathY = provider.getGenerationLocation().getY() - provider.getConfigProvider().getEntity().getGame().getHoleTeleportHeight();
                 if(player.getLocation().getY() <= deathY) {
                     Location location = findRandomMapLocation(game);
@@ -66,7 +85,7 @@ public class PlayerMoveListener implements Listener {
 
                     player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.7f, 1);
 
-                    GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
+
                     if(participant instanceof ScientistParticipant scientist) {
                         player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_HURT, 0.6f, 1);
                         if(player.getHealth() <= 12) {

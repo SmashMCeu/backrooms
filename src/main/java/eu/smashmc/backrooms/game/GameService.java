@@ -22,6 +22,7 @@ import eu.smashmc.backrooms.config.ConfigProvider;
 import eu.smashmc.backrooms.game.participant.spectator.SpectatorParticipant;
 import eu.smashmc.backrooms.game.task.GameMainTask;
 import eu.smashmc.backrooms.game.task.ParticipantKnockedTask;
+import eu.smashmc.backrooms.util.raytrace.ScreenEntityFinder;
 import eu.smashmc.lib.bukkit.world.SoundUtil;
 import in.prismar.library.common.math.MathUtil;
 import in.prismar.library.meta.anno.Inject;
@@ -34,10 +35,12 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -433,6 +436,18 @@ public class GameService {
 
     public void startMainTask(Game game) {
         game.setMainTask(new GameMainTask(provider, this, game).runTaskTimer(getProvider().getBackrooms(), 20, 20));
+    }
+
+    public List<GameParticipant> raytraceParticipants(Game game, Player player) {
+        List<GameParticipant> participants = new ArrayList<>();
+        List<Entity> entities = new ScreenEntityFinder(player).findEntities(24, 60);
+        for(Entity entity : entities) {
+            if(entity instanceof Player target) {
+                GameParticipant targetParticipant = game.getParticipantRegistry().getParticipant(target.getUniqueId());
+                participants.add(targetParticipant);
+            }
+        }
+        return participants;
     }
 
     public void joinGameAsSpectator(Game game, Player player) {
