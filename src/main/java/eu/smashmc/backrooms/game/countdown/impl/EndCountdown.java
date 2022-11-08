@@ -19,7 +19,7 @@ public class EndCountdown extends GameCountdown {
 
 
     public EndCountdown(Plugin plugin, GameProvider provider, GameService service, Game game) {
-        super(plugin, provider, service, game, 30);
+        super(plugin, provider, service, game, 15);
     }
 
     @Override

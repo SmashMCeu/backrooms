@@ -142,9 +142,6 @@ public class GameService {
         executeForAll(game, participant -> {
             resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
             Player player = participant.getPlayer();
-            for (int i = 0; i < 200; i++) {
-                player.sendMessage(" ");
-            }
 
             if (participant instanceof EntityParticipant entity) {
                 Location location = game.getMap().getRandomEntitySpawn();
@@ -417,9 +414,6 @@ public class GameService {
         game.getCountdown().start();
         game.getMainTask().cancel();
 
-        for (int i = 0; i < 200; i++) {
-            sendMessage(game, " ");
-        }
         if (entityWin) {
             sendMessage(game, CenteredMessage.createCentredMessage("§4Entities"));
             sendMessage(game, CenteredMessage.createCentredMessage("§7have won this round."));
