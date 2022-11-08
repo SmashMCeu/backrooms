@@ -47,7 +47,7 @@ public class GameMainTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        long ambientSound = System.currentTimeMillis() - nextAmbientSound;
+        long ambientSound = nextAmbientSound - System.currentTimeMillis();
         for (GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
             Player player = participant.getPlayer();
             if (participant instanceof ScientistParticipant scientist) {
