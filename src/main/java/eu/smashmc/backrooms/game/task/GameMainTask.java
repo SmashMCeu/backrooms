@@ -36,18 +36,18 @@ public class GameMainTask extends BukkitRunnable {
     private final BackroomsConfig config;
 
     private String lastAmbientSound = "";
-    private int ambientSoundCount;
+    private long nextAmbientSound;
 
     public GameMainTask(GameProvider provider, GameService service, Game game) {
         this.game = game;
         this.provider = provider;
         this.config = provider.getConfigProvider().getEntity();
         this.service = service;
-        this.ambientSoundCount = 0;
     }
 
     @Override
     public void run() {
+        long ambientSound = System.currentTimeMillis() - nextAmbientSound;
         for (GameParticipant participant : game.getParticipantRegistry().getParticipants().values()) {
             Player player = participant.getPlayer();
             if (participant instanceof ScientistParticipant scientist) {
@@ -56,7 +56,6 @@ public class GameMainTask extends BukkitRunnable {
                     if (targetParticipant instanceof EntityParticipant entity) {
                         entity.onScientistSee(provider, service, game, scientist);
                     }*/
-
                 }
             } else if (participant instanceof EntityParticipant entity) {
                 for(GameParticipant targetParticipant : raytraceParticipants(player)) {
@@ -69,17 +68,15 @@ public class GameMainTask extends BukkitRunnable {
                     }
                 }
             }
-            if (ambientSoundCount <= 0) {
+            if (ambientSound <= 0) {
                 lastAmbientSound = UniqueRandomizer.getRandom(lastAmbientSound, config.getGame().getAmbientSounds());
                 participant.getPlayer().playSound(participant.getPlayer().getLocation(), lastAmbientSound, config.getGame().getAmbientVolume(), 1);
             }
             participant.onUpdate(provider, service, game);
         }
-        if (ambientSoundCount <= 0) {
-            this.ambientSoundCount = provider.getConfigProvider().getEntity().getGame().getAmbientRepeat();
-            return;
+        if (ambientSound <= 0) {
+            this.nextAmbientSound = System.currentTimeMillis() + 1000 * provider.getConfigProvider().getEntity().getGame().getAmbientRepeat();
         }
-        ambientSoundCount--;
     }
 
     private List<GameParticipant> raytraceParticipants(Player player) {
