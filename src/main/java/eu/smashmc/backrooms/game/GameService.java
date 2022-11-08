@@ -22,6 +22,7 @@ import eu.smashmc.backrooms.config.ConfigProvider;
 import eu.smashmc.backrooms.game.participant.spectator.SpectatorParticipant;
 import eu.smashmc.backrooms.game.task.GameMainTask;
 import eu.smashmc.backrooms.game.task.ParticipantKnockedTask;
+import eu.smashmc.lib.bukkit.world.SoundUtil;
 import in.prismar.library.common.math.MathUtil;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.meta.anno.Service;
@@ -234,14 +235,17 @@ public class GameService {
             participant.getKnockedHologram().disable();
             participant.setKnockedHologram(null);
         }
+        String killedBy = "has died.";
         if(participant.getKnockedBy() != null) {
             backrooms.getStats().addKill(participant.getKnockedBy().getPlayer());
+            participant.getKnockedBy().getPlayer().playSound(participant.getKnockedBy().getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.4f);
+            killedBy = "was killed by §4Entity";
         }
         participant.getPlayer().sendTitle("§cYou died", "", 20, 20, 20);
         participant.setState(ScientistState.DEAD);
         participant.getPlayer().setGameMode(GameMode.SPECTATOR);
 
-        sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer().getName() + " §7has died.");
+        sendMessage(game, BackroomsConstants.PREFIX + "§e" + participant.getPlayer().getName() + " §7" + killedBy);
         backrooms.getStats().addDeath(participant.getPlayer());
         int alive = getAliveParticipants(game);
         if (alive <= 0) {
