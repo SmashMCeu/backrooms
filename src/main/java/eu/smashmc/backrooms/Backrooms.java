@@ -87,7 +87,7 @@ public class Backrooms extends JavaPlugin {
                     Optional<Game> optional = gameProvider.getService().findGame();
                     if(optional.isPresent()) {
                         Game game = optional.get();
-                        return game.getState() == eu.smashmc.backrooms.game.model.GameState.IN_GAME;
+                        return false;
                     }
                     return false;
                 }).build(this);
