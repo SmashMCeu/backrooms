@@ -61,9 +61,9 @@ public class PlayerMoveListener implements Listener {
             Game game = optional.get();
             if(game.getState() == GameState.IN_GAME) {
                 GameParticipant participant = game.getParticipantRegistry().getParticipant(player.getUniqueId());
-                Location from = event.getFrom();
-                Location to = event.getTo();
                 if(participant instanceof EntityParticipant entity) {
+                    Location from = event.getFrom();
+                    Location to = event.getTo();
                     if(from.getBlockX() != to.getBlockX() || from.getBlockZ() != to.getBlockZ()) {
                         for(GameParticipant targetParticipant : service.raytraceParticipants(game, player)) {
                             if(targetParticipant instanceof ScientistParticipant scientist) {
