@@ -42,7 +42,6 @@ public abstract class CountdownBackroomItem extends BackroomItem {
                            Game game, PlayerInteractEvent event) {
         if(entries.containsKey(player.getUniqueId())) {
             CountdownEntry entry = entries.get(player.getUniqueId());
-            player.sendMessage(BackroomsConstants.PREFIX + "§cThis item is on delay. (" + entry.getCount() + "s)");
             return;
         }
         onCountdownInteract(player, provider, service, game, event);
