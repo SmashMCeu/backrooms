@@ -6,6 +6,7 @@ import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.item.event.BackroomItemEvent;
 import eu.smashmc.backrooms.game.model.Game;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -39,12 +40,13 @@ public class AlmondWaterBackroomItem extends BackroomItem {
         if(nextHealth > 20) {
             nextHealth = 20;
         }
+        event.setCancelled(true);
         player.setHealth(nextHealth);
         player.playSound(player.getLocation(), Sound.ENTITY_WITCH_DRINK, 0.8f, 1);
         if(event.getHand() == EquipmentSlot.HAND) {
-            player.getInventory().setItemInMainHand(null);
+            player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
         } else if(event.getHand() == EquipmentSlot.OFF_HAND) {
-            player.getInventory().setItemInOffHand(null);
+            player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
         }
         player.updateInventory();
     }
