@@ -1,9 +1,7 @@
 package eu.smashmc.backrooms.game.item;
 
-import eu.smashmc.backrooms.game.item.impl.AlmondWaterBackroomItem;
-import eu.smashmc.backrooms.game.item.impl.FlashlightBackroomItem;
-import eu.smashmc.backrooms.game.item.impl.LeaveBackroomItem;
-import eu.smashmc.backrooms.game.item.impl.RevealBackroomItem;
+import eu.smashmc.api.core.RegistryService;
+import eu.smashmc.backrooms.game.item.impl.*;
 import in.prismar.library.meta.anno.Service;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
@@ -28,6 +26,7 @@ public class BackroomItemRegistry {
         register(new AlmondWaterBackroomItem());
         register(new RevealBackroomItem());
         register(new FlashlightBackroomItem());
+        register(new AdrenalineBackroomItem());
     }
 
 

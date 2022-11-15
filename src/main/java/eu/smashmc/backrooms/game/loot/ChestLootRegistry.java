@@ -32,6 +32,7 @@ public class ChestLootRegistry {
     @SafeInitialize
     private void initialize() {
         register(new ItemChestLoot(0.4, itemRegistry.createItem("Almond Water")));
+        register(new ItemChestLoot(0.3, itemRegistry.createItem("Adrenaline")));
         register(new ItemChestLoot(0.2, itemRegistry.createItem("Flashlight")));
     }
 
