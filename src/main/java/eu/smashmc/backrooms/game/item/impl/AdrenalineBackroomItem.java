@@ -37,7 +37,7 @@ public class AdrenalineBackroomItem extends BackroomItem {
         } else if(event.getHand() == EquipmentSlot.OFF_HAND) {
             player.getInventory().setItemInOffHand(new ItemStack(Material.AIR));
         }
-        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20*10, 1));
+        player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 20*8, 1));
         player.playSound(player.getLocation(), Sound.BLOCK_BEACON_ACTIVATE, 0.8f, 2);
         player.updateInventory();
         event.setCancelled(true);
