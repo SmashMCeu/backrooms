@@ -80,7 +80,6 @@ public class Backrooms extends JavaPlugin {
         this.metaRegistry.registerProcessor(AutoListener.class, new SpigotListenerProcessor(setup, metaRegistry));
         this.metaRegistry.registerEntity(this);
         this.metaRegistry.build(this.getClassLoader(), "eu.smashmc.backrooms");
-        this.metaRegistry.rescan();
 
         this.setup.register();
         this.smashLib = new SmashLib.SmashLibBuilder().uniqueTablist(true)
