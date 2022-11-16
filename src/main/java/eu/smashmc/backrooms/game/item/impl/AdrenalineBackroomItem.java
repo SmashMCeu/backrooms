@@ -5,6 +5,7 @@ import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.item.BackroomItem;
 import eu.smashmc.backrooms.game.item.event.BackroomItemEvent;
 import eu.smashmc.backrooms.game.model.Game;
+import eu.smashmc.backrooms.util.meta.Register;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -21,6 +22,7 @@ import org.bukkit.potion.PotionEffectType;
  * Proprietary and confidential
  * Written by Maga
  **/
+@Register
 public class AdrenalineBackroomItem extends BackroomItem {
 
     public AdrenalineBackroomItem() {

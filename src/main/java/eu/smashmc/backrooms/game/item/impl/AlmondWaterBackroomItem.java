@@ -5,6 +5,7 @@ import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.item.event.BackroomItemEvent;
 import eu.smashmc.backrooms.game.model.Game;
+import eu.smashmc.backrooms.util.meta.Register;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.Sound;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.EquipmentSlot;
  * Proprietary and confidential
  * Written by Maga
  **/
+@Register
 public class AlmondWaterBackroomItem extends BackroomItem {
 
     public AlmondWaterBackroomItem() {

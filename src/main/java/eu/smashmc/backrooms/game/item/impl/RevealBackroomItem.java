@@ -6,6 +6,7 @@ import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.game.model.GameState;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
 import eu.smashmc.backrooms.util.ParticleUtil;
+import eu.smashmc.backrooms.util.meta.Register;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -19,6 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
  * Proprietary and confidential
  * Written by Maga
  **/
+@Register
 public class RevealBackroomItem extends CountdownBackroomItem {
 
     public RevealBackroomItem() {
