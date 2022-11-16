@@ -1,6 +1,5 @@
 package eu.smashmc.backrooms.game.item;
 
-import eu.smashmc.backrooms.Backrooms;
 import eu.smashmc.backrooms.game.item.impl.*;
 import in.prismar.library.meta.anno.Service;
 import lombok.Getter;

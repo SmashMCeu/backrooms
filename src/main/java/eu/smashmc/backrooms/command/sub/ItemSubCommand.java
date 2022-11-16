@@ -43,6 +43,8 @@ public class ItemSubCommand extends HelpSubCommand<Player> {
                 player.sendMessage(BackroomsConstants.PREFIX + "§cThis item does not exists.");
                 return true;
             }
+            player.sendMessage(BackroomsConstants.PREFIX + "§7You received the item §a" + id);
+            player.getInventory().addItem(registry.createItem(id));
             return true;
         }
         player.sendMessage(" ");
@@ -53,4 +55,5 @@ public class ItemSubCommand extends HelpSubCommand<Player> {
         player.sendMessage(" ");
         return true;
     }
+
 }
