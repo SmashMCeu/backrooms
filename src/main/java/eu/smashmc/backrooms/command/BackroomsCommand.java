@@ -44,6 +44,7 @@ public class BackroomsCommand extends HelpCommand<Player> {
         addChild(new EntitySubCommand(backrooms));
         addChild(new ForceStartSubCommand(backrooms));
         addChild(new InfoSubCommand(backrooms));
+        addChild(new ItemSubCommand(backrooms));
     }
 
 

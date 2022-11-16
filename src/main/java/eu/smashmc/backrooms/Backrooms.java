@@ -3,6 +3,7 @@ package eu.smashmc.backrooms;
 import eu.smashmc.backrooms.config.ConfigProvider;
 import eu.smashmc.backrooms.config.model.GeneratorConfig;
 import eu.smashmc.backrooms.game.GameProvider;
+import eu.smashmc.backrooms.game.item.BackroomItemRegistry;
 import eu.smashmc.backrooms.game.stats.GameStats;
 import eu.smashmc.backrooms.game.stats.GameStatsAdapter;
 import eu.smashmc.backrooms.game.model.Game;
@@ -54,6 +55,7 @@ public class Backrooms extends JavaPlugin {
 
     @Inject
     private GameProvider gameProvider;
+
 
     private GameStats stats;
 

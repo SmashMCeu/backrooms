@@ -45,6 +45,15 @@ public class BackroomItemRegistry {
         return this.items.containsKey(id);
     }
 
+    public boolean existsItemByIdIgnoreCase(String id) {
+        for(BackroomItem item : items.values()) {
+            if(item.getId().equalsIgnoreCase(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public ItemStack createItem(String id) {
         return getItemById(id).build();
     }
