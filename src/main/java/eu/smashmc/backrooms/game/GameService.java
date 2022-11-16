@@ -149,6 +149,7 @@ public class GameService {
                 player.sendTitle("§4Entity", "§c" + entity.getName(), 20, 40, 20);
                 player.playSound(player.getLocation(), Sound.BLOCK_NETHERRACK_BREAK, 1, 1);
 
+                player.sendMessage(" ");
                 player.sendMessage(CenteredMessage.createCentredMessage("§4§lEntity"));
                 player.sendMessage(CenteredMessage.createCentredMessage("§7Your goal is to kill all §eScientists"));
                 player.sendMessage(CenteredMessage.createCentredMessage("§7before they escape."));
@@ -162,6 +163,7 @@ public class GameService {
                 player.sendTitle("§eScientist", "", 20, 40, 20);
                 player.playSound(player.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
 
+                player.sendMessage(" ");
                 player.sendMessage(CenteredMessage.createCentredMessage("§e§lScientist"));
                 player.sendMessage(CenteredMessage.createCentredMessage("§7Your goal is to solve §a" + game.getProperties().getMaxTasks() + " §7tasks."));
                 player.sendMessage(CenteredMessage.createCentredMessage("§7These tasks are distributed on the map, after you solve"));
@@ -342,7 +344,7 @@ public class GameService {
     public int getEntityParticipants(Game game) {
         List<GameParticipant> participants = game.getParticipantRegistry().getParticipants().values()
                 .stream().filter(participant -> {
-                    if (participant instanceof EntityParticipant scientist) {
+                    if (participant instanceof EntityParticipant) {
                         return true;
                     }
                     return false;
@@ -414,7 +416,9 @@ public class GameService {
         game.getCountdown().start();
         game.getMainTask().cancel();
 
+        sendMessage(game, " ");
         if (entityWin) {
+
             sendMessage(game, CenteredMessage.createCentredMessage("§4Entities"));
             sendMessage(game, CenteredMessage.createCentredMessage("§7have won this round."));
         } else {
