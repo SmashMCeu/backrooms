@@ -44,6 +44,9 @@ public class EndCountdown extends GameCountdown {
     @Override
     public void onEnd() {
         getService().sendMessage(getGame(), BackroomsConstants.PREFIX + "§7The game has ended. Thanks for playing §c<3");
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.kickPlayer("");
+        }
         Bukkit.shutdown();
         /*getProvider().stopGame(getGame()).exceptionally(throwable -> {
             throwable.printStackTrace();
