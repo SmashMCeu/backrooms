@@ -8,7 +8,6 @@ import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.game.participant.GameParticipant;
 import eu.smashmc.backrooms.game.participant.entity.EntityParticipant;
 import eu.smashmc.backrooms.util.ParticleUtil;
-import eu.smashmc.backrooms.util.meta.Register;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
@@ -23,7 +22,6 @@ import org.bukkit.util.RayTraceResult;
  * Proprietary and confidential
  * Written by Maga
  **/
-@Register
 public class FlashlightBackroomItem extends BackroomItem {
 
     private static final double RAY_DISTANCE = 6;

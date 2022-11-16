@@ -1,5 +1,6 @@
 package eu.smashmc.backrooms.game.loot;
 
+import eu.smashmc.backrooms.Backrooms;
 import eu.smashmc.backrooms.game.item.BackroomItemRegistry;
 import eu.smashmc.backrooms.game.loot.model.ChestLoot;
 import eu.smashmc.backrooms.game.loot.model.ItemChestLoot;
@@ -25,7 +26,7 @@ public class ChestLootRegistry {
 
     private List<ChestLoot> loot;
 
-    public ChestLootRegistry() {
+    public ChestLootRegistry(Backrooms backrooms) {
         this.loot = new ArrayList<>();
     }
 

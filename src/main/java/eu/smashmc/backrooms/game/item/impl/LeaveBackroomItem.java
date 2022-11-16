@@ -5,8 +5,6 @@ import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.item.BackroomItem;
 import eu.smashmc.backrooms.game.item.event.BackroomItemEvent;
 import eu.smashmc.backrooms.game.model.Game;
-import eu.smashmc.backrooms.util.meta.Register;
-import eu.smashmc.lib.common.minecraft.MinecraftBridge;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -22,7 +20,6 @@ import java.io.IOException;
  * Proprietary and confidential
  * Written by Maga
  **/
-@Register
 public class LeaveBackroomItem extends BackroomItem {
 
     public LeaveBackroomItem() {

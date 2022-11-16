@@ -1,18 +1,18 @@
 package eu.smashmc.backrooms.game.item.impl;
 
-import eu.smashmc.backrooms.game.item.BackroomItem;
 import eu.smashmc.backrooms.game.GameProvider;
 import eu.smashmc.backrooms.game.GameService;
+import eu.smashmc.backrooms.game.item.BackroomItem;
 import eu.smashmc.backrooms.game.item.event.BackroomItemEvent;
 import eu.smashmc.backrooms.game.model.Game;
-import eu.smashmc.backrooms.util.meta.Register;
+import in.prismar.library.meta.anno.Service;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -20,7 +20,6 @@ import org.bukkit.inventory.EquipmentSlot;
  * Proprietary and confidential
  * Written by Maga
  **/
-@Register
 public class AlmondWaterBackroomItem extends BackroomItem {
 
     public AlmondWaterBackroomItem() {

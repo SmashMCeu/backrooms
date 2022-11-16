@@ -5,12 +5,10 @@ import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.item.BackroomItem;
 import eu.smashmc.backrooms.game.item.event.BackroomItemEvent;
 import eu.smashmc.backrooms.game.model.Game;
-import eu.smashmc.backrooms.util.meta.Register;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -22,7 +20,6 @@ import org.bukkit.potion.PotionEffectType;
  * Proprietary and confidential
  * Written by Maga
  **/
-@Register
 public class AdrenalineBackroomItem extends BackroomItem {
 
     public AdrenalineBackroomItem() {

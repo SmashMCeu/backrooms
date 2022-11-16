@@ -2,13 +2,9 @@ package eu.smashmc.backrooms.game.item;
 
 import eu.smashmc.backrooms.Backrooms;
 import eu.smashmc.backrooms.game.item.impl.*;
-import eu.smashmc.backrooms.util.meta.RegisterMetaProcessor;
-import in.prismar.library.meta.MetaRegistry;
 import in.prismar.library.meta.anno.Service;
 import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
-import eu.smashmc.backrooms.util.meta.Register;
-import eu.smashmc.backrooms.util.meta.Register;
 
 import java.util.*;
 
@@ -24,18 +20,18 @@ public class BackroomItemRegistry {
 
     private Map<String, BackroomItem> items;
 
-    public BackroomItemRegistry(Backrooms backrooms) {
+    public BackroomItemRegistry() {
         this.items = new HashMap<>();
-        MetaRegistry metaRegistry = backrooms.getMetaRegistry();
-        metaRegistry.registerProcessor(Register.class, new RegisterMetaProcessor(metaRegistry,
-                instance -> {
-                    if(instance instanceof BackroomItem item) {
-                        register(item);
-                        System.out.println("Registered item " + item.getId());
-                    }
-                }));
+        load();
     }
 
+    private void load() {
+        register(new AdrenalineBackroomItem());
+        register(new AlmondWaterBackroomItem());
+        register(new FlashlightBackroomItem());
+        register(new LeaveBackroomItem());
+        register(new RevealBackroomItem());
+    }
 
     public void register(BackroomItem item) {
         this.items.put(item.getId(), item);
