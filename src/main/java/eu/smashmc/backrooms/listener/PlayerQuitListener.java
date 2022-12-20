@@ -3,6 +3,7 @@ package eu.smashmc.backrooms.listener;
 import eu.smashmc.backrooms.Backrooms;
 import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.model.Game;
+import eu.smashmc.lib.common.minecraft.MinecraftBridge;
 import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.Bukkit;
@@ -37,6 +38,9 @@ public class PlayerQuitListener implements Listener {
         if(optional.isPresent()) {
             Game game = optional.get();
             service.leaveGame(game, player, false);
+            Bukkit.getScheduler().runTaskLater(backrooms, () -> {
+                MinecraftBridge.setResourcePack(player.getUniqueId(), "https://cdn.smashmc.eu/empty.zip");
+            }, 20);
 
         }
     }

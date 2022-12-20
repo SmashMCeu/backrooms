@@ -10,7 +10,7 @@
 
     <properties>
         <bukkit.main>eu.smashmc.backrooms.Backrooms</bukkit.main>
-        <smash-lib.version>1.6.13</smash-lib.version>
+        <smash-lib.version>1.6.14</smash-lib.version>
         <smash-api.version>1.10-SNAPSHOT</smash-api.version>
         <mc-api.version>1.19</mc-api.version>
         <lombok.version>1.18.24</lombok.version>
