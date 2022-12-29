@@ -4,4 +4,4 @@ version: ${project.version}
 api-version: ${mc-api.version}
 description: ${project.description}
 author: SmashMc
-softdepend: [SmashCore, Multiverse-Core]
+softdepend: [SmashCore, Multiverse-Core, Profile]
