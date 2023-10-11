@@ -31,7 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 public class MedkitBackroomItem extends BackroomItem {
 
     public MedkitBackroomItem() {
-        super("Medkit", Material.TOTEM_OF_UNDYING);
+        super("Medkit", Material.DIAMOND_CHESTPLATE);
         setDisplayName("§cMedkit");
         addLore("§7You can revive someone instantly");
     }
