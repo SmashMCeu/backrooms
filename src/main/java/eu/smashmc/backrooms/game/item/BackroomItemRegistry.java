@@ -30,6 +30,7 @@ public class BackroomItemRegistry {
         register(new FlashlightBackroomItem());
         register(new LeaveBackroomItem());
         register(new RevealBackroomItem());
+        register(new MedkitBackroomItem());
     }
 
     public void register(BackroomItem item) {

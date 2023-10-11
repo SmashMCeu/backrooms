@@ -35,6 +35,7 @@ public class ChestLootRegistry {
         register(new ItemChestLoot(0.4, itemRegistry.createItem("Almond Water")));
         register(new ItemChestLoot(0.3, itemRegistry.createItem("Adrenaline")));
         register(new ItemChestLoot(0.2, itemRegistry.createItem("Flashlight")));
+        register(new ItemChestLoot(0.2, itemRegistry.createItem("Medkit")));
     }
 
     public void register(ChestLoot loot) {
