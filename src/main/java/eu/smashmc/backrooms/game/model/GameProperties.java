@@ -16,7 +16,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class GameProperties {
 
+    @Setter
     private int maxScientists;
+
     private int maxEntities;
     private int minPlayers;
 
