@@ -23,7 +23,7 @@ import org.bukkit.potion.PotionEffectType;
 public class AdrenalineBackroomItem extends BackroomItem {
 
     public AdrenalineBackroomItem() {
-        super("Adrenaline", Material.SUGAR);
+        super("Adrenaline", Material.IRON_BOOTS);
         setDisplayName("§eAdrenaline");
         addLore("§7Let's you run faster.");
     }

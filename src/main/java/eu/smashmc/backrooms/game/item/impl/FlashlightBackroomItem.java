@@ -27,7 +27,7 @@ public class FlashlightBackroomItem extends BackroomItem {
     private static final double RAY_DISTANCE = 6;
 
     public FlashlightBackroomItem() {
-        super("Flashlight", Material.STICK);
+        super("Flashlight", Material.GOLDEN_SHOVEL);
         setDisplayName("§bFlashlight");
         addLore("§7Stun an entity");
     }
@@ -38,6 +38,7 @@ public class FlashlightBackroomItem extends BackroomItem {
         RayTraceResult result =
                 player.getWorld().rayTraceEntities(player.getEyeLocation().clone().add(player.getEyeLocation().getDirection().multiply(2)),
                         player.getLocation().getDirection(), RAY_DISTANCE, 1);
+        event.setCancelled(true);
         if(result != null) {
             if (result.getHitEntity() != null) {
                 if(result.getHitEntity() instanceof Player entityPlayer) {

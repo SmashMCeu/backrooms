@@ -31,7 +31,7 @@ import org.bukkit.potion.PotionEffectType;
 public class MedkitBackroomItem extends BackroomItem {
 
     public MedkitBackroomItem() {
-        super("Medkit", Material.FEATHER);
+        super("Medkit", Material.TOTEM_OF_UNDYING);
         setDisplayName("§cMedkit");
         addLore("§7You can revive someone instantly");
     }
@@ -39,6 +39,7 @@ public class MedkitBackroomItem extends BackroomItem {
     @BackroomItemEvent
     public void onInteract(Player player, GameProvider provider, GameService service,
                           Game game, PlayerInteractEvent event) {
+        event.setCancelled(true);
         for(GameParticipant otherParticipants : game.getParticipantRegistry().getParticipants().values()) {
             if(otherParticipants instanceof ScientistParticipant scientist ) {
                 if(scientist.getState() == ScientistState.KNOCKED && !scientist.getPlayer().getUniqueId().equals(player.getUniqueId())) {
@@ -50,7 +51,6 @@ public class MedkitBackroomItem extends BackroomItem {
                         }
                         player.playSound(player.getLocation(), Sound.ENTITY_FIREWORK_ROCKET_LAUNCH, 1f, 2);
                         player.updateInventory();
-                        event.setCancelled(true);
                         service.revive(game, game.getParticipantRegistry().getParticipant(player.getUniqueId()), scientist);
                         return;
                     }
