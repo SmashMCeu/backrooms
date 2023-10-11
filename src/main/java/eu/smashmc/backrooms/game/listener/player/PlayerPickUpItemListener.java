@@ -5,6 +5,7 @@ import eu.smashmc.backrooms.game.GameService;
 import eu.smashmc.backrooms.game.model.Game;
 import eu.smashmc.backrooms.game.participant.GameParticipant;
 import eu.smashmc.backrooms.game.participant.scientist.ScientistParticipant;
+import in.prismar.library.meta.anno.Inject;
 import in.prismar.library.spigot.meta.anno.AutoListener;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -13,7 +14,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
-import javax.inject.Inject;
 import java.util.Optional;
 
 /**
@@ -47,6 +47,7 @@ public class PlayerPickUpItemListener implements Listener {
                             }
                         }
                     }
+
                     event.setCancelled(true);
                     if(size >= 2) {
                         return;
