@@ -38,7 +38,6 @@ steps:
         - main
       event:
         - push
-
   - name: Copy to template
     image: appleboy/drone-ssh
     settings:
