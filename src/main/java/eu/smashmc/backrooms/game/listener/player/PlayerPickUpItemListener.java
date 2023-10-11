@@ -42,7 +42,9 @@ public class PlayerPickUpItemListener implements Listener {
                     int size = 0;
                     for(ItemStack stack : player.getInventory()) {
                         if(stack != null) {
-                            size += stack.getAmount();
+                            if(stack.getType() != Material.AIR) {
+                                size += stack.getAmount();
+                            }
                         }
                     }
                     event.setCancelled(true);
