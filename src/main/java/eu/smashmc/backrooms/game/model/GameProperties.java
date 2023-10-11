@@ -3,6 +3,7 @@ package eu.smashmc.backrooms.game.model;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * Copyright (c) Maga, All Rights Reserved
@@ -19,6 +20,7 @@ public class GameProperties {
     private int maxEntities;
     private int minPlayers;
 
+    @Setter
     private int maxTasks;
 
     public int getMaxPlayers() {

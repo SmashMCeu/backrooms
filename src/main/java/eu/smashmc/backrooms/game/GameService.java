@@ -139,6 +139,7 @@ public class GameService {
         game.setCountdown(new IngameCountdown(backrooms, provider, this, game));
         game.getCountdown().start();
         shuffleParticipants(game);
+        game.getProperties().setMaxTasks(configProvider.getEntity().getGame().getTasksPerPlayer() * getAliveParticipants(game));
         executeForAll(game, participant -> {
             resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
             Player player = participant.getPlayer();
