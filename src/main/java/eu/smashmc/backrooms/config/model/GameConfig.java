@@ -16,6 +16,7 @@ public class GameConfig {
     private double spaceBetweenBackrooms = 400;
     private int maxScientists = 4;
     private int maxEntities = 1;
+    private int minPlayers = 3;
     private int maxTasks = 4;
     private double chestDefaultChance = 0.10;
     private int holeDepth = 20;

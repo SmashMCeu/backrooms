@@ -17,6 +17,7 @@ public class GameProperties {
 
     private int maxScientists;
     private int maxEntities;
+    private int minPlayers;
 
     private int maxTasks;
 

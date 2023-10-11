@@ -80,7 +80,7 @@ public class GameProvider {
             final String id = UUID.randomUUID().toString();
             Tuple<Location, Location> minMax = getMinMaxOfGeneration(result);
             GameMap map = new GameMap(result, minMax.getFirst(), minMax.getSecond());
-            GameProperties properties = new GameProperties(config.getMaxScientists(), config.getMaxEntities(), config.getMaxTasks());
+            GameProperties properties = new GameProperties(config.getMaxScientists(), config.getMaxEntities(), config.getMinPlayers(), config.getMaxTasks());
             Game game = new Game( id, properties, map);
             game.setCountdown(new LobbyCountdown(backrooms, this, service, game));
 

@@ -99,8 +99,8 @@ public class GameService {
 
     public ScientistParticipant spectate(Player player, Game game, ScientistParticipant spectating) {
         ScientistParticipant spectate = null;
-        if(spectating != null) {
-            if(spectating.getState() != ScientistState.ALIVE) {
+        if (spectating != null) {
+            if (spectating.getState() != ScientistState.ALIVE) {
                 player.setSpectatorTarget(null);
             }
         }
@@ -211,11 +211,11 @@ public class GameService {
     public void knock(Game game, EntityParticipant entity, ScientistParticipant participant) {
         if (participant.getKnocks() <= 0) {
             kill(game, participant);
-            if(entity != null) {
+            if (entity != null) {
                 backrooms.getStats().addKill(entity.getPlayer());
             }
         } else {
-            if(entity != null) {
+            if (entity != null) {
                 participant.setKnockedBy(entity);
             }
             participant.setKnocks(participant.getKnocks() - 1);
@@ -238,7 +238,7 @@ public class GameService {
             participant.setKnockedHologram(null);
         }
         String killedBy = "has died.";
-        if(participant.getKnockedBy() != null) {
+        if (participant.getKnockedBy() != null) {
             backrooms.getStats().addKill(participant.getKnockedBy().getPlayer());
             participant.getKnockedBy().getPlayer().playSound(participant.getKnockedBy().getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1f, 1.4f);
             killedBy = "was killed by §4Entity";
@@ -394,7 +394,7 @@ public class GameService {
             resetPlayer(participant.getPlayer(), GameMode.ADVENTURE);
             if (participant instanceof EntityParticipant) {
                 DisguiseAPI.undisguiseToAll(participant.getPlayer());
-                if(entityWin) {
+                if (entityWin) {
                     backrooms.getStats().addEntityWin(participant.getPlayer());
                 }
             } else if (participant instanceof ScientistParticipant scientist) {
@@ -402,7 +402,7 @@ public class GameService {
                     if (scientist.getKnockedHologram() != null) {
                         scientist.getKnockedHologram().disable();
                     }
-                    if(scientist.getKnockedBy() != null) {
+                    if (scientist.getKnockedBy() != null) {
                         backrooms.getStats().addKill(scientist.getKnockedBy().getPlayer());
                     }
                 }
@@ -439,8 +439,8 @@ public class GameService {
     public List<GameParticipant> raytraceParticipants(Game game, Player player) {
         List<GameParticipant> participants = new ArrayList<>();
         List<Entity> entities = new ScreenEntityFinder(player).findEntities(24, 60);
-        for(Entity entity : entities) {
-            if(entity instanceof Player target) {
+        for (Entity entity : entities) {
+            if (entity instanceof Player target) {
                 GameParticipant targetParticipant = game.getParticipantRegistry().getParticipant(target.getUniqueId());
                 participants.add(targetParticipant);
             }
@@ -460,22 +460,21 @@ public class GameService {
     }
 
     public void joinGame(Game game, Player player) {
-        if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
-            game.getParticipantRegistry().register(player.getUniqueId(), new LobbyParticipant(player));
-            player.teleport(configProvider.getEntity().getGame().getLobby());
-            resetPlayer(player, GameMode.ADVENTURE);
-            backrooms.getGameState().setIngamePlayers(game.getParticipantRegistry().getCount());
-            if (game.getParticipantRegistry().getCount() >= game.getProperties().getMaxPlayers()) {
-                if (!game.getCountdown().isRunning()) {
-                    game.getCountdown().start();
-                }
+        game.getParticipantRegistry().register(player.getUniqueId(), new LobbyParticipant(player));
+        player.teleport(configProvider.getEntity().getGame().getLobby());
+        resetPlayer(player, GameMode.ADVENTURE);
+        backrooms.getGameState().setIngamePlayers(game.getParticipantRegistry().getCount());
+        if (game.getParticipantRegistry().getCount() >= game.getProperties().getMinPlayers()) {
+            if (!game.getCountdown().isRunning()) {
+                game.getCountdown().start();
             }
-
-            boardRegistry.add(player, game);
-            boardRegistry.updateTablistAll();
-
-            giveLobbyItems(player);
         }
+
+        boardRegistry.add(player, game);
+        boardRegistry.updateTablistAll();
+
+        giveLobbyItems(player);
+
 
     }
 
@@ -489,8 +488,8 @@ public class GameService {
             GameParticipant participant = game.getParticipantRegistry().unregister(player.getUniqueId());
             backrooms.getGameState().setIngamePlayers(game.getParticipantRegistry().getCount());
             if (game.getState() == GameState.IN_GAME) {
-                if(participant instanceof ScientistParticipant scientist) {
-                    if(scientist.getState() == ScientistState.KNOCKED && scientist.getKnockedBy() != null) {
+                if (participant instanceof ScientistParticipant scientist) {
+                    if (scientist.getState() == ScientistState.KNOCKED && scientist.getKnockedBy() != null) {
                         backrooms.getStats().addKill(scientist.getKnockedBy().getPlayer());
                     }
                 }
@@ -499,12 +498,12 @@ public class GameService {
                     return;
                 }
                 int entities = getEntityParticipants(game);
-                if(entities == 0) {
+                if (entities == 0) {
                     endGame(game);
                     return;
                 }
             } else if (game.getState() == GameState.LOBBY) {
-                if (game.getParticipantRegistry().getCount() < game.getProperties().getMaxPlayers()) {
+                if (game.getParticipantRegistry().getCount() < game.getProperties().getMinPlayers()) {
                     if (game.getCountdown().isRunning()) {
                         game.getCountdown().stop(true);
                     }
