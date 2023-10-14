@@ -120,9 +120,9 @@ public class PrototypeV2BackroomsStrategy extends AbstractBackroomsStrategy<Gene
                             roomX = getRandomRoomByOpeningsAndNot(new RoomOpening[]{RoomOpening.SOUTH, RoomOpening.WEST, RoomOpening.EAST},
                                     new RoomOpening[]{RoomOpening.NORTH});
                         } else {
-                            roomX = getRandomRoomByOpenings(new RoomOpening[]{RoomOpening.WEST, RoomOpening.EAST, RoomOpening.SOUTH, RoomOpening.NORTH});
+                            roomX = getRandomRoomByOpenings(RoomOpening.WEST, RoomOpening.EAST, RoomOpening.SOUTH, RoomOpening.NORTH);
                             while (roomX.hasName()) {
-                                roomX = getRandomRoomByOpenings(new RoomOpening[]{RoomOpening.WEST, RoomOpening.EAST, RoomOpening.SOUTH, RoomOpening.NORTH});
+                                roomX = getRandomRoomByOpenings(RoomOpening.WEST, RoomOpening.EAST, RoomOpening.SOUTH, RoomOpening.NORTH);
                             }
                             universal = true;
                         }
